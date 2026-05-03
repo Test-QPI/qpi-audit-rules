@@ -1,5 +1,14 @@
 # Binary Compliance Checklist – Interview
 
+## Authoritative Declaration
+
+This document is the complete and exclusive Binary Compliance Checklist for Interview calls.
+
+Binary_Items_Applicable = 17.
+
+The following list enumerates all applicable binary compliance items for Interview calls.
+No other binary compliance items apply to Interview calls.
+
 This checklist defines the complete set of binary compliance items
 applicable to Interview calls in the Admissions QPI system.
 
