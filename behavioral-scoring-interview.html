@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Behavioral Scoring – Interview v1.0</title>
+</head>
+<body>
+<h1>Behavioral Scoring – Interview v1.0</h1>
+<pre>Behavioral Scoring
+Version 1.0 – Weighted 40 Points, Stage-Aware, Evidence Strict
+
+PURPOSE
+Convert Behavior Matrix category scores (1/3/5) into Behavioral_Score (0 to 40 points).
+
+INPUTS REQUIRED
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+Behavior Matrix category scores (1, 3, or 5) for applicable categories only
+
+OUTPUT FIELDS
+Behavioral_Points_Earned
+Behavioral_Points_Applicable
+Behavioral_Score (0 to 40)
+
+GLOBAL SAFEGUARDS
+- Score only behavior categories for stages marked YES (present in this call).
+- Do not assume stage presence.
+- If a stage is NO, exclude its categories entirely (do not score them as 1).
+- If evidence is limited or ambiguous for an applicable category, default that category score to 3 (per the Behavior Matrix).
+- Round only the final Behavioral_Score.
+
+Applicability Enforcement Rule (HARD)
+- If a stage flag is NO, behavior categories from that stage must be excluded entirely and may not be scored as 1, 3, or 5.
+- Do NOT force-score later-stage behavior categories based on topic mention alone.
+- Stage presence for behavior applicability is determined only by the Stage Detection source.
+- If Stage_FAFSA_YN = NO, exclude Process Clarity (FAFSA), Risk Prevention (FAFSA), and Accountability Setting (FAFSA).
+- If Stage_Documents_YN = NO, exclude Process Clarity (Documents) and Accountability Setting (Documents).
+
+SCORE VALIDITY RULE (HARD)
+Every category score must be exactly 1, 3, or 5. No other values are valid.
+Do NOT use 2, 4, or any value outside {1, 3, 5}.
+Do NOT apply penalties, deductions, or adjustments to scores or totals.
+Do NOT subtract points from Behavioral_Points_Earned for any reason.
+
+APPLICABLE CATEGORY COUNTS (N/A AWARE)
+Base included category counts by stage flags:
+- If Stage_Interview_YN = YES: include 6 Interview categories (5 if Controlled Discovery = N/A)
+- If Stage_Application_YN = YES: include 2 Application categories
+- If Stage_FAFSA_YN = YES: include 3 FAFSA categories
+- If Stage_Documents_YN = YES: include 2 Documents categories
+
+EXPECTED TOTAL COUNTS (HARD REFERENCE — verify your count before scoring)
+All 4 stages, CD N/A (any stage beyond 1 present): 5+2+3+2 = 12 cats, max = 60 pts
+All 4 stages, CD applicable (Stage 1 only):         6+2+3+2 = 13 cats, max = 65 pts
+Stages 1-3, CD N/A:                                 5+2+3   = 10 cats, max = 50 pts
+Stages 1-2, CD N/A:                                 5+2     =  7 cats, max = 35 pts
+Stage 1 only, CD applicable:                         6       =  6 cats, max = 30 pts
+If your count differs from these, stop and recount before proceeding.
+
+N/A OVERRIDE RULE
+- If any behavior category is explicitly set to N/A by the Behavior Matrix applicability rules, it MUST be excluded from included category counts.
+- Behavioral_Points_Applicable must be calculated using the final included count AFTER removing N/A categories.
+
+Controlled Discovery N/A Case (Behavior Matrix Applicability)
+- If Controlled Discovery = N/A for this call (per the Behavior Matrix applicability rules), reduce Interview included category count by 1 for this call.
+- Do not score Controlled Discovery as 1 when it is N/A.
+- Controlled Discovery = N/A must be excluded from:
+  - Behavioral_Points_Earned
+  - Behavioral_Points_Applicable
+
+CALCULATION DEFINITIONS
+Behavioral_Points_Earned
+Sum of all included category scores (each is 1, 3, or 5).
+
+Behavioral_Points_Applicable
+(Number of included categories) * 5
+
+Behavioral_Rate
+Behavioral_Points_Earned / Behavioral_Points_Applicable
+
+Behavioral_Score
+Behavioral_Rate * 40
+
+CALCULATION STEPS
+1) Determine included categories based on stage flags.
+2) Sum included category scores to get Behavioral_Points_Earned.
+3) Compute Behavioral_Points_Applicable = included_categories_count * 5.
+4) Compute Behavioral_Score = (Behavioral_Points_Earned / Behavioral_Points_Applicable) * 40.
+5) Round Behavioral_Score to nearest whole number.
+6) Cap Behavioral_Score between 0 and 40.
+
+DRIFT CONTROL RULES
+- Default to lower score when ambiguity exists.
+- Do not output 40 unless nearly all included categories are scored 5 with evidence meeting the 5 standard.
+- If Behavioral_Points_Applicable is 0 (should not occur), output Behavioral_Score = 0 and earned/applicable = 0.
+
+</pre>
+</body>
+</html>
