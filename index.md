@@ -12,7 +12,7 @@ Rules may not be inferred, recreated, paraphrased, or modified.
 - [Total QPI Calculation](total-qpi-calculation.md)
 
 ## Binary Compliance
-- [Binary Compliance Checklist – Interview](binary-checkStandard](assessment-disclosure.md)
+- [Binary Compliance Checklist – Interview](binary-checklist-interview.md)
 
 ## Documentation Logic
 - [Documents Timeline Evidence](documents-timeline-evidence.md)
@@ -26,4 +26,5 @@ Rules may not be inferred, recreated, paraphrased, or modified.
 - [Behavioral Scoring – Interview](behavioral-scoring-interview.md)
 
 ## Tonality
-- [Tonality Definitions](tonality-definitions
+- [Tonality Definitions](tonality-definitions.md)
+- [Tonality Scoring](tonality-scoring.md)
