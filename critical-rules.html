@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Critical Scoring Rules</title>
+</head>
+<body>
+<h1>Critical Scoring Rules (Read First)</h1>
+<pre>
+CRITICAL RULES — APPLY ON EVERY CALL BEFORE OUTPUTTING
+
+These rules override any conflicting assumption, prior pattern, or judgment.
+
+-------------------------------------------------\-
+TECHNICAL ISSUE (Portal/Login) — DO NOT COUNT
+Standard FAFSA login, FSA ID login, or studentaid.gov login does NOT qualify.
+2-factor authentication (phone verification) does NOT qualify.
+Agent-side data corrections (e.g., correcting start date on their end) do NOT qualify.
+Tag ONLY when student cannot access a required system due to an error, outage, or access block.
+
+--------------------------------------------------
+TONALITY SCORE MAP (DETERMINISTIC — NO EXCEPTIONS)
+Level A – Strong Positive = 5
+Level B – Positive        = 4
+Level C – Neutral         = 3
+Level D – Negative        = 1
+Level E – Unprofessional  = 0
+Tonality_Score is derived ONLY from Tone_Level. Manual adjustment is forbidden.
+Level A requires: Name_Uses >= 3 AND Empathy >= 3 AND Pressure = 0 AND all flags NO.
+If Pressure_Indicators_Count >= 1, Level A is UNAVAILABLE. Assign Level B or lower.
+
+--------------------------------------------------
+BINARY COMPLIANCE SCORE FORMULA
+Binary_Compliance_Score = round(Binary_Items_Met / Binary_Items_Applicable × 40)
+Standard rounding: .5 rounds up. Never truncate or floor.
+14/17 × 40 = 32.94 → 33.   15/17 × 40 = 35.29 → 35.
+Binary_Items_Applicable maximum for Interview = 17 (Stage1=5, Stage2=4, Stage3=4, Stage4=4).
+Transcript length or repeated discussion within a stage CANNOT increase this number.
+
+--------------------------------------------------
+DOCUMENTS TIMELINE
+Documents_Timeline_Explicit_YN = YES requires a specific deadline or time window
+spoken by the agent: "within 24 hours," "by Friday," "before your start date."
+Procedural guidance, next steps, game plans, or encouragement WITHOUT a time
+reference = NO. If you cannot quote the specific time window, output NO.
+
+--------------------------------------------------
+BINARY_ITEMS_MISSED
+Output None ONLY when Binary_Items_Met = Binary_Items_Applicable (all items scored 1).
+If any item scored 0, list all missed items using S-series IDs with semicolon + space:
+  Example: S2_4 Submission Evidence Verified; S3_3 FAFSA Handoff Secured
+Never output a count. Never output None when items were missed.
+
+--------------------------------------------------
+OPPORTUNITY FIELDS
+Opportunity_1 = lowest-scoring eligible behavior category.
+N/A categories are NOT eligible and must NEVER appear in Opportunity fields.
+If fewer than 3 eligible categories scored below maximum, remaining fields = None.
+Opportunity fields must contain exact category names from the applicable matrix only.
+
+--------------------------------------------------
+ASSESSMENT DISCLOSURE
+Assessment_Discussed_YN = YES requires ALL THREE of the following explicitly stated:
+  1) That an assessment or entrance requirement exists
+  2) What it evaluates or involves
+  3) When or how it will occur
+General skill discussion, program fit conversation, or background exploration
+does NOT satisfy any of these three elements. Default is NO.
+
+--------------------------------------------------
+ANALYSIS-TO-OUTPUT RECONCILIATION
+Before outputting the row, confirm every scored field value matches what was
+computed in its scoring step:
+  Progression_Score, Binary_Compliance_Score, Behavioral_Score, Tonality_Score,
+  QPI_Total_Score = sum of the four above.
+If any value differs from the computed value, correct the row before outputting.
+</pre>
+</body>
+</html>
