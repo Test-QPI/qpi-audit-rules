@@ -12,7 +12,7 @@ Rules may not be inferred, recreated, paraphrased, or modified.
 - [Total QPI Calculation](total-qpi-calculation.md)
 
 ## Binary Compliance
-- [Binary Compliance Checklist – Interview](binary-checklist-interview.html)
+- binary-compliance-scoring.md
 
 ## Documentation Logic
 - [Documents Timeline Evidence](documents-timeline-evidence.md)
