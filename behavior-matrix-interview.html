@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Behavior Matrix – Interview v1.7</title>
+</head>
+<body>
+<h1>Behavior Matrix – Interview v1.7</h1>
+<pre>Behavior Matrix and Opportunity Taxonomy
+Version 1.7 – Adds Score 1 Absence Confirmation Requirement, 5-Anchor Evidence Gate, Qualifying Quote Standard
+
+CHANGE LOG FROM v1.6
+1) Score 1 anchor: Added ABSENCE CONFIRMATION REQUIREMENT — before assigning score 1, the evaluator must identify the expected section, quote agent language, and confirm zero attempt. Validated against live transcripts. Fixes batch pattern of Risk Prevention = 1 on every call.
+2) Score 1 anchor: Added explicit clarification that absent is not the same as ambiguous or incomplete. Imperfect or surface-level execution = 3, not 1.
+3) Score 5 anchor: Added 5-ANCHOR EVIDENCE GATE — before assigning score 5, two distinct qualifying quotes from different sections must be identified. Moved from master prompt into this source where it belongs as a definition rule.
+4) Score 5 anchor: Added QUALIFYING QUOTE STANDARD — closed questions, acknowledgment phrases, and language already excluded by global rules do not count as qualifying evidence.
+
+
+N/A OPPORTUNITY SUPPRESSION (HARD RULE)
+If a behavior category is marked N/A due to stage progression rules, it MUST NOT
+appear in Opportunity_1, Opportunity_2, or Opportunity_3 regardless of its score.
+Only categories that were scored (1, 3, or 5) are eligible for Opportunity fields.
+When determining opportunities, exclude all N/A categories first, then select the
+lowest-scoring eligible categories in order.
+
+PURPOSE
+This source provides a single behavior matrix used for:
+1) Behavioral scoring (weighted 40 percent of total QPI)
+2) Opportunity identification (top 3, unscored)
+3) Deterministic Lowest_Behavior_Category selection for output schema reporting
+
+GLOBAL RULES (ANTI-DRIFT)
+- Score 1, 3, or 5 only. No 2s or 4s.
+- Score only behaviors that are verifiably present in the transcript.
+- A score of 5 requires at least two distinct explicit examples in the call (unless otherwise specified in a category’s 5-anchor).
+- If evidence is limited, ambiguous, or only occurs once -&gt; default to 3.
+- If absent -&gt; score 1.
+- Opportunities must use the same labels as this matrix. No custom opportunity names allowed.
+- Lowest_Behavior_Category must use the same labels as this matrix. No custom labels.
+
+EVIDENCE REQUIREMENTS BY SCORE LEVEL (HARD RULES — APPLY TO EVERY CATEGORY)
+
+Score 5 — STRONG:
+The behavior must be demonstrated with multiple distinct examples drawn from different stages of the call. Two quotes from the same exchange or the same section of the call do not constitute consistent demonstration. To award a 5, identify at least two examples that occur at meaningfully different points in the transcript — for instance, one from the interview stage and one from the financial or application stage. If all evidence comes from a single moment or a single section, the score must not exceed 3. Category-specific 5-anchors defined below may impose additional requirements beyond this global rule.
+
+5-ANCHOR EVIDENCE GATE (HARD RULE — NEW IN v1.7)
+Before finalizing any category score of 5, internally confirm:
+- Quote 1: exact agent words from one section of the call that satisfy the 5-anchor
+- Quote 2: exact agent words from a meaningfully different section of the call that satisfy the 5-anchor
+Both quotes must independently satisfy the specific 5-anchor criteria for that category.
+If you cannot identify two qualifying quotes, the score must be 3 (if any evidence exists) or 1 (if completely absent).
+Do not award 5 based on general call quality, agent effort, task completion, or the fact that other categories scored 5.
+
+QUALIFYING QUOTE STANDARD (HARD RULE — NEW IN v1.7)
+A quote only qualifies as 5-anchor evidence if it directly and substantively demonstrates the specific behavior being evaluated. The following do NOT qualify regardless of context:
+- Closed questions (&quot;Did you...&quot;, &quot;Are you...&quot;, &quot;Have you...&quot;) for categories requiring open-ended engagement
+- Acknowledgment phrases (&quot;Perfect&quot;, &quot;Awesome&quot;, &quot;That sounds great&quot;, standalone affirmations without substantive follow-through)
+- Any language already excluded by the global Acknowledgment Phrases rule below
+- A quote already cited as the first qualifying quote — both quotes must be distinct and from different sections
+
+Score 3 — PRESENT BUT INCOMPLETE:
+The behavior occurred but was limited to one section of the call, was inconsistent across the call, or was present in form but lacked depth or follow-through. This is the correct score when the behavior was attempted but did not meet the full standard for a 5. Do not skip this level. If evidence is thin, drawn from only one moment, or does not meet the category-specific 5-anchor, score 3 not 5.
+
+Score 1 — ABSENT:
+The behavior did not occur in the transcript. No evidence of any attempt. If you can find any evidence of the behavior at all, do not score 1 — use 3 for limited evidence. Score 1 only when the behavior is completely absent.
+
+ABSENCE CONFIRMATION REQUIREMENT (HARD RULE — NEW IN v1.7)
+Before assigning a score of 1 to any behavior category:
+1) Identify the section of the call where this behavior would be expected to occur based on the call type and stages present.
+2) Quote the agent language that occurred in that section.
+3) Confirm that language contains zero evidence of any attempt — not imperfect execution, not surface-level execution, but zero attempt of any kind anywhere in the call.
+
+Absent is not the same as ambiguous. Absent is not the same as incomplete.
+- Ambiguous execution = score 3
+- Incomplete execution = score 3
+- Surface-level attempt = score 3
+- Score 1 only when no attempt of any kind occurred anywhere in the call.
+
+Do not treat imperfect or incomplete execution as absence.
+Conservative scoring means do not award credit without evidence.
+It does not mean suppress or ignore evidence that clearly exists.
+If any evidence of the behavior exists in the transcript — even surface-level — the score must be 3, not 1.
+
+CRITICAL RULE — DO NOT DEFAULT TO 5
+The default score is NOT 5. Each category must be evaluated independently against the evidence in this specific transcript. Do not award 5 simply because other categories scored 5. Do not award 5 because the call went well overall. Do not award 5 because the agent was generally competent. Award 5 only when multiple distinct examples from different parts of the call confirm consistent demonstration of the specific behavior being evaluated.
+
+ACKNOWLEDGMENT PHRASES ARE NOT BEHAVIORAL EVIDENCE
+The following types of agent language are acknowledgment phrases and do not constitute evidence for any behavioral category:
+- Generic affirmations: &quot;Very cool&quot;, &quot;Awesome&quot;, &quot;Perfect&quot;, &quot;Great&quot;, &quot;No worries&quot;, &quot;Absolutely&quot;
+- Brief agreement: &quot;I hear you&quot;, &quot;I got you&quot;, &quot;Got it&quot;, &quot;Okay&quot;
+- Filler encouragement: &quot;That&#x27;s great&quot;, &quot;Love that&quot;, &quot;Sounds good&quot;
+These phrases may appear throughout the call but cannot be cited as evidence for any behavioral score. Only substantive agent language that directly demonstrates the specific behavior being evaluated qualifies as evidence.
+
+APPLICABILITY RULES
+- Stage Detection determines which stage behavior categories are applicable for scoring.
+- Interview calls: score Stage 1 behaviors if Stage 1 is present. Score later-stage behaviors only if those stages are present.
+- Follow-Up calls: score only the stage(s) that are present in the call, regardless of prior stage completion.
+- Do not penalize a follow-up for missing Stage 1 behaviors if Stage 1 is not present.
+
+Applicability Clarification
+- A stage marked PRESENT = YES means that stage occurred and its related behavior categories may be evaluated.
+- A stage marked PRESENT = NO means that stage behavior categories are not applicable and must be excluded.
+- Behavior scoring evaluates quality of execution within an applicable stage.
+- Behavior scoring does NOT determine whether the end goal of the stage was successfully achieved for progression credit.
+CONTROLLED DISCOVERY APPLICABILITY (INTERVIEW-PRIMARY RULE)
+- Controlled Discovery is REQUIRED only when the call is functionally an Interview (Stage 1 only).
+- If the call progresses into Stage 2, Stage 3, or Stage 4 in this interaction, Controlled Discovery is NOT REQUIRED (defaults to N/A) unless the agent performs discovery.
+
+Rules:
+1) Interview-Primary Requirement:
+   - If Stage_Interview_YN = YES AND Stage_Application_YN = NO AND Stage_FAFSA_YN = NO AND Stage_Documents_YN = NO:
+     -&gt; Controlled Discovery is Applicable and must be scored 1/3/5 using the existing anchors.
+
+2) Multi-Stage or Execution Call (Interview + later stages):
+   - If Stage_Interview_YN = YES AND (Stage_Application_YN = YES OR Stage_FAFSA_YN = YES OR Stage_Documents_YN = YES):
+     -&gt; Controlled Discovery = N/A by default.
+     -&gt; Exception: If the agent meets Controlled Discovery Path A or Path B in THIS call, score it normally (1/3/5) instead of N/A.
+
+3) If Stage_Interview_YN = NO:
+   -&gt; Controlled Discovery = N/A.
+
+N/A HANDLING
+- Any category set to N/A must be excluded from:
+  - Behavioral scoring totals and applicable points
+  - Lowest_Behavior_Category selection
+  - Opportunity_1/2/3 eligibility
+
+OUTPUT EXPECTATION
+Each scored category results in a 1/3/5 value. Unscored opportunity selection is derived from the same categories.
+Lowest_Behavior_Category is selected deterministically from the same scored categories using the tie-break rule below.
+
+--------------------------------------------------------------------
+
+STAGE 1 – INTERVIEW
+
+1) Rapport Development
+Definition
+Builds connection and trust while maintaining a professional, student-centered conversation.
+Evidence indicators
+- Uses student name naturally
+- Reflects or validates student statements
+- Establishes supportive tone without sounding scripted
+Scoring anchors
+5 = Two or more empathy/validation moments AND at least one personalized tie-back to student goals.
+3 = At least one rapport behavior present, but inconsistent or surface-level.
+1 = Transactional, scripted, or minimal connection effort.
+
+2) Controlled Discovery
+Definition
+Asks purposeful questions and follows up to understand goals, motivation, constraints, and fit.
+Evidence indicators
+- Open-ended questions about goals and motivations
+- Follow-up probing (why, tell me more, what led you to)
+- Summarizes or connects goals to program value
+
+Scoring anchors
+5 = Meets Path A or Path B.
+
+Path A (question-driven):
+- At least 2 open-ended discovery questions AND
+- At least 1 follow-up probe AND
+- At least 1 explicit tie-back connecting the student’s goal/motivation/barrier to program fit or the next step.
+
+Path B (context volunteered by student):
+- The student clearly states goals/motivation/barriers without being prompted AND
+- The agent provides an explicit summary of what the student shared AND
+- The agent provides at least 1 explicit tie-back connecting that information to program fit or the next step.
+
+3 = Some discovery occurs, but Path A and Path B are not fully met (for example: mostly closed questions, no follow-up probe, or no tie-back).
+1 = Little to no discovery; agent does not seek or use student goals/motivation/barriers.
+
+3) Financial Clarity (Interview)
+Definition
+Sets accurate expectations around tuition and the financial process without guarantees or avoidance.
+Evidence indicators
+- Addresses tuition or cost expectations accurately when relevant
+- Introduces FAFSA/aid process accurately at a high level when relevant
+- Avoids guarantees, minimization, or evasive responses
+Scoring anchors
+5 = Financial expectations explained clearly AND confirms student understanding (verbal check-in) AND no guarantee language.
+3 = Financial topics mentioned but incomplete OR no confirmation of understanding.
+1 = Avoids/deflects improperly, unclear tuition messaging, or any misleading framing.
+
+4) Risk Prevention (Interview)
+Definition
+Prevents financial aid misunderstandings and compliance risk during initial financial discussion.
+Evidence indicators
+- Explicitly avoids guarantee language about aid amounts or eligibility
+- Sets expectation that awards/eligibility are determined later
+- Prepares student for at least one common financial aid blocker when relevant (access, timing, documentation)
+Scoring anchors
+5 = Sets determination expectations clearly AND avoids guarantees AND prepares for at least one common blocker.
+3 = Accurate but surface-level; limited prevention (no blockers or weak expectation setting).
+1 = Any guarantee language or minimizing financial aid process.
+
+5) Assumptive Leadership
+Definition
+Uses confident, forward-moving language that keeps the student progressing, including when the student expresses hesitation, wants to shorten the call, or attempts to disconnect before the workflow is complete.
+
+Evidence indicators
+- Uses “next step” language (we will, next, let’s do this now)
+- Maintains conversational control and direction
+- Limits unnecessary optional phrasing
+- Redirects hesitation, time pressure, or disconnect attempts into a narrowed but forward-moving plan
+- Uses confident deflection language that keeps the student engaged long enough to secure the next appropriate step
+
+Scoring anchors
+5 = Two or more assumptive/forward statements AND maintains control through transitions, including at least one effective redirect of hesitation, time pressure, or disconnect resistance when relevant.
+3 = Some leadership language is present, but it is inconsistent, overly optional, or only partially effective in keeping the call moving forward.
+1 = Passive tone; student drives the call; agent repeatedly defers without attempting to progress, OR the agent allows hesitation/disconnect resistance to end forward movement without a meaningful redirect attempt.
+
+6) Progression Control
+Definition
+Secures the next required step with a clear action and timeline.
+
+Evidence indicators
+- Explicit next step identified (apply, FAFSA, docs, follow-up)
+- Time-bound commitment or scheduled plan
+- Confirms what will happen next
+- Student agreement or acknowledgement is explicit when required
+
+Scoring anchors
+5 = Clear next step + TIME-BOUND commitment + student agreement.
+    - TIME-BOUND means a specific date/time or deadline (today/by tomorrow/at 3pm), OR the next step is completed in-call.
+    - Student agreement must be explicit (yes/okay/that works/I’ll do that).
+
+3 = Clear next step stated, but the timeline is non-time-bound (e.g., “when you can,” “soon,” “email me when done”) OR student agreement is not explicit.
+
+1 = No clear next step, no timeline, or call ends without a progression plan.
+
+Clarification
+- Assumptive Leadership and objection handling may help keep the call moving, but they do NOT by themselves satisfy Progression Control.
+- To score Progression Control, the call must still result in a clearly identified next step and a secured plan at the standard required by the anchors above.
+- A successful redirect of hesitation, time pressure, or disconnect resistance without a secured next-step plan should support Assumptive Leadership, not Progression Control.
+--------------------------------------------------------------------
+
+STAGE 2 – APPLICATION
+
+7) Technical Guidance Precision (Application)
+Definition
+Gives clear, step-by-step application guidance and resolves obstacles.
+Evidence indicators
+- Walks through steps in order (where to go, what to click/enter)
+- Troubleshoots barriers
+- Confirms what the student will do next
+Scoring anchors
+5 = Step-by-step guidance AND addresses a barrier OR confirms completion plan explicitly.
+3 = General instructions given but lacks structure or confirmation.
+1 = Vague, incorrect, or confusing guidance.
+
+8) Accountability Setting (Application)
+Definition
+Creates ownership and urgency to complete the application.
+
+Evidence indicators
+- Reinforces importance of completing
+- Secures time-bound commitment
+- Sets expectations for follow-up
+- Confirms completion when completed in-call
+
+Scoring anchors
+5 = Application is completed and submitted during the call (proof-locked).
+    - Must include explicit confirmation of submission/completion (agent or student/parent), e.g., &quot;submitted&quot;, &quot;hit submit&quot;, &quot;confirmation page&quot;, &quot;application completed.&quot;
+    - If submission is blocked (verification code not received, portal error, FSO registration interruption), score cannot be 5.
+
+3 = Time-bound deadline + student agreement + follow-up expectation, but application is NOT completed on-call.
+    - Deadline must be specific (today/by tomorrow/at 3pm/within 1 hour).
+    - Follow-up expectation must be explicit (agent states when/how they will reconnect OR what action triggers follow-up, e.g., &quot;text/email me once complete&quot;).
+    - Note: Time-bound commitment cannot score 5 unless submission is completed during the call.
+
+1 = Passive encouragement only; no specific deadline, no explicit follow-up expectation, no ownership established.
+--------------------------------------------------------------------
+
+STAGE 3 – FAFSA
+
+9) Process Clarity (FAFSA)
+Definition
+Explains FAFSA steps and requirements clearly without overpromising.
+Evidence indicators
+- Directs to correct access path (studentaid.gov)
+- Explains FSA ID at a basic level when relevant
+- Clarifies what the student must do next
+Scoring anchors
+5 = Clear steps + next action plan + VERIFIED understanding.
+    - VERIFIED understanding requires the student to clearly confirm the next action (e.g., “Yes, I’m going to submit it today,” or repeats what they will do next).
+    - A simple “okay” without clarity does not count as verified understanding.
+3 = Clear explanation is provided, but next action plan is vague OR understanding is not verified.
+Clarification
+- Giving the correct FAFSA year, link, or general next step does NOT by itself satisfy the 5-anchor.
+- To score 5, the agent must provide clear steps, a clear next action plan, AND verified understanding at the standard defined above.
+- A simple acknowledgment, generic “okay,” or broad agreement does NOT count as verified understanding.
+1 = Incorrect, vague, or misleading explanation.
+
+10) Risk Prevention (FAFSA)
+Definition
+Prepares student for common FAFSA issues and avoids compliance risk.
+Evidence indicators
+- Avoids guarantee language about awards
+- Mentions common blockers (docs, dependency, timing) when relevant
+- Sets expectation that eligibility/amount is determined later
+Scoring anchors
+5 = Explicitly sets determination expectation + avoids guarantees + prepares for at least one common blocker.
+3 = Accurate but surface-level; limited prevention.
+1 = Any guarantee language or minimizing FAFSA process.
+
+11) Accountability Setting (FAFSA)
+Definition
+Secures a clear ownership plan for FAFSA completion and establishes expectations for what happens next.
+
+Evidence indicators
+- Establishes a timeline or immediate workflow expectation for FAFSA completion
+- Secures student commitment or acknowledgement
+- Clarifies follow-up expectations
+- When applicable, executes the scripted FAFSA handoff appropriately by leaving the student at the FAFSA workflow handoff point and setting expectations for continued completion and follow-up
+
+Scoring anchors
+5 = ONE of the following is explicitly present:
+
+A) TIME-BOUND completion path
+- Specific deadline + student agreement + follow-up expectation tied to FAFSA completion.
+- Deadline must be specific (today/by tomorrow/at 3pm) OR FAFSA is completed in-call.
+- Follow-up expectation must be explicit (agent states when/how they will reconnect or what action triggers follow-up).
+
+OR
+
+B) Scripted FAFSA handoff path
+- The agent actively progresses the student to the FAFSA workflow handoff point, AND
+- The agent explicitly states that the student will continue the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion, AND
+- The student explicitly agrees or acknowledges the plan.
+
+Campus Mentor Handoff Clarification
+- For campus students following the approved Campus Mentor handoff script, the 5-anchor scripted FAFSA handoff path may still be satisfied even if the original Admissions Representative does not personally schedule the short callback, provided the transcript explicitly shows:
+  - Campus Mentor / campus-team handoff as the immediate next-step owner,
+  - Campus Mentor framed as the main point of contact going forward,
+  - and explicit instruction for the student to continue FAFSA in the meantime.
+- This exception applies only when the campus handoff is clearly script-driven and immediate, not when the follow-up is generic, indefinite, or assigned to an unspecified team member.
+
+3 = FAFSA ownership is established, but the completion path is incomplete at the 5-anchor level.
+Examples:
+- FAFSA completion is encouraged and the next step is clear, but the timeline is vague/non-time-bound, OR
+- follow-up expectation is present but not short/specific enough for the scripted handoff 5-anchor, OR
+- the student acknowledges the plan generally, but explicit agreement or timing is weaker than required for a 5.
+
+1 = No meaningful ownership plan for FAFSA completion.
+Examples:
+- FAFSA is mentioned only as a future task,
+- no deadline or immediate workflow expectation is established,
+- no real follow-up expectation is set,
+- or the agent leaves FAFSA as a general suggestion without securing student ownership of the next step.
+
+Clarification
+- A valid FAFSA handoff should not be scored as a 1 if the agent clearly advances the student into the FAFSA process and establishes what happens next, but falls short of the strict 5-anchor timing requirements.
+- In those cases, score 3 unless the transcript clearly meets the 5-anchor path above.
+- A specific callback time does NOT by itself make the FAFSA completion path time-bound.
+To qualify for the 5-anchor time-bound path, the student’s own FAFSA completion expectation must also be specific and time-bound.
+
+--------------------------------------------------------------------
+
+STAGE 4 – DOCUMENTS
+
+12) Process Clarity (Documents)
+Definition
+Explains required documents and how to submit them clearly.
+Evidence indicators
+- Names at least one specific document
+- Explains where/how to upload or submit
+- Confirms student understanding
+Scoring anchors
+5 = Names specific document(s) + explains submission path + confirms understanding/next action.
+3 = Mentions documents/portal but lacks specificity or confirmation.
+1 = Vague instructions; student left unclear on what/where/how.
+
+13) Accountability Setting (Documents)
+Definition
+Secures a time-bound plan for document submission.
+Evidence indicators
+- Sets timeline expectation
+- Secures commitment
+- Clarifies follow-up expectations
+Scoring anchors
+5 = Timeline + commitment + follow-up expectation.
+3 = Encourages completion but timeline vague.
+1 = No timeline or accountability.
+
+--------------------------------------------------------------------
+
+LOWEST_BEHAVIOR_CATEGORY SELECTION RULES (DETERMINISTIC)
+Use this section to determine:
+- Lowest_Behavior_Category
+- Lowest_Behavior_Score
+
+OPPORTUNITY ELIGIBILITY GATE (HARD RULE)
+- Opportunities may ONLY be selected from behavior categories scored 1 or 3.
+- A category scored 5 is NEVER eligible to be an Opportunity.
+- If no categories are scored 1 or 3, then Opportunity_1 = None, Opportunity_2 = None, Opportunity_3 = None.
+- If a selected Opportunity does not have a score of 1 or 3, replace it with the next eligible category by priority order. If none exist, output None.
+
+Step 1: Build eligible scored category list
+- Include all applicable behavior categories that were scored for this call.
+- Exclude unscored categories from stages that were not present.
+
+Step 2: Determine Lowest_Behavior_Score
+- Lowest_Behavior_Score is the lowest numeric score among eligible scored categories.
+- Allowed values remain 1, 3, or 5.
+
+Step 3: Determine Lowest_Behavior_Category
+- Select the category or categories tied at Lowest_Behavior_Score.
+- If only one category is tied, output that label.
+- If multiple categories are tied, select the highest-priority tied category using the fixed priority order below.
+
+Fixed Priority Order for tie-breaks
+Progression Control
+Assumptive Leadership
+Accountability Setting (Application)
+Accountability Setting (FAFSA)
+Accountability Setting (Documents)
+Controlled Discovery
+Rapport Development
+Financial Clarity (Interview)
+Process Clarity (FAFSA)
+Process Clarity (Documents)
+Risk Prevention (Interview)
+Risk Prevention (FAFSA)
+Technical Guidance Precision (Application)
+
+Step 4: Output rule
+- Lowest_Behavior_Category must be exactly one label from this matrix.
+- Do not output multiple labels.
+- Do not output a custom label.
+
+--------------------------------------------------------------------
+
+OPPORTUNITY SELECTION RULES (UNSCORED)
+Always output up to three Opportunities using the labels above.
+No custom opportunity names allowed.
+
+Opportunity Selection Decision Tree (Deterministic)
+
+Step 1: Build candidate list
+- Include any behavior categories scored as 1 or 3 from applicable stages.
+- Exclude categories scored 5.
+
+Step 2: Mandatory inclusion rules
+
+2A) Score-1 override (HARD)
+If any applicable behavior category is scored 1, Opportunity_1 must equal Lowest_Behavior_Category.
+This overrides Progression_Success-based forcing rules.
+
+2B) Progression failure escalation
+If 2A does NOT apply AND Progression_Success = NO AND Progression Control is scored 3 or lower,
+then Opportunity_1 must be Progression Control.
+
+2C) Lowest alignment rule (HARD)
+If 2A does NOT apply, Opportunity_1 must equal Lowest_Behavior_Category.
+
+Step 3: Rank remaining candidates by fixed priority order
+Use this order:
+Progression Control
+Assumptive Leadership
+Accountability Setting (Application)
+Accountability Setting (FAFSA)
+Accountability Setting (Documents)
+Controlled Discovery
+Rapport Development
+Financial Clarity (Interview)
+Process Clarity (FAFSA)
+Process Clarity (Documents)
+Risk Prevention (Interview)
+Risk Prevention (FAFSA)
+Technical Guidance Precision (Application)
+
+Step 4: Select outputs
+- Opportunity_1 = highest-ranked remaining candidate not already used (unless Step 2A forced it).
+- Opportunity_2 = next highest-ranked remaining candidate not already used.
+- Opportunity_3 = next highest-ranked remaining candidate not already used.
+
+Step 5: Fill rules
+If fewer than three candidates exist, fill remaining Opportunity fields with None.
+
+--------------------------------------------------
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------</pre>
+</body>
+</html>

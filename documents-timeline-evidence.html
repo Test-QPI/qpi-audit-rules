@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Documents Timeline Evidence v1.0</title>
+</head>
+<body>
+<h1>Documents Timeline Evidence v1.0</h1>
+<pre>Documents Timeline Evidence
+Version 1.0 – Stage 4 Completion Gate, Evidence Strict
+
+PURPOSE
+Output two binary fields that confirm whether a Stage 4 (Documents) timeline was explicitly set and agreed to.
+These fields are used to prevent non-document scheduling (tour/start dates) from being counted as document completion.
+
+OUTPUT FIELDS
+Documents_Timeline_Explicit_YN (YES/NO)
+Documents_Timeline_Agreed_YN (YES/NO)
+
+GLOBAL RULES
+- Evidence only. No inference.
+- These fields apply only when Documents are discussed (Tasks_Discussed includes Documents OR Stage_Documents_YN = YES).
+- If Documents are not discussed and Stage_Documents_YN = NO:
+  Documents_Timeline_Explicit_YN = N/A
+  Documents_Timeline_Agreed_YN = N/A
+
+DEFINITIONS
+
+Documents_Timeline_Explicit_YN = YES only if BOTH are present:
+1) The agent explicitly references document submission/upload as the task, AND
+2) The agent states a time-bound timeline that explicitly applies to document submission/upload.
+Examples:
+- &quot;Upload your transcript today.&quot;
+- &quot;Please submit your documents by tomorrow.&quot;
+- &quot;Get that ID uploaded before Friday.&quot;
+Non-examples (do NOT count):
+- Tour scheduled date/time
+- Start date selection/change
+- General callback scheduling not tied to document upload
+- &quot;As long as you have a game plan&quot; — encouragement without a specific deadline
+- &quot;Whenever you can get to it&quot; or similar open-ended language
+- Documents completed in-call (no timeline needed; the task is already done)
+- FSO application tasks or enrollment tasks completed during the call without a separate deadline for outstanding documents
+
+Documents_Timeline_Agreed_YN = YES only if BOTH are present:
+1) Documents_Timeline_Explicit_YN = YES, AND
+2) The student verbally agrees to that document timeline.
+Examples:
+- &quot;Yes, I can do that.&quot;
+- &quot;Okay, I’ll upload it tonight.&quot;
+- &quot;That works.&quot;
+If the student does not agree explicitly or the response is unclear -&gt; NO.
+
+HARD RULE — TIME-BOUND REQUIREMENT
+Documents_Timeline_Explicit_YN = YES requires a specific deadline or time window
+verbally stated by the agent. Qualifying examples: &quot;within 24 hours,&quot; &quot;by Friday,&quot;
+&quot;before your start date,&quot; &quot;by end of this week.&quot;
+Procedural guidance, general next steps, or encouragement without a time reference
+does NOT qualify regardless of how specific the document discussion is.
+If you cannot identify the specific deadline or time window in the transcript,
+Documents_Timeline_Explicit_YN = NO.
+
+DEFAULTS
+If Documents are discussed but no explicit doc timeline is set:
+- Documents_Timeline_Explicit_YN = NO
+- Documents_Timeline_Agreed_YN = NO
+
+</pre>
+</body>
+</html>
