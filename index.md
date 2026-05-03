@@ -1,28 +1,29 @@
 # Admissions QPI Knowledge Base (Authoritative)
 
-This site contains the **authoritative, immutable knowledge base** for Admissions QPI call auditing.
+This site hosts the **authoritative, immutable knowledge base** for Admissions QPI call auditing.
 
-All evaluations MUST use these documents as the sole source of truth.
-Rules may not be inferred, recreated, or modified.
+All evaluations MUST use these documents as the sole source of truth.  
+Rules may not be inferred, recreated, paraphrased, or modified.
 
 ---
 
 ## Schema & Aggregation
-- [Output Schema](output-schemaculation
+- [Output Schema](output-schema.md)
+- [Total QPI Calculation](total-qpi-calculation.md)
 
 ## Binary Compliance
-- [Binary Checklist – Interview](binary-checklist-interview)
-- [Binary Compliance Scoring](binary-compliance-scoring)
-- [Assessment Disclosure Standard](assessment-disression Definitions](progression-definitions)
-- [Progression Scoring](progression-scoring)
+- [Binary Compliance Checklist – Interview](binary-checkStandard](assessment-disclosure.md)
+
+## Documentation Logic
+- [Documents Timeline Evidence](documents-timeline-evidence.md)
+
+## Progression
+- [Progression Definitions](progression-definitions.md)
+- [Progression Scoring](progression-scoring.md)
 
 ## Behavioral – Interview
-- [Behavior Matrix – Interview](behavior-matrix-interview)
-- [Behavioral Scoring – Interview](behavioral-scoring-interview)
+- [Behavior Matrix – Interview](behavior-matrix-interview.md)
+- [Behavioral Scoring – Interview](behavioral-scoring-interview.md)
 
 ## Tonality
-- [Tonality Definitions](tonality-definitions)
-- [Tonality Scoring](tonality-scoring)
-
-## Context & Risk
-- [Tasks Discussed Labels](tasks
+- [Tonality Definitions](tonality-definitions
