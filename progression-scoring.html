@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progression Scoring v1.4</title>
+</head>
+<body>
+<h1>Progression Scoring v1.4</h1>
+<pre>Admissions Progression Scoring
+Version 1.4 – Tiered Completion Credit (0/5/10/15), Constraint-Agnostic, Follow-Up Stage 4 Supported
+
+PURPOSE
+Assign Progression_Score (0–15) based on the highest stage verifiably completed in THIS call.
+This score reflects what was actually completed in-call (tiered credit), not excuses or constraints.
+Constraints remain reportable context but do not change Progression_Score.
+
+FOUNDATIONAL RULE
+Progression Scoring is separate from Stage Detection.
+
+- Stage Detection determines whether a workflow stage occurred and whether that stage is applicable for Binary Compliance and Behavior Matrix scoring.
+- Progression Scoring determines the highest stage whose end goal was successfully achieved in this call.
+- A stage may be PRESENT = YES without being successfully achieved for progression credit.
+- Binary Compliance and Behavior Matrix then explain what was passed, missed, or executed weakly within the stages that were present.
+
+INPUTS REQUIRED
+Call_Subtype
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+(These stage flags must be produced by the Stage Detection source using evidence strict rules.)
+
+OUTPUT
+Progression_Score must be one of:
+0, 5, 10, 15
+
+GLOBAL SAFEGUARDS (ANTI-DRIFT)
+- Use transcript evidence only. No inference.
+- Stage flags indicate what occurred in THIS call only.
+- Award points only if the stage is BOTH present (stage flag YES) AND completed with an explicit action/commitment.
+- Never award a higher tier unless its completion criteria are met.
+- When uncertain, default to the lower score.
+
+INTERPRETATION RULE
+- Do not use Binary Compliance or Behavior Matrix scores to decide whether a stage was present. Use Stage Detection for stage presence.
+- Do not use Stage Detection alone to determine Progression_Score. Use the stage completion rules below to determine whether the end goal of that stage was successfully achieved.
+- A stage can be PRESENT = YES but still fail to achieve progression credit for that stage.
+- A stage can receive progression credit while still containing some Binary or Behavior misses within that stage.
+
+STAGE COMPLETION REQUIREMENT (COMMITMENT GATE)
+A stage is &quot;completed in this call&quot; only if BOTH are true:
+1) The corresponding stage flag is YES, AND
+2) The agent secures an explicit action/commitment tied to that stage (time-bound plan or confirmed action).
+
+Minimum completion evidence by stage:
+
+Stage 1 completion (Interview)
+Stage 1 is &quot;completed in this call&quot; only if BOTH are true:
+1) Stage_Interview_YN = YES, AND
+2) The agent secures the next step using ONE of the following completion paths:
+
+A) Immediate execution path (in-the-moment)
+- Agent directs the student/parent to begin the next step during the call (application/FAFSA/documents action), AND
+- Student/parent explicitly agrees OR demonstrates execution (e.g., confirms they are on the site/page, begins entering info, proceeds with steps).
+
+OR
+
+B) Time-bound plan (off-call)
+- Agent states a specific follow-up time or completion window (same-day window or scheduled time), AND
+- Student/parent explicitly agrees.
+
+If neither A nor B is fully satisfied -&gt; Stage 1 is NOT completed.
+
+Stage 2 completion (Application)
+Stage 2 is &quot;completed in this call&quot; only if the application is explicitly confirmed as submitted/completed during THIS call.
+
+Score Stage 2 as completed ONLY if:
+A) Verified completion
+- Agent explicitly confirms the application was submitted/completed in this call (or student/parent explicitly confirms submission), OR
+- The call includes explicit evidence of submission completion (e.g., “you hit submit,” “application submitted,” “confirmation page,” “submission confirmation received,” “final screen confirms application submitted,” “application processed successfully”).
+
+Do NOT count as Stage 2 completion:
+- a scheduled callback to return and finish the application later
+- a student agreement to work on the application after the call
+- a same-day or next-day time-bound plan without in-call submission confirmation
+- strong application momentum or partial completion without explicit submission/completion evidence
+
+Business Rule Clarification
+- For progression credit, the application step is considered achieved only when it is completed on the call itself.
+- Off-call completion plans may still support Binary and Behavioral scoring, but they do NOT satisfy Stage 2 completion for Progression_Score purposes.
+
+Stage 3 completion (FAFSA)
+Stage 3 is &quot;completed in this call&quot; only if BOTH are true:
+1) Stage_FAFSA_YN = YES, AND
+2) The agent secures ONE of the following FAFSA completion paths:
+
+A) FAFSA submitted/verified
+- FAFSA is explicitly confirmed as already submitted, OR
+- FAFSA is explicitly confirmed as submitted during the call.
+
+OR
+
+B) Scripted FAFSA handoff completion
+- The agent actively progresses the student into the FAFSA workflow (correct FAFSA year, access path, login/FSA ID/account recovery as needed), AND
+- The student reaches the FAFSA workflow handoff point (for example: “Starting the FAFSA” page or equivalent pre-form completion point), AND
+- The agent explicitly states that the student will continue the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion, AND
+- The student explicitly agrees or acknowledges the plan.
+
+Short Follow-Up Requirement (HARD RULE)
+- The follow-up expectation must be near-term and specific enough to function as a real FAFSA completion plan.
+- Acceptable examples include:
+  - callback in about 30 minutes to 1 hour
+  - later today
+  - tomorrow at a stated time
+  - another similarly specific near-term follow-up tied to FAFSA completion
+
+Enforcement Clarification
+- A generalized team handoff or unscheduled future outreach does NOT satisfy the short follow-up requirement.
+- Statements such as &quot;be on the lookout for a phone call,&quot; &quot;someone will call you,&quot; &quot;your mentor will follow up,&quot; or similar unscheduled continuation language must be scored as NOT completed for Stage 3 progression credit.
+- These statements may support Stage 3 presence only when true workflow movement occurred, but they do NOT satisfy Stage 3 completion.
+
+Do NOT count as Stage 3 completion:
+- vague or unspecified continuation language such as:
+  - “we’ll follow up”
+  - “be on the lookout for a phone call”
+  - “someone will reach out”
+  - or similar non-time-bound follow-up language
+- general FAFSA encouragement without a real handoff plan
+- a follow-up expectation that is not clearly tied to FAFSA completion
+
+Strict Completion Enforcement
+- Generalized team handoff language does NOT satisfy Stage 3 completion.
+- If the follow-up is assigned to a future advisor, mentor, campus mentor, team member, or unspecified callback without a specific short timeline tied to FAFSA completion, Stage 3 completion must be scored NO.
+- Statements such as:
+  - &quot;your mentor will follow up&quot;
+  - &quot;be on the lookout for a phone call&quot;
+  - &quot;someone from the team will call you&quot;
+  - &quot;they will reach out&quot;
+  do NOT satisfy the scripted FAFSA handoff completion path unless the transcript also contains a specific short follow-up timeframe tied to FAFSA completion.
+- These statements may coexist with valid Stage 3 presence, but they do NOT convert Stage 3 presence into Stage 3 completion.
+
+Campus Mentor Handoff Exception (NARROW RULE)
+- For campus students following the approved Campus Mentor handoff script, Stage 3 completion may still be awarded through the scripted FAFSA handoff path even if the original Admissions Representative does not personally schedule the short callback.
+
+Count as valid Stage 3 completion under this exception ONLY if ALL are explicit in the transcript:
+1) The call clearly indicates the student is a campus student or is being routed into the Campus Mentor / campus team path, AND
+2) The agent explicitly states that the Campus Mentor will be the student&#x27;s main point of contact going forward or will be following up on FAFSA / next steps, AND
+3) The agent explicitly instructs the student to continue working on FAFSA in the meantime, AND
+4) The handoff language reflects the approved immediate-next-step campus script rather than a vague or indefinite future follow-up.
+
+Qualifying examples include language such as:
+- &quot;Your Campus Mentor will be following up on FAFSA completion and be your main point of contact going forward&quot;
+- &quot;You&#x27;ll be hearing from your Campus Mentor and supporting teams very soon&quot;
+- &quot;In the meantime, continue to work on your FAFSA&quot;
+
+Do NOT apply this exception if:
+- the student is not clearly established as campus-path / campus-handoff eligible in the current call, OR
+- the handoff is generic team language without Campus Mentor / campus-team specificity, OR
+- the agent does not explicitly reinforce continued FAFSA completion in the meantime.
+
+If FAFSA is only discussed, explained, or positioned as a future task without active workflow progression to the handoff point, Stage 3 is NOT completed.
+
+If the agent does not explicitly state that they cannot remain on the phone for the government form portion, the scripted FAFSA handoff completion path does NOT apply.
+
+Stage 4 completion (Documents)
+- Agent actively advances the documents objective in this call (requirements + where/how to submit), AND
+- Secures an explicit commitment/timeline tied specifically to document submission/upload.
+
+Stage 4 completion requires ALL of the following:
+a) The agent names at least one specific document OR explicitly identifies “required documents” as the objective, AND
+b) The agent confirms where/how the student will submit (portal/location), AND
+c) The agent sets a time-bound plan that explicitly references document submission/upload (not tour dates, start-date changes, or unrelated scheduling), AND
+d) The student verbally agrees to the document timeline/plan (example: “yes,” “okay,” “that works,” “I’ll do that”).
+e) Documents_Timeline_Explicit_YN = YES AND Documents_Timeline_Agreed_YN = YES
+
+DETERMINISTIC SCORING LOGIC
+
+INTERVIEW CALLS
+(Top tier is FAFSA completion.)
+If Stage 3 is completed -&gt; Progression_Score = 15
+Else if Stage 2 is completed -&gt; Progression_Score = 10
+Else if Stage 1 is completed -&gt; Progression_Score = 5
+Else -&gt; Progression_Score = 0
+
+FOLLOW-UP CALLS
+(Top tier can be Documents or FAFSA completion depending on the call task.)
+If Stage 4 is completed -&gt; Progression_Score = 15
+Else if Stage 3 is completed -&gt; Progression_Score = 15
+Else if Stage 2 is completed -&gt; Progression_Score = 10
+Else if Stage 1 is completed -&gt; Progression_Score = 5
+Else -&gt; Progression_Score = 0
+
+CONSTRAINT NOTE (REPORTING ONLY)
+- Constraints do not change Progression_Score.
+- Constraints remain important context for interpretation and trend segmentation.
+
+</pre>
+</body>
+</html>

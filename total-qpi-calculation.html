@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total QPI Calculation v1.0</title>
+</head>
+<body>
+<h1>Total QPI Calculation v1.0</h1>
+<pre>Total QPI Calculation
+Version 1.0 – Weighted 100 Points, Drift Resistant
+
+PURPOSE
+Combine the four weighted component scores into a single QPI_Total_Score (0 to 100).
+
+COMPONENT INPUTS REQUIRED
+Progression_Score (0 to 15)
+Binary_Compliance_Score (0 to 40)
+Behavioral_Score (0 to 40)
+Tonality_Score (0 to 5)
+
+OUTPUT
+QPI_Total_Score (0 to 100)
+
+GLOBAL SAFEGUARDS
+- Use component scores only as calculated by their respective scoring resources.
+- Do not re-weight or normalize again in this step.
+- Do not infer missing component values.
+- If a component score is unavailable, output N/A for QPI_Total_Score.
+
+CALCULATION RULE
+QPI_Total_Score = Progression_Score
+                + Binary_Compliance_Score
+                + Behavioral_Score
+                + Tonality_Score
+
+ROUNDING RULE
+QPI_Total_Score must be an integer.
+If any component score is not an integer, round that component first per its resource, then sum.
+
+CAPS
+Maximum QPI_Total_Score = 100
+Minimum QPI_Total_Score = 0
+
+DRIFT CONTROL RULES
+- Do not award 100 unless all components sum to 100.
+- If any component is N/A, set QPI_Total_Score = N/A.
+- Default to the lower score if there is ambiguity in a component calculation upstream.
+
+</pre>
+</body>
+</html>

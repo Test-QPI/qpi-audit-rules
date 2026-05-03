@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Disclosure v1.1</title>
+</head>
+<body>
+<h1>Assessment Disclosure v1.1</h1>
+<pre>Admissions_QPI_Source_Assessment_Disclosure
+Version: 1.1 – Adds Follow-Up Call Applicability
+Purpose: Detects whether the agent conducted a complete assessment disclosure conversation during the call. This source operates independently and does not modify any existing compliance, behavioral, or scoring outputs.
+
+
+DEFINITION
+
+A complete assessment disclosure requires explicit transcript evidence of all three of the following elements. If any element is missing, the output is NO.
+
+Element 1 - Substance: The agent described the assessment or entrance requirement with enough detail for the student to understand what completing it actually involves. A passing reference to the existence of an assessment does not satisfy this element. The agent must have communicated what the student will need to do.
+
+Element 2 - Readiness Check: The agent directly asked the student a question about their comfort level, feelings, or readiness to complete the assessment. The question must be directed at the student&#x27;s personal response to the requirement, not a general informational question about the program.
+
+Element 3 - Concern Response: If the student expressed any hesitation, concern, or resistance in response to the assessment discussion, the agent attempted to address it before continuing. If the student expressed no concern, this element is considered met by default.
+
+
+DETECTION RULES
+
+Rule 1 - Explicit evidence only. Each element must be supported by a direct, verbatim example from the transcript. Do not infer intent. Do not assume an element was covered because related topics were discussed.
+
+Rule 2 - General admissions policy language does not satisfy Element 1. Any reference to assessments or entrance requirements made during the broad admissions overview portion of the call, prior to the program-specific assessment discussion, must be excluded from consideration.
+
+Rule 3 - All three elements must be present for a YES. If one or more elements cannot be supported by transcript evidence, the output is NO regardless of how well the other elements were executed.
+
+Rule 4 - Self-validation required. Before returning a YES, identify and confirm the specific transcript evidence supporting each of the three elements. If you cannot identify supporting evidence for any element, return NO.
+
+
+OUTPUT
+
+Field name: Assessment_Discussed_YN
+Accepted values: YES or NO
+Default: NO
+
+Return YES only when all three elements are confirmed by explicit transcript evidence.
+Return NO when any element is absent, when evidence is ambiguous, or when assessment language appears only in the general admissions overview and not in a program-specific discussion.
+
+
+SCOPE NOTE
+
+This field is reported for informational and coaching purposes only. It does not affect QPI_Total_Score, Binary_Compliance_Score, Behavioral_Score, or any other scored component. It is a standalone disclosure check designed to support Team Leader coaching conversations about assessment preparation.
+
+FOLLOW-UP CALL APPLICABILITY
+
+On Follow-Up calls, Assessment_Discussed_YN is evaluated using the same three-element standard regardless of degree program. All three elements — Substance, Readiness Check, and Concern Response — must be present for a YES.
+
+On Follow-Up calls the assessment re-engagement is expected regardless of program. Acceptable scripted language for Follow-Up assessment re-engagement:
+&quot;Now that we have completed your documents, the final task is completing your assessment. This is an important part of starting into your program, so let&#x27;s make this a priority so you can get ahead.&quot;
+
+The same evidence standard applies — scripted language alone does not satisfy the disclosure unless all three elements are present with explicit transcript evidence.
+
+INTERVIEW CALL APPLICABILITY (UNCHANGED)
+On Interview calls, Assessment_Discussed_YN is evaluated only for qualifying degree programs as defined in the original scope of this source.
+</pre>
+</body>
+</html>

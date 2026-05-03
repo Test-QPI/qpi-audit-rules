@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red Flags v1.2</title>
+</head>
+<body>
+<h1>Red Flags v1.2</h1>
+<pre>Red Flags (Compliance and Risk) – Unscored
+Version 1.2 – Evidence Strict, Schema Aligned (Adds Professionalism Breach; Expands Outcome Guarantee)
+
+PURPOSE
+Identify red flags present in the call. Red flags do NOT alter QPI score.
+They are reported for leadership review and compliance monitoring.
+
+GLOBAL RULES (ANTI-DRIFT)
+- Flag only when explicit evidence is present in the transcript.
+- No inference allowed.
+- If unclear or implied, do not flag.
+- Third-party statements are ignored unless the Admissions Representative confirms or adopts the claim.
+
+RED FLAGS ARE INDEPENDENT (HARD RULE)
+- Red flag detection is independent of stage flags, starting stage, progression ceiling, call subtype, and scoring.
+- Scan the entire transcript for red flag evidence.
+- If evidence exists anywhere in the call, flag it even if the related stage is not present.
+
+MULTI-FLAG OUTPUT RULE (HARD RULE)
+- If more than one red flag category applies, output all applicable categories separated by semicolons.
+- Do not limit to a single category.
+
+EDITABILITY RULE
+- New red flag categories may be added later.
+- Do not rename existing categories without updating downstream reporting.
+- Keep sub-items phrased as explicit agent claims or explicit tactics.
+
+OUTPUT FIELDS (REQUIRED)
+Red_Flag_YN
+Red_Flag_Type(s)
+Red_Flag_Evidence
+
+OUTPUT FORMAT RULES
+- Red_Flag_YN must be YES or NO.
+- Red_Flag_Type(s) must be &quot;None&quot; if Red_Flag_YN = NO.
+- If Red_Flag_YN = YES, list one or more categories separated by semicolons.
+- Red_Flag_Evidence must include short quoted phrases or paraphrased statements anchored to agent language.
+
+--------------------------------------------------
+
+RED FLAG CATEGORIES
+
+1) Financial Aid Misrepresentation
+Flag YES if the agent explicitly:
+- Promised a specific aid amount
+- Guaranteed funding or guaranteed approval
+- Claimed aid is certain or automatic
+
+Coverage Guarantee Language (Financial Aid Misrepresentation)
+Flag YES if the agent implies a guaranteed outcome that the student will not pay out of pocket, including statements like:
+- “Scholarships will cover whatever aid doesn’t.”
+- “You won’t have to pay out of pocket because we’ll cover it.”
+- “Before we start charging out of pocket, scholarships will cover the rest.”
+- “If aid doesn’t cover it, the scholarship will.”
+
+Do NOT flag if the agent clearly frames scholarships as eligibility-based or conditional, including phrases like:
+- “You may qualify…”
+- “If you’re awarded…”
+- “Depending on eligibility…”
+- “We can explore scholarship options…”
+
+2) Cost Misleading
+Flag YES if the agent explicitly:
+- Minimized or dismissed cost concerns
+- Avoided stating tuition when directly asked
+- Framed tuition inaccurately or deceptively
+
+3) Outcome Guarantee
+Flag YES if the agent explicitly guarantees any outcome that should be conditional, including:
+Employment and Earnings:
+- Guaranteed a job
+- Guaranteed salary or earnings
+- Claimed employment is assured
+
+Completion and Academic Outcomes:
+- Guaranteed graduation or degree completion
+- Claimed the student will complete the program or “get your degree” as a certainty
+- Guaranteed an academic deliverable by graduation (example: “your work WILL be published by the time you graduate”)
+- Guaranteed portfolio outcomes (example: “you WILL have X finished projects by graduation”)
+- Used absolute certainty language about outcomes (“every single time,” “you will definitely”)
+
+4) Pressure Tactics
+Flag YES if the agent explicitly:
+- Used fear-based urgency
+- Claimed false scarcity (limited seats) without verification
+- Repeatedly pressured after the student refused
+
+5) Academic Misrepresentation
+Flag YES if the agent explicitly:
+- Minimized workload or requirements
+- Misrepresented program difficulty
+- Suggested the program is easy
+
+6) Professionalism Breach
+Flag YES if the agent explicitly:
+- Used profanity or explicit vulgar language (example: “f***”, “s***”) in front of the student
+- Insulted, mocked, or belittled the student or a third party
+- Used aggressive or hostile phrasing directed at the student
+
+NOTE
+- Do not flag mild slang unless it is clearly profane or hostile.
+
+--------------------------------------------------
+
+DECISION RULE
+
+If any category is flagged:
+Red_Flag_YN = YES
+
+If more than one category applies, output ALL applicable categories in Red_Flag_Type(s), separated by semicolons. Do not limit to a single category.
+
+If no categories are flagged:
+Red_Flag_YN = NO
+Red_Flag_Type(s) = None
+Red_Flag_Evidence = None
+
+</pre>
+</body>
+</html>

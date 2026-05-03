@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Behavioral Scoring – Follow-Up v1.0</title>
+</head>
+<body>
+<h1>Behavioral Scoring – Follow-Up v1.0</h1>
+<pre>Follow-Up Behavioral Scoring
+Version 1.0 – Initial Release
+
+PURPOSE
+Convert Follow-Up Behavior Matrix category scores (1/3/5) into Behavioral_Score (0 to 40 points).
+This source applies ONLY when Call_Subtype = Follow-Up.
+Do NOT apply this source to Interview calls. Interview calls use the Interview Behavioral Scoring source.
+
+INPUTS REQUIRED
+Call_Subtype (must be Follow-Up to apply this source)
+Follow-Up Behavior Matrix category scores (1, 3, or 5) for all four categories:
+- FAFSA Assessment
+- FlightPath Execution
+- Obstacle Resolution
+- Accountability Setting (Follow-Up)
+
+OUTPUT FIELDS
+Behavioral_Points_Earned
+Behavioral_Points_Applicable
+Behavioral_Score (0 to 40)
+
+GLOBAL SAFEGUARDS
+- All four Follow-Up behavioral categories are always applicable on Follow-Up calls.
+- Do not exclude any category based on FAFSA_Validated_YN branch.
+- Do not exclude any category based on whether the student raised an obstacle.
+  If no obstacle was raised, score Obstacle Resolution = 1 (absent).
+- If evidence is limited or ambiguous for any category, default that category score to 3 per the Follow-Up Behavior Matrix.
+- Round only the final Behavioral_Score.
+
+APPLICABLE CATEGORIES
+Always 4 for Follow-Up calls:
+1. FAFSA Assessment
+2. FlightPath Execution
+3. Obstacle Resolution
+4. Accountability Setting (Follow-Up)
+
+Behavioral_Points_Applicable = 4 × 5 = 20 (always)
+
+CALCULATION DEFINITIONS
+
+Behavioral_Points_Earned
+Sum of all four category scores.
+Minimum: 4 (all scored 1) | Maximum: 20 (all scored 5)
+
+Behavioral_Points_Applicable
+Always 20 for Follow-Up calls (4 categories × maximum score of 5).
+
+Behavioral_Rate
+Behavioral_Points_Earned / Behavioral_Points_Applicable
+Behavioral_Points_Earned / 20
+
+Behavioral_Score
+Behavioral_Rate × 40
+Round to nearest whole number.
+
+SCORE EXAMPLES
+All categories 5: 20/20 = 1.00 × 40 = 40
+Three 5s one 3: 18/20 = 0.90 × 40 = 36
+Two 5s two 3s: 16/20 = 0.80 × 40 = 32
+One 5 three 3s: 14/20 = 0.70 × 40 = 28
+All categories 3: 12/20 = 0.60 × 40 = 24
+One 5 two 3s one 1: 12/20 = 0.60 × 40 = 24
+All categories 1: 4/20 = 0.20 × 40 = 8
+
+OUTPUT VALIDATION
+Before finalizing Behavioral_Score:
+- Confirm all four categories were scored
+- Confirm Behavioral_Points_Applicable = 20
+- Confirm Behavioral_Points_Earned = sum of all four category scores
+- Confirm Behavioral_Rate = Behavioral_Points_Earned / 20
+- Confirm Behavioral_Score = Behavioral_Rate × 40 rounded to nearest whole number
+- If any check fails, recalculate before outputting
+
+LOWEST_BEHAVIOR_CATEGORY AND OPPORTUNITY SELECTION
+After scoring all four categories:
+- Lowest_Behavior_Category = the category with the lowest score
+- If tie: use tie-break order from Follow-Up Behavior Matrix (FAFSA Assessment &gt; FlightPath Execution &gt; Obstacle Resolution &gt; Accountability Setting Follow-Up)
+- Lowest_Behavior_Score = the score of the Lowest_Behavior_Category
+- Opportunity_1 = Lowest_Behavior_Category
+- Opportunity_2 = category with second lowest score (None if all remaining categories score 5)
+- Opportunity_3 = category with third lowest score (None if all remaining categories score 5)
+- If all four categories score 5: Lowest_Behavior_Score = 5, all Opportunity fields = None
+</pre>
+</body>
+</html>

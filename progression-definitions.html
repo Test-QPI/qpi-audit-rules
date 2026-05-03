@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progression Definitions v1.10</title>
+</head>
+<body>
+<h1>Progression Definitions v1.10</h1>
+<pre>Admissions Progression Definitions
+Version 1.10 – Clarifies Follow-Up Starting_Stage Evidence Standard for Prior Completion
+
+CHANGE LOG FROM v1.9
+1) FOLLOW-UP STARTING_STAGE: Added explicit guidance that broad prior completion language
+   from the agent — positioning the student as having finished all upstream enrollment work
+   before the call — qualifies for Starting_Stage = Stage 3 or Stage 4. Scorers were
+   defaulting to Unknown when evidence was present but not item-by-item explicit.
+2) Added qualifying and non-qualifying examples for Stage 3 and Stage 4 Starting_Stage
+   on Follow-Up calls.
+3) Added STARTING_STAGE INTERACTION WITH MONOTONIC RULE clarification — when Starting_Stage
+   is correctly set to Stage 4, the monotonic rule raises Progression_Ceiling to Stage 4
+   and Progression_Success becomes NOT APPLICABLE on coordination-only calls. This is the
+   correct coaching signal for well-executed Post-FAFSA calls.
+4) No changes to Interview Starting_Stage rules, Progression_Ceiling rules, Progression_Success
+   rules, Constraint rules, FSO Registration rules, or any other section.
+
+PURPOSE
+Determine progression-related fields for each call:
+Call_Subtype, Starting_Stage, Progression_Ceiling, Progression_Success,
+Constraint_Flag_YN, Constraint_Type.
+
+INPUTS REQUIRED
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+These flags must be produced using the Stage Detection and Trigger Rules source.
+
+Tasks_Discussed
+(From the Tasks Discussed Tagging source. Used for Follow-Up task ceiling selection.)
+
+GLOBAL RULES (ANTI-DRIFT)
+- Use transcript evidence only.
+- No assumed progression.
+- Stage flags indicate what occurred in THIS call only.
+- Follow-Up calls may begin at later stages due to prior completion; do not require earlier
+  stage flags to be YES to set Starting_Stage above Stage 1.
+- Default to the more conservative value when uncertain, except where a default is explicitly
+  defined below.
+
+--------------------------------------------------
+
+CALL SUBTYPE
+Allowed values:
+Interview
+Follow-Up
+
+Follow-Up evidence (agent-spoken examples):
+- &quot;following up&quot;
+- &quot;we spoke before&quot;
+- &quot;your application is already submitted&quot;
+- &quot;your FAFSA is pending&quot;
+- &quot;we still need your documents&quot;
+
+RECONNECT LANGUAGE EXCEPTION (HARD RULE)
+Phrases such as &quot;following up&quot;, &quot;we spoke before&quot;, &quot;reaching back out&quot;, &quot;reconnecting&quot;, or
+similar contact history references describe why the agent called, not what type of call it is.
+These phrases alone do not classify a call as Follow-Up.
+
+If the agent uses reconnect language but then conducts a full interview sequence during the
+call, classify as Interview.
+
+PRIOR APPLICATION EXCEPTION
+A call is NOT a Follow-Up solely because the student has a prior application on file or prior
+enrollment activity. If the agent conducts the full interview sequence during this call —
+including background exploration, program discussion, tuition explanation, and financial aid
+introduction — the call is classified as Interview regardless of the student&#x27;s prior activity.
+
+The distinction is agent behavior, not student history:
+- If the agent is conducting a first-time interview sequence: Call_Subtype = Interview
+- If the agent is reconnecting after a prior completed interview to advance a next step:
+  Call_Subtype = Follow-Up
+
+If unclear: Call_Subtype = Interview.
+
+--------------------------------------------------
+
+FAFSA_VALIDATED_YN
+Allowed values:
+N/A
+YES
+NO
+
+PURPOSE
+This field applies to Follow-Up calls only. It determines which binary compliance branch is
+used for scoring.
+
+DETECTION RULES
+
+If Call_Subtype = Interview:
+FAFSA_Validated_YN = N/A
+
+If Call_Subtype = Follow-Up:
+Evaluate the transcript to determine whether the student submitted the FAFSA form before or
+during this call.
+
+FAFSA_Validated_YN = YES if:
+- The agent explicitly asked about FAFSA status AND the student confirmed they submitted, OR
+- The agent confirmed the FAFSA is on file or processing, OR
+- The student volunteered that the FAFSA was submitted and the agent acknowledged this, OR
+- The agent&#x27;s blanket prior completion language explicitly establishes FAFSA as complete
+  (see BLANKET PRIOR COMPLETION LANGUAGE in the Starting_Stage section below)
+
+FAFSA_Validated_YN = NO if:
+- The student confirmed the FAFSA has not been submitted, OR
+- The agent identified FAFSA as an incomplete next step and routed to FAFSA completion, OR
+- No evidence of prior FAFSA submission exists in the transcript
+
+HARD RULE — DO NOT INFER
+Do not assume FAFSA submission based on the stage of the call or the student&#x27;s enrollment
+history. If the transcript does not contain explicit confirmation of FAFSA submission status,
+default to NO.
+
+--------------------------------------------------
+
+STARTING_STAGE
+Allowed values:
+Stage 1
+Stage 2
+Stage 3
+Stage 4
+Unknown
+
+Definition:
+Starting_Stage represents the stage the call begins in, based on agent references to what was
+already completed before this call.
+
+INTERVIEW OVERRIDE (HARD RULE)
+If the agent explicitly references conducting an interview during this call:
+- Call_Subtype = Interview
+- Starting_Stage = Stage 1
+
+Interview Calls:
+- Default Starting_Stage = Stage 1.
+- Starting_Stage may be Stage 2 only if agent explicitly confirms the application was already
+  started or completed before this call.
+
+Follow-Up Calls:
+Starting_Stage may be Stage 2, Stage 3, or Stage 4 based on explicit prior completion
+evidence in the transcript. Follow-Up Starting_Stage does NOT require earlier stage flags
+to be YES.
+
+FOLLOW-UP STARTING_STAGE EVIDENCE STANDARD (UPDATED IN v1.10)
+For Follow-Up calls, Starting_Stage may be set based on either:
+
+A) Item-by-item prior completion evidence
+The agent explicitly references a specific prior completed item tied to the target stage.
+Examples:
+- &quot;Your application is already submitted&quot; → Stage 2
+- &quot;Your FAFSA is already on file&quot; → Stage 3
+- &quot;Your GIPI and transcript are uploaded&quot; → Stage 4
+
+B) Broad prior completion language (NEW IN v1.10)
+The agent&#x27;s language explicitly positions the student as having completed all upstream
+enrollment work before this call, even without naming individual items. This qualifies
+Starting_Stage = Stage 3 or Stage 4 depending on what the completion language implies.
+
+BROAD PRIOR COMPLETION — QUALIFYING EVIDENCE FOR STAGE 3 OR STAGE 4
+
+Use Stage 3 when agent language establishes FAFSA is complete but does not clearly
+reference document or supplemental enrollment task completion:
+- &quot;Your FAFSA is handled so now we focus on next steps&quot;
+- &quot;Since your FAFSA is already submitted, we&#x27;re moving forward&quot;
+- &quot;You&#x27;re past the FAFSA stage, we&#x27;re focused on what comes next&quot;
+
+Use Stage 4 when agent language explicitly establishes that all upstream enrollment work —
+including documents or supplemental enrollment tasks — is complete before this call:
+- &quot;What usually takes students days you took care of before we even met&quot;
+- &quot;You&#x27;ve already got your supplemental enrollment documents done&quot;
+- &quot;Everything was handled before we got on this call — you&#x27;re already ahead&quot;
+- &quot;Since you&#x27;ve already completed everything on your end, we&#x27;re focused on next steps&quot;
+- Any agent statement that explicitly frames the student as having completed all upstream
+  enrollment requirements before this call, and positions the current call as coordination
+  or advancement rather than task completion
+
+BROAD PRIOR COMPLETION — NOT QUALIFYING
+The following do NOT establish Starting_Stage above Stage 1:
+- Vague encouragement without explicit completion reference (&quot;you&#x27;ve been doing great&quot;)
+- Agent referencing the student&#x27;s motivation or effort without naming completed tasks
+- General reconnect language without prior completion content (&quot;following up with you&quot;)
+- Student volunteering completion without agent acknowledgment
+
+CONSERVATIVE DEFAULT
+If Starting_Stage cannot be determined from either item-by-item or broad prior completion
+evidence, output Starting_Stage = Unknown.
+Do not use Unknown when broad prior completion language is clearly present. Unknown is
+reserved for calls where no evidence of prior stage completion exists.
+
+--------------------------------------------------
+
+STARTING_STAGE INTERACTION WITH MONOTONIC RULE AND PROGRESSION_SUCCESS (NEW IN v1.10)
+
+COACHING SIGNAL CLARIFICATION
+When Starting_Stage is correctly set to Stage 4 on a Post-FAFSA coordination call:
+1) The FOLLOW-UP CEILING RULE (Tasks_Discussed) may produce a lower ceiling (e.g., Stage 1)
+   if Tasks_Discussed does not include Documents, FAFSA, or Application.
+2) The MONOTONIC RULE then raises Progression_Ceiling to match Starting_Stage = Stage 4.
+3) Progression_Success = NOT APPLICABLE because Starting_Stage = Progression_Ceiling and
+   no advancement is feasible within call scope — all prior work is complete.
+4) Progression_Score = 0 because no stage was completed in-call.
+
+This combination — Starting_Stage = Stage 4, Progression_Ceiling = Stage 4,
+Progression_Success = NOT APPLICABLE, Progression_Score = 0 — is the correct and intended
+coaching signal for a well-executed Post-FAFSA coordination call. It tells a leader:
+this student was already at Stage 4 before the call; the agent&#x27;s job was coordination,
+not workflow execution; no penalty applies. The coaching conversation should focus on
+Binary Compliance and Behavioral scores, not Progression.
+
+DO NOT default to Unknown to avoid this combination. If broad prior completion evidence
+establishes Stage 4, set Starting_Stage = Stage 4 and allow the downstream rules to
+produce the correct coaching signal.
+
+--------------------------------------------------
+
+CONSTRAINTS
+Constraint_Flag_YN values:
+YES
+NO
+
+Constraint_Type values (single values):
+Time
+Refusal
+Access
+Disconnected
+Other
+None
+
+Output format:
+- If more than one constraint applies, output ALL applicable constraint types separated by
+  semicolons, in order of first appearance in the transcript.
+  Example: Time; Access
+- Do NOT choose only one when multiple are explicit.
+- Do NOT infer constraints. Flag only when explicitly stated.
+
+Examples:
+Time: &quot;I have to go&quot;, &quot;no time&quot;, &quot;we&#x27;re busy&quot;, &quot;call me back later&quot;
+Refusal: &quot;I&#x27;m not doing that&quot;, &quot;not ready&quot;, &quot;I don&#x27;t want to&quot;
+Access: &quot;no computer&quot;, &quot;can&#x27;t log in&quot;, &quot;code isn&#x27;t coming through&quot;, &quot;site is down&quot;,
+        &quot;not allowing me to edit&quot;, &quot;correction unavailable&quot;
+Disconnected: abrupt drop/hang-up clearly indicated
+Other: explicit constraint not covered above
+
+Constraint Consistency Rules:
+- If Constraint_Flag_YN = NO, then Constraint_Type must be None.
+- If Constraint_Flag_YN = YES, then Constraint_Type must NOT be None.
+- If Constraint_Flag_YN = YES and multiple constraints are explicit, Constraint_Type must
+  include all applicable types separated by semicolons.
+
+If none are explicit:
+Constraint_Flag_YN = NO
+Constraint_Type = None
+
+--------------------------------------------------
+
+FSO REGISTRATION ISSUE FLAG (OUTPUT ONLY; UN-SCORED)
+
+Field:
+FSO_Registration_Issue_YN values:
+YES
+NO
+N/A
+
+Restriction (HARD RULE)
+- Do NOT set FSO_Registration_Issue_YN = YES unless the transcript explicitly references
+  Full Sail One, FSO, or the account/registration/login issue is explicitly tied to the
+  Full Sail portal/account.
+- If the transcript does not explicitly anchor the issue to Full Sail One / FSO / the Full
+  Sail account or portal, output NO.
+
+Set FSO_Registration_Issue_YN = YES only if BOTH are true:
+1) Stage_Application_YN = YES AND Binary S2_3 = 1 (application completion explicitly
+   confirmed), AND
+2) An explicit obstacle with Full Sail One (FSO) registration/account creation/access is
+   mentioned.
+
+Qualifying FSO obstacle evidence (must be explicit):
+- &quot;Full Sail One&quot; / &quot;FSO&quot;
+- account creation / registration
+- verification code not received / code not coming through
+- cannot create account / cannot log in / login error
+- portal outage specific to account/FSO access
+
+Set FSO_Registration_Issue_YN = NO if:
+- Application completion is explicitly confirmed AND no FSO obstacle is mentioned, OR
+- FSO is not mentioned at all (no inference allowed).
+
+Set FSO_Registration_Issue_YN = N/A if:
+- Binary S2_3 ≠ 1 (application completion not explicitly confirmed).
+
+--------------------------------------------------
+
+PROGRESSION_CEILING
+Allowed values:
+Stage 1
+Stage 2
+Stage 3
+Stage 4
+Unknown
+
+Definition:
+Progression_Ceiling represents the stage target used to evaluate progression performance
+for the call type.
+
+INTERVIEW CEILING RULE (DEPARTMENT EXPECTATION)
+For Interview calls:
+- Default Progression_Ceiling = Stage 3.
+- This reflects departmental expectation that interviews should drive toward FAFSA progression.
+
+INTERVIEW CEILING RULE (HARDENED STAGE 4 SAFEGUARD)
+For Interview calls, do not set Progression_Ceiling to Stage 4 unless ALL conditions are met:
+
+A) Stage_Documents_YN = YES, AND
+B) Stage 4 Intent Evidence is present (agent frames documents as current objective), AND
+C) Stage 4 Commitment Evidence is present (specific document named, submission method, and
+   time-bound timeline or confirmed upload).
+
+If any of A, B, or C are missing, cap ceiling at Stage 3 or below.
+
+FOLLOW-UP CEILING RULE (TASK CEILING)
+For Follow-Up calls:
+- Determine Progression_Ceiling using Tasks_Discussed in this priority order:
+  1) If Tasks_Discussed includes Documents -&gt; Stage 4
+  2) Else if Tasks_Discussed includes FAFSA -&gt; Stage 3
+  3) Else if Tasks_Discussed includes Application -&gt; Stage 2
+  4) Else -&gt; Stage 1
+
+Follow-Up Ceiling Clarification
+- Tasks_Discussed is the default ceiling selector for Follow-Up calls.
+- Tasks_Discussed must NOT override stronger direct transcript evidence about the active
+  stage objective of the call.
+- Brief mention of a later-stage topic does not, by itself, make that later stage the ceiling.
+- Use the highest stage that is clearly functioning as the active task objective of the call.
+
+Constraint Safeguard:
+If explicit constraints prevent advancement, ceiling must not exceed the highest achievable
+stage within call scope.
+
+Fallback:
+If ceiling cannot be determined confidently: Progression_Ceiling = Unknown.
+
+--------------------------------------------------
+
+PROGRESSION SUCCESS
+Allowed values:
+YES
+NO
+NOT APPLICABLE
+
+Definition:
+Whether the agent successfully achieved the Progression_Ceiling in THIS call.
+
+Authority Rule (HARD RULE)
+- Progression_Success must be determined using the stage-specific completion rules in
+  Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+- Progression Definitions determines the ceiling stage to evaluate.
+- Progression Scoring determines whether that ceiling stage was successfully achieved.
+
+Verification Rule (No Assumptions):
+To claim the ceiling stage was successfully achieved during THIS call, the corresponding
+stage flag must be YES.
+
+Ceiling Stage Verification:
+If Progression_Ceiling = Stage 1 -&gt; Stage_Interview_YN must be YES
+If Progression_Ceiling = Stage 2 -&gt; Stage_Application_YN must be YES
+If Progression_Ceiling = Stage 3 -&gt; Stage_FAFSA_YN must be YES
+If Progression_Ceiling = Stage 4 -&gt; Stage_Documents_YN must be YES
+Progression_Success = YES only if BOTH:
+1) The ceiling stage flag is YES, AND
+2) The ceiling stage meets the full stage-specific completion standard defined in
+   Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+
+SYSTEM / ACCESS BLOCK OVERRIDE (HARD RULE)
+If the ceiling stage work is blocked by an explicit access/system failure during the call,
+Progression_Success must be NO even if the ceiling stage flag is YES.
+
+FSO REGISTRATION DOES NOT BLOCK STAGE 2 COMPLETION (PRAGMATIC RULE)
+If the admissions application is explicitly confirmed as completed/submitted in this call,
+treat Stage 2 completion as achieved even if Full Sail One (FSO) registration/account
+creation is interrupted or fails.
+
+Stage 4 Success Gate (Documents)
+For Progression_Ceiling = Stage 4:
+- A time-bound plan must explicitly reference document submission/upload.
+- Student must verbally agree to the document timeline/plan.
+If either is missing -&gt; Progression_Success = NO.
+
+Progression_Success = NO if:
+- Ceiling stage flag is NO, OR
+- Ceiling stage flag is YES but ceiling stage does NOT meet the full stage-specific completion
+  standard defined in Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+
+Progression_Success = NOT APPLICABLE only if:
+- Starting_Stage equals Progression_Ceiling AND no advancement is feasible within call scope.
+
+--------------------------------------------------
+
+MONOTONIC RULE (CEILING CANNOT BE BELOW START)
+
+If Starting_Stage is known (Stage 1–4) and Progression_Ceiling is known (Stage 1–4):
+- Progression_Ceiling must be equal to or higher than Starting_Stage.
+- If a lower ceiling would occur, set Progression_Ceiling = Starting_Stage.
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by
+Admissions_QPI_Source_Assessment_Disclosure_v1.1.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------
+</pre>
+</body>
+</html>

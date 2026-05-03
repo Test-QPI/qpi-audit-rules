@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metadata Extraction v1.1</title>
+</head>
+<body>
+<h1>Metadata Extraction v1.1</h1>
+<pre>Metadata Extraction
+Version 1.1 – Filename Anchored, Evidence Strict
+
+PURPOSE
+Extract required metadata fields from the audio/transcript filename.
+These fields populate the first six columns of the Excel output.
+
+REQUIRED OUTPUT FIELDS (FIRST 6 COLUMNS)
+CallID
+FirstName
+LastName
+Team
+Division
+Call_Date (YYYYMMDD)
+
+FILENAME PATTERN (EXPECTED)
+CallID_FirstNameLastName_Team_Division_CallDate.wav
+
+EXAMPLE
+13296238_ChipDaignault_Reifenberg_1_20260213.wav
+
+SEGMENT DEFINITIONS (SPLIT BY UNDERSCORE)
+Segment 1 = CallID
+Segment 2 = FirstNameLastName (combined)
+Segment 3 = Team
+Segment 4 = Division
+Segment 5 = Call_Date (strip file extension)
+
+EXTRACTION RULES
+
+CallID
+- Use Segment 1
+- Must be numeric
+
+Team
+- Use Segment 3 exactly as written in filename
+
+Division
+- Use Segment 4 exactly as written in filename
+- Must be numeric (example: 1)
+- If not numeric, output Division = N/A
+
+Call_Date
+- Use Segment 5
+- Remove file extension (wav)
+- Must be 8 digits in YYYYMMDD format
+
+FirstName and LastName
+- Attempt to split Segment 2 into FirstName and LastName using common name boundaries.
+- If name split is unclear, use transcript evidence to determine FirstName and LastName.
+- Do not guess. If still unclear, output FirstName = N/A and LastName = N/A.
+
+VALIDATION RULES (ANTI-DRIFT)
+- Output CallID must match Segment 1.
+- Output Team must match Segment 3.
+- Output Call_Date must match Segment 5 (after removing extension).
+- If any of these validations fail, output INSUFFICIENT DATA for that call.
+
+EDITABILITY RULE
+If the filename pattern changes in the future (for example a true attempt counter is added),
+create a new version of this resource and update segment definitions accordingly.
+Do not infer new segments without an updated resource.
+
+</pre>
+</body>
+</html>

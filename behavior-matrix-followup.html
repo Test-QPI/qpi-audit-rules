@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Behavior Matrix – Follow-Up v1.3</title>
+</head>
+<body>
+<h1>Behavior Matrix – Follow-Up v1.3</h1>
+<pre>Follow-Up Behavior Matrix and Opportunity Taxonomy
+Version 1.3 – Adds Enforcement Block: Hard Score Ban Extended, Anchor Selection Rule, Pre-Aggregate Validation
+
+CHANGE LOG FROM v1.2
+1) SCORING SCALE LOCK extended — hard ban now explicitly covers 6 and any value
+   above 5 in addition to 2 and 4. No score above 5 exists under any anchor or path.
+2) ANCHOR SELECTION RULE added — model must select exactly one of 1=ABSENT,
+   3=PRESENT, 5=STRONG. Inventing, paraphrasing, or interpolating anchors is prohibited.
+   The label EXEMPLARY is explicitly banned — it does not exist in this system.
+3) PRE-AGGREGATE VALIDATION added — model must confirm each category score is exactly
+   1, 3, or 5 before computing Behavioral_Score. If any score fails, stop and correct.
+
+CHANGE LOG FROM v1.1
+1) All four category score anchors rewritten to Audit-First structure:
+   each score level now states QUALIFIES, DOES NOT QUALIFY, and MUST NOT INFER explicitly.
+2) Score 3 anchors replaced with enumerated conditions — subjective descriptors
+   (&quot;limited,&quot; &quot;incomplete,&quot; &quot;surface-level,&quot; &quot;passingly&quot;) removed.
+3) FAFSA Assessment Score 5 now requires all four criteria explicitly listed.
+   Blanket completion language is locked to Score 3 maximum — Score 5 unavailable
+   without a direct FAFSA status question.
+4) FlightPath Execution Post-FAFSA Score 5 now requires all four criteria explicitly listed.
+   One transfer attempt, however well communicated, locks maximum to Score 3.
+5) Accountability Setting Score 5 now requires evidence from at least two distinct sections
+   of the call — one end-of-call moment alone locks maximum to Score 3.
+6) VALID CATEGORY IDENTIFIERS section added (Principle 3).
+7) INVALID LEGACY IDENTIFIERS section added (Principle 3).
+8) SCORING SCALE LOCK section added (Principle 8).
+9) ABSENCE CONFIRMATION REQUIREMENT made mandatory for Score 1 on every category.
+
+CHANGE LOG FROM v1.0 (carried forward from v1.1)
+- FAFSA Assessment Score 3: added blanket enrollment completion confirmation path.
+- FlightPath Execution: added Post-FAFSA alternate path for calls where FAFSA_Validated_YN
+  = YES and prior enrollment completion is established.
+
+PURPOSE
+This source provides the behavior matrix for Follow-Up calls used for:
+1) Behavioral scoring (weighted 40 points of total QPI)
+2) Opportunity identification (top 3, unscored)
+3) Deterministic Lowest_Behavior_Category selection
+
+This matrix applies ONLY when Call_Subtype = Follow-Up.
+Do NOT apply this matrix to Interview calls.
+
+--------------------------------------------------
+
+VALID CATEGORY IDENTIFIERS (CLOSED LIST — Principle 3)
+The only valid Follow-Up behavioral category labels are:
+  FAFSA Assessment
+  FlightPath Execution
+  Obstacle Resolution
+  Accountability Setting (Follow-Up)
+
+Any label not on this list is invalid and must not be output.
+
+INVALID LEGACY IDENTIFIERS (EXPLICIT BAN — Principle 3)
+The following identifiers from prior system versions are explicitly banned.
+They must not be scored, referenced, or cited as evidence:
+  FUB1, FUB2, FUB3, FUB4
+  Workflow Positioning and FAFSA Contribution
+  Obstacle or Readiness Resolution
+  FA1_1, FA1_2, FA1_3, FA1_4
+  FF1_1, FF1_2, FF1_3, FF1_4
+  FP1_1, FP1_2, FP1_3, FP1_4
+  FU1_1, FU1_2, FU1_3, FU1_4
+  Application Continuation
+  FAFSA Continuation
+  Post-FAFSA Completion
+  Unknown Follow-Up Position
+
+--------------------------------------------------
+
+SCORING SCALE LOCK (Principle 8)
+Valid scores: 1, 3, or 5 only.
+  1 = ABSENT: the behavior did not occur
+  3 = PRESENT: the behavior occurred but did not meet all Score 5 criteria
+  5 = STRONG: the behavior occurred and all Score 5 criteria are explicitly met
+
+HARD BAN — INVALID SCORES (UPDATED IN v1.3)
+Scores of 2, 4, 6, or any value not exactly equal to 1, 3, or 5 are invalid and must
+never be output. No score above 5 exists in this system under any anchor, path, or
+circumstance. If a computed or intended score is not 1, 3, or 5, it must be corrected
+before proceeding. Any response containing a score outside {1, 3, 5} is invalid and
+must be regenerated from scratch.
+
+ANCHOR SELECTION RULE (NEW IN v1.3)
+For each category, select exactly one anchor from the fixed list above:
+  1 = ABSENT
+  3 = PRESENT
+  5 = STRONG
+You may NOT invent, paraphrase, interpolate, or combine anchors.
+The label EXEMPLARY does not exist in this system and is explicitly banned.
+Any anchor not appearing verbatim in this source is invalid.
+
+PRE-AGGREGATE VALIDATION (HARD RULE — NEW IN v1.3)
+Before computing Behavioral_Score, confirm each of the four category scores is exactly
+1, 3, or 5. If any score is not one of these three values, stop, identify the category,
+correct it using the valid anchors defined in this source, and restart the validation.
+Do not proceed to Behavioral_Score computation until all four scores pass this check.
+
+DEFAULT: If evidence is ambiguous and any attempt is present, score 3.
+Score 1 requires confirmed absence. Score 5 requires all criteria met.
+
+--------------------------------------------------
+
+GLOBAL EVIDENCE STANDARD (Principle 6 and 7)
+Score credit requires explicit, quotable transcript evidence spoken by the Admissions
+Representative. The following are not evidence and must never be used to satisfy a criterion:
+- Generic affirmations: &quot;Very cool,&quot; &quot;Awesome,&quot; &quot;Perfect,&quot; &quot;Great,&quot; &quot;No worries,&quot; &quot;Absolutely&quot;
+- Brief agreement: &quot;I hear you,&quot; &quot;I got you,&quot; &quot;Got it,&quot; &quot;Okay&quot;
+- Filler encouragement: &quot;That&#x27;s great,&quot; &quot;Love that,&quot; &quot;Sounds good&quot;
+- Student, parent, or third-party statements
+- Implied actions or reasonable inferences
+- Evidence from any other call in a batch
+
+5-ANCHOR EVIDENCE GATE (Principle 8)
+Before finalizing Score 5 on any category:
+- Identify Quote 1: exact agent words from one section of the call satisfying the criteria.
+- Identify Quote 2: exact agent words from a meaningfully different section of the call
+  satisfying the criteria.
+Both quotes must independently satisfy the specific Score 5 criteria for that category.
+If two qualifying quotes cannot be identified, the score must not exceed 3.
+
+ABSENCE CONFIRMATION REQUIREMENT (mandatory before scoring 1 — Principle 11)
+Before assigning Score 1 to any category:
+1) Identify the section of the call where the behavior would be expected.
+2) Quote the agent language in that section.
+3) Confirm zero evidence of any attempt — not incomplete, not ambiguous, but zero.
+Score 1 is only valid when zero attempt of any kind is confirmed.
+Ambiguous or incomplete evidence must score 3, not 1.
+
+--------------------------------------------------
+
+FOLLOW-UP BEHAVIORAL CATEGORIES
+
+The four categories below are the only valid behavioral categories for Follow-Up calls.
+Do not score Rapport Development, Controlled Discovery, Financial Clarity, Risk Prevention,
+Assumptive Leadership, Progression Control, Technical Guidance Precision, or any other
+Interview-stage category on a Follow-Up call.
+
+--------------------------------------------------
+
+CATEGORY 1 — FAFSA Assessment
+
+DEFINITION
+The agent established clear awareness of where the student stands in the enrollment workflow
+— whether through a direct FAFSA status question or through explicit blanket acknowledgment
+of prior completion — and oriented the call to the correct next step based on that awareness.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required — Principle 11):
+1) Agent posed a direct FAFSA status question using explicit language.
+   Qualifying examples: &quot;Did you submit your FAFSA?&quot;, &quot;How did the FAFSA go?&quot;,
+   &quot;Were you able to get your FAFSA completed?&quot;, &quot;Is your FAFSA submitted?&quot;
+2) Student response explicitly confirmed the FAFSA_Validated_YN branch.
+   Branch YES: student stated FAFSA is submitted, complete, or on file.
+   Branch NO: student stated FAFSA is not yet submitted or still pending.
+3) Agent explicitly stated or confirmed the next step appropriate to the confirmed branch.
+4) Evidence of the status check and next-step communication exists in at least two distinct
+   exchanges from meaningfully different sections of the call.
+
+DOES NOT QUALIFY for Score 5:
+- Blanket prior completion language without a direct FAFSA status question.
+  Maximum score available without a direct question is 3.
+- Agent referencing a prior call plan without asking about current FAFSA status.
+- Student volunteering FAFSA status without agent asking.
+- A single-exchange status check without routing follow-through.
+- Agent assuming FAFSA completion from context clues.
+
+MUST NOT INFER for Score 5:
+- That &quot;you&#x27;ve got everything done&quot; or similar blanket language equals a direct FAFSA
+  status question.
+- That two exchanges about scholarship or enrollment topics constitute FAFSA status routing.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient — Principle 11):
+A) Agent posed a direct FAFSA status question but did not confirm routing or next step
+   based on the student&#x27;s confirmed status.
+B) Agent&#x27;s opening language explicitly established blanket prior completion of all
+   enrollment work — including FAFSA — without a direct question, AND the call was
+   demonstrably oriented toward the correct next step for Branch B.
+   This is the maximum score available when no direct FAFSA question occurs.
+
+DOES NOT QUALIFY for Score 3:
+- Blanket completion language that does not explicitly reference FAFSA or enrollment task
+  completion.
+- Agent mentioning FAFSA in passing without establishing status.
+- Student mentioning FAFSA completion without agent acknowledgment.
+- Agent mentioning FAFSA as a future task only.
+
+SCORE 1 — ABSENT
+
+QUALIFIES (all confirmed via Absence Confirmation):
+- No direct FAFSA status question occurred at any point in the call, AND
+- No blanket prior completion language explicitly establishing FAFSA or enrollment
+  completion occurred at any point in the call.
+
+ABSENCE CONFIRMATION REQUIRED:
+Identify the section where FAFSA assessment would be expected (call opening).
+Quote the agent language. Confirm it contains neither a direct FAFSA question nor blanket
+completion language. If any such language exists anywhere in the call, score 3.
+
+--------------------------------------------------
+
+CATEGORY 2 — FlightPath Execution
+
+DEFINITION
+The agent advanced the student through the next required enrollment execution step with
+specific guidance appropriate to the student&#x27;s current workflow position.
+On standard Follow-Up calls this means FSO FlightPath navigation.
+On Post-FAFSA calls where all FSO tasks are established as complete, this means connecting
+the student to the enrollment team or coordinating the next completion-path action.
+
+POST-FAFSA PATH APPLICABILITY (Principle 5)
+The Post-FAFSA alternate path applies ONLY when BOTH are explicitly established:
+1) FAFSA_Validated_YN = YES, AND
+2) Agent language establishes prior enrollment task completion before or at call start.
+If either condition is not met, apply the Standard FSO Path only.
+
+STANDARD FSO PATH — SCORE 5
+
+QUALIFIES (all four required):
+1) Agent provided step-by-step navigation guidance through FSO FlightPath tasks or steps.
+2) Agent confirmed student&#x27;s location within FlightPath at multiple points during the call.
+3) Agent adapted guidance when student encountered confusion or technical difficulty.
+4) Evidence drawn from at least two distinct FSO navigation exchanges from different sections
+   of the call.
+
+DOES NOT QUALIFY for Score 5 (Standard):
+- Directing student to FlightPath without confirming login or task status.
+- Guidance limited to one task or one section of the call.
+- Agent mentioning FlightPath as a future task without current navigation.
+
+STANDARD FSO PATH — SCORE 3
+
+QUALIFIES (any one sufficient):
+A) Agent directed student into FlightPath and confirmed login, but did not guide through
+   multiple tasks or confirm task completion.
+B) Agent provided FlightPath guidance in one section only, without evidence from a second
+   meaningfully different section.
+
+STANDARD FSO PATH — SCORE 1
+No FSO navigation or FlightPath guidance occurred during the call.
+FSO referenced as a future task only, or not referenced at all.
+
+--
+
+POST-FAFSA ALTERNATE PATH — SCORE 5
+
+QUALIFIES (all four required — Principle 11):
+1) Two or more separate warm transfer attempts to the enrollment team are documented in
+   meaningfully different sections of the call. Two attempts described in the same
+   conversational turn do not count as separate for this criterion.
+2) Agent explicitly stated what the enrollment team connection will accomplish for the
+   student (e.g., &quot;any additional steps that need to be taken care of, you can start
+   knocking those out,&quot; &quot;to get you to the next level of conversations&quot;).
+3) When transfer did not connect, agent explicitly committed to a specific retry plan
+   naming when the retry will occur (same day, next call, specific time window).
+4) Student verbally acknowledged or agreed to the retry plan.
+
+DOES NOT QUALIFY for Post-FAFSA Score 5:
+- One transfer attempt, however well communicated. Maximum score with one attempt is 3.
+- Two documented attempts without explicit purpose statement.
+- Retry plan without student verbal acknowledgment.
+- Enrollment team mentioned as a future goal without an actual transfer attempt.
+
+POST-FAFSA ALTERNATE PATH — SCORE 3
+
+QUALIFIES (any one sufficient):
+A) One documented warm transfer attempt with explicit statement of enrollment team purpose,
+   plus an explicit retry plan, but student acknowledgment not confirmed.
+B) One documented warm transfer attempt with student acknowledgment, but retry plan absent
+   or enrollment team purpose not stated.
+C) Two documented transfer attempts but without meeting the explicit purpose or retry
+   criteria for Score 5.
+
+POST-FAFSA ALTERNATE PATH — SCORE 1
+No warm transfer attempt was made during the call.
+Enrollment team was not mentioned as an action item during this call.
+
+MUST NOT INFER for either path:
+- That discussing the enrollment team in general terms equals an attempted transfer.
+- That a failed transfer without follow-through equals a retry plan.
+
+--------------------------------------------------
+
+CATEGORY 3 — Obstacle Resolution
+
+DEFINITION
+The agent identified a student-raised concern, hindrance, or obstacle that threatened
+enrollment momentum and worked with the student to arrive at a concrete plan to move forward.
+Post-enrollment questions about logistics, networking, program details, or campus life are
+not enrollment-threatening obstacles unless the student explicitly framed them as hesitations
+about proceeding.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required, with two-instance rule — Principle 11):
+1) Student raised an explicit concern, question, or hesitation that threatened enrollment
+   momentum during the call.
+2) Agent acknowledged the specific concern with language tied to that concern — not a
+   generic affirmation.
+3) Agent proposed or co-developed a concrete resolution or course of action.
+4) Student verbally agreed to or acknowledged the plan.
+
+TWO-INSTANCE RULE: Evidence must come from at least two distinct obstacle-resolution
+exchanges from different sections of the call. OR one exchange demonstrating all four
+elements with explicit depth and follow-through at multiple distinct points.
+
+DOES NOT QUALIFY for Score 5:
+- Generic affirmation (&quot;no worries,&quot; &quot;absolutely&quot;) in response to a concern.
+- Agent redirecting from a concern without acknowledging it specifically.
+- One obstacle exchange, however complete. Maximum with one exchange is 3.
+- Student questions about logistics or post-enrollment topics framed as curiosity, not
+  hesitation.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient):
+A) Student raised an enrollment-affecting concern; agent acknowledged specifically; no
+   concrete plan was reached.
+B) Student raised an enrollment-affecting concern; agent proposed a plan; student agreement
+   not confirmed.
+C) One complete obstacle resolution exchange (all four elements met) but only one occurrence.
+
+DOES NOT QUALIFY for Score 3:
+- Generic affirmation without specific acknowledgment of the concern raised.
+- Student questions about logistics or campus life that were not framed as hesitations.
+
+SCORE 1 — ABSENT
+
+QUALIFIES when confirmed via Absence Confirmation:
+No student statement threatening enrollment momentum occurred in the call, OR a
+concern was raised and agent responded only with a generic affirmation without
+specific acknowledgment.
+
+ABSENCE CONFIRMATION REQUIRED:
+Review the full transcript. Identify any student statement. Confirm whether it threatened
+enrollment momentum. Quote the agent&#x27;s response. Confirm generic affirmation only or
+no enrollment-affecting concern raised. If any specific acknowledgment is present, score 3.
+
+SCORING NOTE — SCORE 1 IS NOT A PENALTY:
+If no enrollment-threatening obstacle was raised during the call, Score 1 correctly reflects
+the absence of this behavior. It does not indicate agent failure.
+
+--------------------------------------------------
+
+CATEGORY 4 — Accountability Setting (Follow-Up)
+
+DEFINITION
+The agent established clear, time-bound expectations for what the student will complete
+before the next contact and secured explicit student agreement. On a Follow-Up call,
+accountability setting is the primary mechanism for maintaining enrollment momentum
+between contacts.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required, with two-section rule — Principle 11):
+1) Agent communicated at least one specific task the student is expected to complete
+   before the next contact.
+2) Agent stated a specific timeframe for next contact. Specific means a named day, time
+   window, or equivalent deadline. &quot;When you can&quot; or &quot;sometime this week&quot; are not specific.
+3) Student verbally agreed to the timeline or explicitly confirmed the plan.
+4) Evidence of accountability setting exists in at least two distinct exchanges from
+   meaningfully different sections of the call.
+   Example: one accountability moment during task coaching mid-call, and one at the close.
+
+DOES NOT QUALIFY for Score 5:
+- A single end-of-call accountability moment, however specific. Maximum with one moment is 3.
+- Specific timeframe without student verbal agreement.
+- Student suggesting a time without agent anchoring the commitment.
+- General encouragement to &quot;keep going&quot; or &quot;stay on track&quot; without a specific task and time.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient):
+A) One complete accountability exchange (task + specific timeframe + student agreement) but
+   only one occurrence in the call.
+B) Task and specific timeframe set but student agreement not explicitly confirmed.
+C) Multiple references to next steps across the call but no specific timeframe named in
+   any of them.
+
+SCORE 1 — ABSENT
+
+QUALIFIES when confirmed via Absence Confirmation:
+No task expectation, timeframe, or next contact plan was established by the agent at any
+point during the call.
+
+ABSENCE CONFIRMATION REQUIRED:
+Quote the end of the call. Quote any mid-call sections where next steps were discussed.
+Confirm no specific task, timeframe, or contact plan was communicated by the agent.
+If any such language exists anywhere in the call, score 3.
+
+--------------------------------------------------
+
+AGGREGATION AND OUTPUT RULES (Principle 9)
+
+BEHAVIORAL SCORE CALCULATION
+Behavioral_Points_Earned = sum of all four category scores.
+Behavioral_Points_Applicable = 20 (always for Follow-Up calls).
+Behavioral_Score = (Behavioral_Points_Earned / 20) × 40, rounded to nearest whole number.
+
+SCORE EXAMPLES
+5+5+5+5 = 20 → 40
+5+5+5+3 = 18 → 36
+5+5+3+3 = 16 → 32
+5+3+3+3 = 14 → 28
+5+5+5+1 = 16 → 32
+5+5+3+1 = 14 → 28
+5+5+1+1 = 12 → 24
+5+3+1+1 = 10 → 20
+3+3+3+3 = 12 → 24
+3+3+3+1 = 10 → 20
+3+3+1+1 = 8  → 16
+3+1+1+1 = 6  → 12
+1+1+1+1 = 4  → 8
+
+PRE-OUTPUT MATH LOCK (Principle 9)
+Before finalizing Behavioral_Score:
+1) List all four category scores.
+2) Sum to verify Behavioral_Points_Earned.
+3) Confirm Behavioral_Points_Applicable = 20.
+4) Recompute Behavioral_Score = (Earned / 20) × 40 and round.
+If Behavioral_Score = 40 and any category scored below 5, correct before outputting.
+
+LOWEST_BEHAVIOR_CATEGORY SELECTION (Principle 8)
+Lowest_Behavior_Score = the lowest numeric score among the four categories.
+Lowest_Behavior_Category = the category at that score, using tie-break if needed.
+
+TIE-BREAK ORDER (fixed — Principle 8):
+If two or more categories share the lowest score, select the first in this order:
+  1. FAFSA Assessment
+  2. FlightPath Execution
+  3. Obstacle Resolution
+  4. Accountability Setting (Follow-Up)
+
+OPPORTUNITY SELECTION (Principle 8)
+Opportunity_1 = Lowest_Behavior_Category (must be scored 1 or 3).
+Opportunity_2 = category with second-lowest score (scored 1 or 3 only).
+Opportunity_3 = category with third-lowest score (scored 1 or 3 only).
+If fewer than 3 categories score below 5, fill remaining fields with None.
+If all four categories score 5, all Opportunity fields = None and Lowest_Behavior_Score = 5.
+
+A category scored 5 is never eligible to appear in any Opportunity field.
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE — Principle 2)
+Assessment_Discussed_YN is governed exclusively by
+Admissions_QPI_Source_Assessment_Disclosure_v1.1.txt.
+This source has no authority over Assessment_Discussed_YN.
+Do not evaluate, infer, score, or reference Assessment_Discussed_YN from this source.
+</pre>
+</body>
+</html>

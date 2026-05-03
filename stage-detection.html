@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage Detection v1.1</title>
+</head>
+<body>
+<h1>Stage Detection v1.1</h1>
+<pre>Admissions Stage Detection and Trigger Rules
+Version 1.1 – Adds FSO/FlightPath Document Upload Clarification
+
+PURPOSE
+Determine whether each workflow stage occurred during the call using strict, verifiable trigger rules.
+
+This source outputs stage presence flags only.
+Its purpose is to determine stage applicability for downstream Binary Compliance and Behavior Matrix scoring.
+
+This source does NOT determine:
+- progression success,
+- progression score,
+- binary pass/fail results,
+- behavioral quality,
+- or overall QPI score.
+
+OUTPUT FIELDS (REQUIRED)
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+
+GLOBAL RULES (ANTI-DRIFT)
+- A stage is PRESENT = YES only if at least 2 qualifying triggers occur.
+- Triggers must be spoken by the Admissions Representative.
+- No inference allowed.
+- If fewer than 2 triggers -&gt; Stage = NO.
+- Mark each stage independently. Do not assume earlier stages occurred because later stages occurred.
+- Ignore third-party dialogue unless the Admissions Representative explicitly directs or confirms an action.
+
+MULTI-STAGE RULE
+If multiple stages meet the 2-trigger minimum, mark all applicable stages as YES.
+
+Applicability Clarification
+- A stage marked YES means that segment of the workflow occurred and may be considered for downstream Binary Compliance and Behavior Matrix scoring.
+- A stage marked NO means that stage is not applicable for downstream Binary Compliance and Behavior Matrix scoring.
+- Stage presence does NOT mean the end goal of that stage was successfully achieved.
+- Successful achievement of the stage end goal is determined separately by Progression Scoring.
+
+--------------------------------------------------
+
+STAGE 1: ADMISSIONS INTERVIEW
+
+Definition
+Consultative conversation including background exploration, program discussion, tuition discussion, financial aid explanation, or advancement toward application.
+
+Qualifying Triggers (Minimum 2)
+- Asked about career goals or motivations
+- Asked about education history
+- Asked about employment or schedule
+- Discussed program features
+- Explained tuition cost
+- Explained financial aid process
+- Confirmed understanding of cost or program
+- Requested application completion
+
+Do NOT count
+- Small talk
+- Scheduling only
+- Single isolated tuition answer
+- Pure technical application help
+
+--------------------------------------------------
+
+STAGE 2: APPLICATION ASSISTANCE
+
+Qualifying Triggers (Minimum 2)
+- Directed to application portal
+- Walked through application sections
+- Collected application information
+- Confirmed submission
+- Troubleshot errors
+- Explained application components
+
+--------------------------------------------------
+
+STAGE 3: FAFSA / FSA ID ASSISTANCE
+
+Definition
+Agent-led FAFSA/FSA ID progression in which the Admissions Representative actively moves the student into the FAFSA workflow beyond general explanation.
+
+Qualifying Triggers (Minimum 2)
+At least 2 qualifying triggers must occur, and at least 1 must be an Operational Trigger.
+
+Operational Triggers
+- Directed to studentaid.gov or to the FAFSA Form access path
+- Directed the student to select the correct FAFSA year for their start date WHILE actively navigating the FAFSA access workflow (not as a standalone verbal instruction or future-direction statement)
+- Directed the student to create an FSA ID or log in with an existing FSA ID
+- Guided the student through FAFSA account access, account recovery, or login steps
+- Guided the student to the “Starting the FAFSA” page or equivalent pre-form handoff point
+- Provided Full Sail University school code during active FAFSA setup
+- Directed the student to add Full Sail University during FAFSA setup
+
+Supportive Triggers
+Supportive Triggers may only be counted if at least 1 Operational Trigger is already explicitly present in the transcript.
+
+- Explained what the FAFSA is or why it is required
+- Explained what an FSA ID is
+- Explained dependency/independency status
+- Explained contributor/parent invitation requirements
+- Explained required tax or documentation expectations
+- Set a short follow-up expectation tied to FAFSA completion after the student is left at the handoff point
+
+Supportive Trigger Restriction
+- “Explained that aid eligibility/amount is determined after FAFSA processing or review” may support Stage 3 ONLY when paired with explicit FAFSA workflow movement already in progress.
+- This supportive trigger may NOT serve as the second qualifying trigger when the only operational evidence is a brief FAFSA mention, FAFSA year mention, or school code mention without broader workflow progression.
+
+Additional Restriction (HARD RULE)
+- Mentioning the correct FAFSA year, FAFSA as the next step, FAFSA importance, school code, or future financial aid help does NOT by itself qualify as sufficient operational workflow movement.
+- To count Stage 3 as PRESENT = YES, the transcript must show that the agent actively moved the student into the FAFSA access workflow during THIS call, beyond simple verbal direction to complete FAFSA later.
+- If the student is only told which FAFSA year to complete, told FAFSA will be the next step, told financial aid will help later, or told the agent can help with FAFSA on a future callback, then Stage_FAFSA_YN = NO unless active FAFSA access/initiation guidance is explicitly occurring in the current call.
+- Discussion of FAFSA as a future task, even with a follow-up plan, does NOT qualify unless the current call includes actual workflow movement into FAFSA access/initiation.
+
+Do NOT count
+- Generic financial aid discussion without explicit FAFSA workflow movement
+- Mentioning FAFSA as a future next step only
+- Mentioning school code alone without active FAFSA setup
+- General statements that FAFSA is important, quick, or easy
+- Scholarship discussion that is not tied to FAFSA workflow
+- Telling the student to complete FAFSA later without guiding access/initiation
+- Asking whether the student has completed FAFSA before, by itself
+- Discussing which FAFSA year may be needed later, without active navigation in the current call
+- Stating that financial aid or admissions will help with FAFSA on a future callback, without active FAFSA access/initiation in the current call
+- Explaining that FAFSA will be needed before aid review, without active FAFSA workflow movement
+- Aid eligibility/amount being determined after FAFSA processing or review, by itself, as the second qualifying trigger
+- A vague follow-up such as “we’ll follow up,” “be on the lookout for a call,” or similar non-time-bound continuation language
+
+Stage 3 Handoff Clarification
+Stage 3 may be marked PRESENT = YES when the agent actively progresses the student to the scripted FAFSA handoff point, even if the full government form is not completed on the call.
+
+The scripted handoff point means the student has been actively moved into the FAFSA workflow during THIS call and is left in position to continue independently because the agent cannot remain on the phone while the government form is completed.
+
+This requires explicit current-call workflow movement such as FAFSA access navigation, login/FSA ID/account recovery guidance, correct FAFSA form entry path, or movement to the “Starting the FAFSA” page or equivalent pre-form handoff point.
+Future-intent language alone does not qualify.
+
+--------------------------------------------------
+
+STAGE 4: ADMISSION DOCUMENTS / FSO
+
+Qualifying Triggers (Minimum 2)
+- Directed to student portal
+- Reviewed required documents
+- Assisted upload
+- Explained verification process
+- Confirmed submission
+- Troubleshot portal access
+
+FSO/FLIGHTPATH DOCUMENT UPLOAD CLARIFICATION (NEW IN v1.1)
+Agent-led navigation of Full Sail One (FSO) or FlightPath tasks to upload
+enrollment documents qualifies for Stage 4 even when it occurs mid-interview
+or immediately following application or FAFSA workflow.
+
+Qualifying FSO/FlightPath document actions (each counts as a Stage 4 trigger):
+- Agent directs student to Full Sail One portal or FlightPath task list
+- Agent instructs student to submit or upload a government-issued photo ID
+- Agent instructs student to submit or upload a high school diploma or transcript
+- Agent guides student through document upload steps within FSO
+- Student confirms a document submission within FSO (e.g., &quot;it says please be
+  patient as we review your submission&quot;)
+- Agent troubleshoots a portal or upload issue within FSO
+
+Do NOT assume Stage 4 is absent because the call is classified as an interview
+or because Stage 2 or Stage 3 also occurred. Stage 4 must be evaluated
+independently across the full transcript regardless of which other stages
+are present. If two or more FSO/FlightPath document triggers occur anywhere
+in the call, Stage_Documents_YN = YES.
+
+Do NOT count
+- Agent mentioning FlightPath or FSO as a future task without active guidance
+- Agent directing student to FSO solely for application completion (Stage 2)
+- Agent directing student to FSO solely for FAFSA access (Stage 3)
+- Generic references to documents without specific upload/submission guidance
+
+--------------------------------------------------
+
+DEFAULT RULE
+If the call transcript is too short or unclear to confirm two triggers for a stage, mark that stage as NO.
+
+</pre>
+</body>
+</html>

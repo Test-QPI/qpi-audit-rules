@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Output Schema v1.7</title>
+</head>
+<body>
+<h1>Output Schema v1.7</h1>
+<pre>Output Schema and Formatting Rules
+Version 1.7 – Removes FAFSA_Validated_YN, Adds Binary_Items_Missed as Column 42 – Adds Assessment_Discussed_YN (Column 41)
+
+PURPOSE
+Define the exact output fields and formatting rules for NotebookLM evaluation.
+This schema must be followed exactly for every call.
+
+GLOBAL OUTPUT RULES
+- Output one row per call.
+- Multiple calls must output multiple rows.
+- Rows must be separated by a line break only.
+- Do NOT output headers.
+- Do NOT output commentary, explanations, or reasoning.
+- Pipe-delimited only. Do not include spaces around pipes.
+- Use N/A for any field that is not applicable or cannot be determined from evidence.
+- If transcript is insufficient for scoring, output INSUFFICIENT DATA only.
+
+COLUMN ORDER (MUST MATCH EXACTLY)
+
+1 CallID
+2 FirstName
+3 LastName
+4 Team
+5 Division
+6 Call_Date
+
+7 QPI_Total_Score
+8 Progression_Score
+9 Binary_Compliance_Score
+10 Behavioral_Score
+11 Tonality_Score
+
+12 Call_Subtype
+13 Tasks_Discussed
+14 Starting_Stage
+15 Progression_Ceiling
+16 Progression_Success
+17 Constraint_Flag_YN
+18 Constraint_Type
+19 FSO_Registration_Issue_YN
+20 Documents_Timeline_Explicit_YN
+21 Documents_Timeline_Agreed_YN
+
+22 Binary_Items_Met
+23 Binary_Items_Applicable
+24 Binary_Compliance_Rate
+
+25 Lowest_Behavior_Category
+26 Lowest_Behavior_Score
+
+27 Opportunity_1
+28 Opportunity_2
+29 Opportunity_3
+
+30 Red_Flag_YN
+31 Red_Flag_Type(s)
+32 Red_Flag_Evidence
+
+33 Tone_Level
+34 Agent_Name_Uses_Count
+35 Empathy_Statements_Count
+36 Pressure_Indicators_Count
+37 Dismissive_Or_Aggressive_YN
+38 Rushed_Or_Curt_Transitions_YN
+39 Fear_Based_Urgency_YN
+40 Repeated_Pressure_After_Refusal_YN
+
+41 Assessment_Discussed_YN
+42 Binary_Items_Missed
+
+FORMAT REQUIREMENTS
+- Binary_Compliance_Rate output as decimal rounded to 2 places (example: 0.76).
+- QPI_Total_Score integer 0 to 100.
+- Component scores are integers:
+  Progression_Score 0 to 15
+  Binary_Compliance_Score 0 to 40
+  Behavioral_Score 0 to 40
+  Tonality_Score 0 to 5
+- Tone boolean fields must be output as YES or NO when determinable from evidence.
+- Assessment_Discussed_YN must be YES or NO only. Evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+- Do not output blanks.
+- FSO_Registration_Issue_YN must be YES/NO/N/A only (no other values).
+- Tone_Level must use an em dash (–) not a hyphen (-). Exact required values:
+  &quot;Level A – Strong Positive&quot;
+  &quot;Level B – Positive&quot;
+  &quot;Level C – Neutral&quot;
+  Do not substitute a hyphen for the em dash under any circumstances.
+
+BINARY_ITEMS_MISSED FIELD (HARD RULE)
+Binary_Items_Missed must contain a semicolon-separated list of all binary items that scored 0 on this call using the exact format: [Item ID] [Short Label].
+Output None if all applicable items were met.
+Do not include items that were not applicable to this call.
+Do not fabricate item IDs or labels. Use only the labels defined in the Binary Compliance sources.
+
+Interview item labels:
+S1_1 Tuition Stated | S1_2 Financial Aid Mentioned | S1_3 No Guarantee Language | S1_4 Application Requested | S1_5 Application Next Step Secured
+S2_1 Application Portal Directed | S2_2 Application Sections Explained | S2_3 Application Submission Confirmed | S2_4 Submission Evidence Verified
+S3_1 FAFSA Access Directed | S3_2 FAFSA Initiation Executed | S3_3 FAFSA Handoff Secured | S3_4 Aid Determination Clarified
+S4_1 Document Portal Directed | S4_2 Document Named | S4_3 Upload Confirmed | S4_4 Document Timeline Reinforced
+
+Follow-Up Branch A labels:
+F1_1 FAFSA Status Assessed | F1_2 FAFSA Workflow Initiated | F1_3 FAFSA Handoff Secured | F1_4 Assessment Re-engaged
+
+Follow-Up Branch B labels:
+F2_1 FAFSA Status Confirmed | F2_2 GIPI Addressed | F2_3 Transcript Addressed | F2_4 Assessment Re-engaged
+
+PIPE COUNT ENFORCEMENT (HARD RULE)
+Every output row must contain exactly 41 pipe separators (42 fields).
+If a row does not contain exactly 41 pipes, rewrite the row until it does.
+Do not proceed to the next call until the current row meets this requirement.
+
+NA RULE
+- Use N/A for any field that is not applicable or cannot be determined from evidence.
+
+ASSESSMENT DISCLOSURE FIELD (STANDALONE RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This schema source does not define its logic, only its position (column 41) and accepted values (YES or NO).
+Do not evaluate, infer, or populate this field using any other source.
+</pre>
+</body>
+</html>
