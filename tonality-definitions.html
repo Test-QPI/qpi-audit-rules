@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tonality Definitions v1.4</title>
+</head>
+<body>
+<h1>Tonality Definitions v1.4</h1>
+<pre>REQUIRED TALLY BLOCK — COMPLETE BEFORE ASSIGNING TONE LEVEL
+Before assigning Tone_Level, explicitly compute and state each count:
+  Name_Uses_Count:     [count only direct address of student first name]
+  Empathy_Count:       [count only qualifying phrases from list below]
+  Pressure_Count:      [count only explicit pressure tactics]
+  Negative_Flags:      [Dismissive / Rushed / Fear / RepeatPressure = YES/NO each]
+
+Only after completing this tally may Tone_Level be assigned.
+Tone_Level must follow deterministically from the tally — no post-hoc adjustment.
+
+Tonality Definitions
+Version 1.4 – Adds Reassurance Phrase Exclusion, Speaker Attribution Rule
+
+PURPOSE
+Evaluate conversational tonality using verifiable indicators with stable score spread.
+Tonality is scored separately as a 0–5 point component.
+
+GLOBAL RULES
+- Base tone evaluation on observable transcript evidence only.
+- Do not infer emotions or intent.
+- Use countable indicators and explicit output flags.
+- Default to Neutral when evidence is limited or ambiguous.
+- If transcript is too short or purely technical, tone defaults to Neutral.
+
+REQUIRED TONE DATA OUTPUT (FIELDS)
+Tone_Level
+Tonality_Score (0–5)
+Agent_Name_Uses_Count
+Empathy_Statements_Count
+Pressure_Indicators_Count
+Dismissive_Or_Aggressive_YN
+Rushed_Or_Curt_Transitions_YN
+Fear_Based_Urgency_YN
+Repeated_Pressure_After_Refusal_YN
+
+OUTPUT FORMAT REQUIREMENT
+Tone_Level must be output exactly as one of:
+&quot;Level A – Strong Positive&quot;
+&quot;Level B – Positive&quot;
+&quot;Level C – Neutral&quot;
+&quot;Level D – Negative&quot;
+&quot;Level E – Unprofessional&quot;
+
+COUNTABLE INDICATORS
+
+Name Use (DETERMINISTIC COUNT RULE)
+Count ONLY when the agent says the student’s first name (or first + last) as a direct address in conversation.
+Do NOT count:
+- reading back contact info (email/phone/address)
+- greetings that do not include the name
+- “sir,” “ma’am,” “buddy,” “friend,” or role terms (“mom,” “dad”)
+If uncertain, do not count.
+
+SPEAKER ATTRIBUTION RULE (HARD RULE — NEW IN v1.4)
+Count ONLY statements spoken by the agent.
+Do NOT count any phrase spoken by the student, parent, or third party
+regardless of content. Before counting any instance, verify the speaker
+is the agent. If speaker attribution is unclear, do not count.
+
+Empathy Statement (DETERMINISTIC COUNT RULE)
+Count ONLY if the agent explicitly validates the student’s emotion/situation using one of the following patterns:
+
+A) Explicit validation phrases (count each instance ONLY when the phrase clearly validates a student’s difficulty, concern, barrier, or meaningful situation):
+- “I understand”
+- “That makes sense”
+- “I can see why”
+- “I appreciate you sharing that”
+- “I’m sorry you’re going through that”
+- “I’m sorry to hear that”
+- “That sounds [hard/frustrating/stressful]”
+- “I know that can be [hard/frustrating/stressful]”
+- “I can imagine that’s [hard/frustrating/stressful]”
+
+Restriction for “That makes sense”
+- “That makes sense” counts ONLY when it clearly refers to a student’s challenge, concern, hesitation, obstacle, or meaningful personal situation.
+- Do NOT count “That makes sense” when it is used only as conversational agreement with a neutral fact, preference, or logical statement.
+
+B) Reflection + validation (count ONLY if BOTH occur in the same sentence/turn):
+- Agent reflects the student’s stated situation (briefly) AND
+- Agent validates it (e.g., “That’s understandable / that makes sense / I get it”)
+
+Do NOT count:
+- Generic politeness or filler (“okay,” “got it,” “perfect,” “awesome,” “no worries”)
+- Reassurance without validation (“we’ll be fine,” “it’s all good,” “don’t worry”)
+- Generic reassurance phrases regardless of context (NEW IN v1.4): “that’s all right,” “that’s okay,” “it’s okay,” “no worries,” “don’t worry about it,” “it happens,” “no big deal” — these do not qualify regardless of the situation they respond to
+- Solidarity or agreement phrases: “I am right there with you,” “I hear you,” “I get it,” “same here” — these express agreement, not validation of the student’s difficulty
+- Coaching/advice without explicit validation (“you should…”, “let’s do…”, “here’s what we’ll do”)
+- Name use alone
+- Conversational agreement with a neutral fact, preference, or logical statement, even if it includes a phrase such as “that makes sense”
+If uncertain, do not count.
+
+Hard exclusion rule:
+Do NOT count empathy if the agent is only acknowledging a task/step or offering generic reassurance (e.g., “okay,” “perfect,” “got it,” “no problem,” “that’s fine,” “that’s all right,” “it’s okay,” “no worries,” “it happens”) unless it includes an explicit validation phrase from list A, or meets Reflection + validation (B).
+
+SPEAKER ATTRIBUTION RULE (HARD RULE — NEW IN v1.4)
+Before counting any empathy statement, verify the speaker is the agent.
+Do NOT count empathy statements spoken by the student, parent, or any
+third party. Student expressions of empathy, agreement, or validation
+do not count regardless of how clearly they qualify under Pattern A or B.
+If speaker attribution is unclear from the transcript, do not count.
+
+Do NOT count “that makes sense” unless the transcript clearly shows the agent is validating a student’s difficulty, concern, barrier, hesitation, or meaningful personal situation.
+
+COMPLETE COUNT REQUIREMENT (HARD RULE — NEW IN v1.3)
+Count every qualifying empathy statement in the transcript.
+Do not stop counting once any threshold is reached.
+Do not cap the count at any number.
+
+Before finalizing Empathy_Statements_Count:
+1) Review the full transcript from start to finish.
+2) Document every instance that meets Pattern A or Pattern B criteria.
+3) Apply the hard exclusion rule to each instance.
+4) The final count is the total of all instances that survive the exclusion check — not the number needed to reach a threshold.
+
+Stopping at 2 because Level B is achieved is a counting error.
+Stopping at 3 because Level A is achieved is a counting error.
+The final Empathy_Statements_Count must reflect every qualifying instance actually present in the transcript.
+
+CONSERVATIVE DEFAULT CLARIFICATION (HARD RULE — NEW IN v1.3)
+Conservative scoring for empathy means: do not count a statement unless it clearly meets the Pattern A or Pattern B criteria.
+It does not mean stop counting once a threshold is reached.
+It does not mean suppress instances that clearly qualify.
+
+These are the only two options:
+- Statement clearly meets Pattern A or B and survives the exclusion check: COUNT IT.
+- Statement is genuinely uncertain or does not clearly meet criteria: DO NOT COUNT IT.
+
+Artificially capping the count at any number is a violation of this rule.
+The same complete-count requirement applies to Agent_Name_Uses_Count.
+Count every qualifying name use in the transcript. Do not stop early.
+
+
+Pressure Indicator
+Count each instance of urgency or pressure language, including:
+- &quot;you need to&quot;
+- &quot;must do this today&quot;
+- &quot;do this right now&quot;
+- &quot;as soon as possible&quot;
+- &quot;I need you to do this&quot;
+- repeated pushing after refusal
+- &quot;you don&#x27;t want to miss this&quot; used as urgency
+Do not count normal next-step direction unless it includes urgency or repeated pushing.
+Do NOT count normal next-step direction phrased without urgency (e.g., “next you’ll…”, “when you can…”, “the next step is…”).
+
+EXPLICIT NEGATIVE CONDITION FIELDS
+
+Dismissive or Aggressive
+Output field:
+Dismissive_Or_Aggressive_YN = YES or NO
+
+Mark YES only if the agent uses language that is belittling, impatient, scolding, sarcastic at the student, or overtly aggressive.
+
+Rushed or Curt Transitions
+Output field:
+Rushed_Or_Curt_Transitions_YN = YES or NO
+
+Mark YES only if the agent repeatedly moves through the call with abrupt, acknowledgment-free transitions that create a clearly rushed or curt tone.
+Examples may include:
+- repeated subject changes without acknowledgment of the student’s response
+- repeated clipped transitions that bypass student concerns or comments
+Do not mark YES for efficient pacing alone.
+
+Fear-Based Urgency
+Output field:
+Fear_Based_Urgency_YN = YES or NO
+
+Mark YES only if the agent uses urgency framed around fear, loss, or negative consequence pressure.
+Examples may include:
+- implying harm or failure if the student does not act immediately
+- coercive phrasing tied to fear or loss
+Do not mark YES for standard urgency alone.
+
+Repeated Pressure After Refusal
+Output field:
+Repeated_Pressure_After_Refusal_YN = YES or NO
+
+Mark YES only if:
+- the student explicitly resists, declines, or says not ready, AND
+- the agent continues pressing the same action repeatedly with pressure language after that refusal.
+Do not mark YES for one additional clarifying attempt.
+
+PURELY TECHNICAL RULE
+If the call is purely technical (portal navigation only) or under 2 minutes of meaningful dialogue:
+- Tone_Level = Level C
+- Tonality_Score = 3
+- Agent_Name_Uses_Count = 0
+- Empathy_Statements_Count = 0
+- Pressure_Indicators_Count = 0
+- Dismissive_Or_Aggressive_YN = NO
+- Rushed_Or_Curt_Transitions_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+TONE LEVELS (CALIBRATED FOR VARIATION)
+
+Level A – Strong Positive (rare)
+Criteria (all required)
+- Agent_Name_Uses_Count &gt;= 3
+- Empathy_Statements_Count &gt;= 3
+- Pressure_Indicators_Count = 0
+- Dismissive_Or_Aggressive_YN = NO
+- Rushed_Or_Curt_Transitions_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+Interpretation
+Reserved for consistently supportive tone throughout the call, not just polite professionalism.
+
+Level B – Positive (common)
+Criteria (all required)
+- (Agent_Name_Uses_Count &gt;= 1 OR Empathy_Statements_Count &gt;= 2)
+- Pressure_Indicators_Count &lt;= 1
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+Level C – Neutral (default)
+Criteria
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+- Pressure_Indicators_Count &lt;= 1
+- Does not meet Level A or Level B thresholds and does not meet Level D or Level E thresholds
+
+Interpretation
+Professional and acceptable, but not notably warm/supportive.
+
+Level D – Negative
+Criteria
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+AND at least one of the following:
+- Pressure_Indicators_Count &gt;= 2
+- Rushed_Or_Curt_Transitions_YN = YES
+
+Note
+If uncertainty exists, default to Level C unless the explicit negative fields or pressure count clearly support Level D.
+
+Level E – Unprofessional
+Criteria
+Assign Level E if any of the following are YES:
+- Dismissive_Or_Aggressive_YN = YES
+- Fear_Based_Urgency_YN = YES
+- Repeated_Pressure_After_Refusal_YN = YES
+
+DETERMINISTIC CLASSIFICATION RULE (REQUIRED)
+Tone_Level must be computed from the count fields and explicit negative-condition output fields.
+
+- Assign Level E first if any Level E condition field = YES.
+- Else assign Level A only if all Level A criteria are satisfied.
+- Else assign Level B only if all Level B criteria are satisfied.
+- Else assign Level D if Level D criteria are satisfied.
+- Else assign Level C.
+
+Do not assign Tone_Level first and then backfill counts or flags.
+If Tone_Level and the counts/flags disagree, change Tone_Level to match the counts/flags.
+
+VALIDATION (REQUIRED)
+If Tone_Level = Level A and (Agent_Name_Uses_Count &lt; 3 OR Empathy_Statements_Count &lt; 3),
+then Tone_Level must be downgraded to Level B if Level B criteria are met, otherwise Level C.
+
+If Tone_Level = Level A and any of the following are YES:
+- Dismissive_Or_Aggressive_YN
+- Rushed_Or_Curt_Transitions_YN
+- Fear_Based_Urgency_YN
+- Repeated_Pressure_After_Refusal_YN
+then Tone_Level must be downgraded based on the deterministic classification rule.
+
+If Tone_Level = Level B and (Agent_Name_Uses_Count = 0 AND Empathy_Statements_Count &lt; 2),
+then Tone_Level must be downgraded to Level C.
+
+If Tone_Level = Level B and (Fear_Based_Urgency_YN = YES OR Repeated_Pressure_After_Refusal_YN = YES OR Dismissive_Or_Aggressive_YN = YES),
+then Tone_Level must be reassigned based on the deterministic classification rule.
+
+</pre>
+</body>
+</html>
