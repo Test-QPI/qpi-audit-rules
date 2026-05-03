@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Binary Compliance Checklist – Interview v1.7</title>
+</head>
+<body>
+<h1>Binary Compliance Checklist – Interview v1.7</h1>
+<pre>Binary Compliance Checklist Definitions
+Version 1.7 – Adds S2_3 FSO Account Creation Exception
+
+PURPOSE
+Define binary compliance items scored as 1 or 0 using explicit transcript evidence.
+This checklist supports a weighted Binary Compliance score (40 points).
+
+APPLICABILITY RULE
+Binary items may be scored ONLY for stages that are marked PRESENT = YES by the Stage Detection source.
+
+- If Stage_Interview_YN = NO, Stage 1 binary items are not applicable.
+- If Stage_Application_YN = NO, Stage 2 binary items are not applicable.
+- If Stage_FAFSA_YN = NO, Stage 3 binary items are not applicable.
+- If Stage_Documents_YN = NO, Stage 4 binary items are not applicable.
+
+Clarification
+- Stage presence determines whether a stage may be evaluated.
+- Binary scoring then determines which explicit required actions within that stage were met or missed.
+- A stage may be PRESENT = YES even if some or many binary items within that stage score 0.
+
+Applicability Override (HARD RULE)
+- Do NOT make a stage binary-applicable based on Progression_Ceiling alone.
+- Do NOT make a stage binary-applicable based on topic mention alone.
+- If the corresponding Stage_X_YN flag is NO, binary items from that stage must be excluded.
+
+INPUTS REQUIRED
+Call_Subtype
+Progression_Ceiling
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+
+GLOBAL SCORING RULES (ANTI-DRIFT)
+- Score 1 = YES only when the agent performed the explicit action in the transcript.
+- Score 0 if action is missing, unclear, implied, or performed only by a third party.
+- No inference allowed.
+- Default to 0 when uncertain.
+- Checklist items are designed to be editable. New items may be added under any stage.
+
+PROOF-LOCK RULE (HARD RULE — APPLIES TO EVERY BINARY ITEM)
+Before scoring any binary item as 1, you must be able to identify and internally quote the exact agent or student words from this transcript that satisfy the criterion.
+
+If you cannot identify specific verbatim language:
+- The score must be 0
+- Do not paraphrase
+- Do not reconstruct
+- Do not cite language from a different call in the batch
+- Do not assume the action occurred because a related action occurred
+
+FABRICATION PREVENTION
+If you scored a binary item as 1 but the evidence you would cite does not appear word-for-word in the transcript, correct the score to 0 before outputting. Cross-check every scored 1 against the transcript before finalizing the row. If the exact quote cannot be located, the score is 0.
+
+APPLICABLE STAGES RULES
+- Binary applicability must follow Stage Detection stage presence rules.
+- Use Progression_Ceiling for reporting context only, not to expand binary applicability beyond stages marked PRESENT = YES.
+- If all stage flags are unclear, default to Stage 1 items only.
+
+--------------------------------------------------
+
+STAGE 1 – INTERVIEW CHECKLIST ITEMS (5)
+
+S1_1 Explicit action: Tuition was stated clearly (numeric amount or clear tuition statement).
+S1_2 Explicit action: Financial aid process was mentioned (FAFSA or aid steps referenced).
+S1_3 Explicit action: No guarantee language was used (aid, cost, outcomes).
+S1_4 Explicit action: Application request was made (agent asked student to start/complete the application).
+S1_5 Explicit action: Application next step was secured (Immediate OR time-bound with agreement):
+Score 1 ONLY if ONE of the following is explicitly present:
+
+A) Immediate execution path (in-the-moment)
+- Agent directs the student to begin the application during the call (portal/link/what page are you on), AND
+- Student/parent explicitly agrees OR demonstrates execution (e.g., “yes/okay,” “I’m on it,” confirms they are on the site/page, or begins entering info).
+
+OR
+
+B) Time-bound plan (off-call)
+- Agent states a specific completion timeframe (same-day window or scheduled time), AND
+- Student/parent explicitly agrees to that timeframe (yes/okay/I will).
+
+If neither A nor B is fully satisfied → score 0.
+
+Notes
+- S1_3 is an absence check: score 1 ONLY if no prohibited guarantee language appears anywhere in agent statements (outcomes, aid, cost coverage, job/salary, graduation/completion, limited seats/urgency).
+- Do NOT use “qualify for / review what you qualify for / determined after FAFSA” statements as evidence for S1_3. Those statements support S3_4, not S1_3.
+- If any prohibited guarantee language appears in agent statements, score S1_3 = 0 and trigger red flag evaluation (do not infer).
+
+RED FLAG OVERRIDE (HARD RULE)
+If Red_Flag_YN = YES and Red_Flag_Type includes Financial Aid Misrepresentation or Cost Misleading, S1_3 must be scored 0. A call cannot simultaneously pass the no-guarantee check and carry a financial misrepresentation or cost misleading flag. These findings are mutually exclusive. Apply this override after completing the Red Flag step and before finalizing the output row.
+
+--------------------------------------------------
+
+STAGE 2 – APPLICATION CHECKLIST ITEMS (4)
+
+S2_1 Explicit action: Student was directed to the application portal or access method.
+S2_2 Explicit action: Required information or sections were explained (what to enter/provide).
+S2_3 Explicit action: Application submission was confirmed as completed:
+Score 1 ONLY if ONE of the following is explicitly present:
+- The student explicitly confirms the application is already submitted/complete, OR
+- The application is completed/submitted during the call (agent walks through to completion), OR
+- The call includes explicit completion language tied to the application workflow, such as the final screen confirming submission, the application being processed successfully, or equivalent confirmation that the application has been submitted, OR
+- The student reaches the Full Sail One welcome video or FSO account creation step during the call (see FSO Account Creation Exception below).
+
+Otherwise score 0.
+
+FSO ACCOUNT CREATION EXCEPTION
+If the student reaches the Full Sail One welcome video or account creation step during the call, the application is considered submitted regardless of whether FSO account creation was completed. The application is internally submitted at the point the student reaches the FSO registration step, even if the confirmation screen has not yet appeared. In these cases:
+- S2_3 = 1 (application submitted — evidenced by reaching the FSO registration step)
+- S2_4 = 0 (confirmation screen not verified if FSO account creation failed or was not completed)
+- FSO_Registration_Issue_YN = YES if FSO account creation was not completed during the call
+
+Do not require the &quot;App Processed Successfully&quot; screen to award S2_3 when FSO failure or interruption prevented the student from reaching that screen.
+
+S2_4 Explicit action: Submission confirmation evidence was verified:
+Score 1 ONLY if the agent or student explicitly references confirmation of submission, including at least one of the following:
+- confirmation screen
+- submitted status
+- confirmation email
+- final screen confirms application submitted
+- application processed successfully
+
+Note: If FSO account creation failed or was not completed, S2_4 must be 0 even if S2_3 = 1. The confirmation screen only appears after successful FSO account creation.
+
+Otherwise score 0.
+
+--------------------------------------------------
+
+STAGE 3 – FAFSA CHECKLIST ITEMS (4)
+
+S3_1 Explicit action: Student was directed to the FAFSA access path and correct starting point.
+Score 1 ONLY if the agent explicitly directs the student into the FAFSA workflow, including at least one of the following:
+- studentaid.gov
+- FAFSA Form / Complete the FAFSA Form
+- correct FAFSA year selection for the student’s start date
+- Login to Start / Create Account / FAFSA Account Recovery
+
+Score 0 if FAFSA is only described at a high level or mentioned as a future task without active workflow direction.
+
+S3_2 Explicit action: FAFSA initiation was functionally executed on-call (agent-led).
+Score 1 ONLY if:
+- The agent actively guides the student through FSA ID creation, FAFSA login, account recovery, or FAFSA access steps, AND
+- The student functionally reaches the FAFSA workflow (for example: inside the FAFSA access flow, selecting the FAFSA year, logging in, reaching the “Starting the FAFSA” page, or equivalent pre-form handoff point), AND
+- There is no unresolved system block preventing progression to that point.
+
+Score 0 if:
+- FAFSA is only explained but not actively initiated, OR
+- The student is told to do FAFSA later without agent-led workflow movement, OR
+- The only evidence is a verbal plan to complete FAFSA later, OR
+- An outage, login failure, or access issue prevents reaching the workflow handoff point.
+
+INTERRUPTED OR UNCONFIRMED EXECUTION (HARD RULE)
+The following do NOT satisfy S3_2:
+- Account creation that was reset, interrupted, or not confirmed as completed during the call
+- The agent directing the student toward FAFSA without the student confirming they reached the workflow handoff point
+- Partial navigation that stopped before the student reached the FAFSA starting point (student or parent selection page)
+
+Score 0 if the FAFSA initiation was attempted but interrupted, reset, or unconfirmed before the call ended.
+Score 1 only if the student explicitly confirms reaching the FAFSA workflow handoff point during the call.
+
+S3_3 Explicit action: FAFSA handoff/completion plan was secured.
+Score 1 ONLY if ONE of the following is explicitly present:
+
+A) FAFSA submitted/complete
+- FAFSA submission is explicitly confirmed as already submitted, OR
+- FAFSA is explicitly confirmed as submitted during the call.
+
+OR
+
+B) Scripted handoff path
+- The agent has actively progressed the student to the FAFSA workflow handoff point, AND
+- The agent explicitly states that the student will continue completing the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion that meets the scripted standard defined below, AND
+- The student explicitly agrees or acknowledges the plan.
+
+SHORT FOLLOW-UP REQUIREMENT (HARD RULE)
+The scripted standard for the follow-up expectation is a callback in approximately 30 minutes to 1 hour. This reflects the actual time required to complete the FAFSA and is the required agent behavior.
+
+Score S3_3 = 1 for the follow-up element ONLY if the agent commits to a callback within approximately 30 minutes to 1 hour of leaving the student at the FAFSA handoff point.
+
+NOT acceptable:
+- Tomorrow at any time — this is a script deviation regardless of whether a specific time is stated
+- Later today without a specific time — too vague to constitute a real completion plan
+- A week or any timeframe beyond same-day
+- Any language that does not commit to a near-term specific callback tied to FAFSA completion
+
+Note: The Campus Mentor handoff exception operates under its own rules and is not governed by the 30 minutes to 1 hour standard. See the Campus Mentor exception language below.
+
+Campus Mentor Handoff Exception (NARROW RULE)
+For campus students following the approved Campus Mentor handoff script, score S3_3 = 1 even if the original Admissions Representative does not personally schedule the short callback, ONLY if ALL are explicit in the transcript:
+- the student is clearly being routed into the Campus Mentor / campus team path,
+- the agent explicitly states that the Campus Mentor will follow up on FAFSA / next steps or be the student&#x27;s main point of contact,
+- the agent explicitly tells the student to continue working on FAFSA in the meantime,
+- and the handoff language reflects the approved campus script rather than a vague generic follow-up.
+
+Generic statements such as &quot;someone will call you,&quot; &quot;the team will reach out,&quot; or &quot;be on the lookout for a phone call&quot; do NOT qualify unless the Campus Mentor script conditions above are explicitly met.
+
+Score 0 if:
+- FAFSA is only introduced or encouraged, OR
+- The student is left to start FAFSA later without active initiation, OR
+- The agent does not explicitly state that they cannot remain on the phone for the government form portion, OR
+- No short follow-up expectation is secured after the handoff, OR
+- The follow-up plan is vague or not tied to FAFSA completion.
+
+S3_4 Explicit action: Aid determination expectations were clarified.
+
+Score 1 ONLY if the agent explicitly communicates both of the following:
+1) That the FAFSA must be completed or submitted first, AND
+2) That eligibility or aid amount will be determined or reviewed by the financial aid team after that submission or processing.
+
+Both elements must be present. One without the other does not satisfy this item.
+
+Scripted language that satisfies this item:
+- &quot;The first step to see what you may be eligible for is completing the FAFSA&quot;
+- &quot;Our financial aid team will be able to go over what you qualify for&quot;
+- &quot;Once we get the FAFSA on file our financial aid team will be able to see what options you would have&quot;
+- &quot;After you submit the FAFSA you will receive a letter showing your estimated aid&quot;
+- Any language that explicitly connects FAFSA completion to a subsequent financial aid review or determination
+
+NOT sufficient to satisfy this item:
+- &quot;For those who qualify&quot; — conditional language that satisfies S1_3 but does not explain the determination process
+- &quot;As long as you qualify&quot; — same as above
+- &quot;It can be fully covered with financial aid for those who qualify&quot; — Launch Box language, not a determination explanation
+- &quot;How we figure out what you are eligible for&quot; — too vague, does not reference FAFSA submission or a subsequent review
+- Any general reference to financial aid without connecting it to FAFSA completion and a subsequent determination step
+
+Score 0 if:
+- The agent only uses conditional qualifiers without explaining the determination process
+- Aid is guaranteed, implied as automatic, or determination timing is not clarified
+- The agent mentions FAFSA generally without connecting it to the determination of eligibility or amount
+
+--------------------------------------------------
+
+STAGE 4 – DOCUMENTS CHECKLIST ITEMS (4)
+
+S4_1 Explicit action: Student was directed to the portal or submission location for documents.
+S4_2 Explicit action: At least one specific required document was named.
+S4_3 Explicit action: Upload was confirmed or a clear upload plan was established.
+S4_4 Explicit action: A timeline was reinforced for document submission.
+
+--------------------------------------------------
+
+OUTPUTS EXPECTED (FOR SCORING RESOURCE)
+Binary item results (0 or 1) for each applicable item.
+Binary_Items_Met
+Binary_Items_Applicable
+
+--------------------------------------------------
+BINARY_ITEMS_MISSED OUTPUT (HARD RULE)
+After scoring all applicable binary items, populate Binary_Items_Missed as follows:
+- List every applicable item that scored 0 using this exact format: [Item ID] [Short Label]
+- Separate multiple items with a semicolon and space
+- Output None ONLY if all applicable items scored 1 (Binary_Items_Met = Binary_Items_Applicable)
+- If Binary_Items_Met &lt; Binary_Items_Applicable, None is INVALID — list all missed items
+- Do not include items that were not applicable to this call
+- Do not include items that scored 1
+
+Exact labels to use for missed items:
+S1_1 Tuition Stated
+S1_2 Financial Aid Mentioned
+S1_3 No Guarantee Language
+S1_4 Application Requested
+S1_5 Application Next Step Secured
+S2_1 Application Portal Directed
+S2_2 Application Sections Explained
+S2_3 Application Submission Confirmed
+S2_4 Submission Evidence Verified
+S3_1 FAFSA Access Directed
+S3_2 FAFSA Initiation Executed
+S3_3 FAFSA Handoff Secured
+S3_4 Aid Determination Clarified
+S4_1 Document Portal Directed
+S4_2 Document Named
+S4_3 Upload Confirmed
+S4_4 Document Timeline Reinforced
+
+Example: If S3_3 and S3_4 scored 0 on a call with Stages 1-3 present:
+Binary_Items_Missed = S3_3 FAFSA Handoff Secured; S3_4 Aid Determination Clarified
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------</pre>
+</body>
+</html>
