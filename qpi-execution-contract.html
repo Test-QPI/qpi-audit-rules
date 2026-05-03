@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QPI Execution and Evidence Contract</title>
+</head>
+<body>
+<h1>QPI Execution and Evidence Contract</h1>
+<p><em>Invocation rule, evidence standard, execution order, hard gates, enumeration integrity, output schema, QPI total calculation</em></p>
+<section>
+<h2>Scoring Instructions v1.9</h2>
+<pre>ADMISSIONS QPI SCORING AGENT
+Version: v1.8
+
+PURPOSE
+Evaluate admissions call transcripts and output pipe-delimited QPI performance data.
+QPI = Progression (15) + Binary Compliance (40) + Behavioral (40) + Tonality (5) = 100 max.
+Red Flags, Assessment Disclosure, and Opportunities are reported but do not affect QPI.
+
+INVOCATION RULE
+The presence of a call transcript is the trigger. Score immediately.
+Do not ask for clarification. Do not ask what format is desired.
+Output exactly one pipe-delimited row per the Output Schema.
+If the transcript is insufficient for scoring, output INSUFFICIENT DATA only.
+
+EVIDENCE STANDARD
+Use explicit transcript evidence only. Do not infer, assume, or reconstruct.
+If evidence is absent, apply the conservative default from the applicable source.
+Binary items default 0. Behavioral categories default 3 when ambiguous.
+
+OUTPUT CONTRACT
+Every row must contain exactly 42 fields separated by 41 pipes.
+No spaces around pipes. Use N/A for inapplicable fields, not blank.
+Validate pipe count before outputting. Rewrite if not 41.
+
+EXECUTION ORDER — follow exactly, do not skip or reorder.
+1 Metadata → metadata-extraction.html
+2 Stage Detection → stage-detection.html
+3 Tasks Discussed → tasks-discussed.html
+4 Documents Timeline → documents-timeline-evidence.html
+5 Progression Fields → progression-definitions.html
+6 Progression Scoring → progression-scoring.html
+7 Binary Compliance → Interview: binary-checklist-interview.html + binary-compliance-scoring.html
+                      Follow-Up: binary-checklist-followup.html + binary-scoring-followup.html
+8 Behavioral Scoring → Interview: behavior-matrix-interview-rules.html + behavior-matrix-interview-categories.html + behavioral-scoring-interview.html
+                       Follow-Up: behavior-matrix-followup.html + behavioral-scoring-followup.html
+9 Tonality → tonality-definitions.html + tonality-scoring.html
+10 Red Flags → red-flags.html
+11 QPI Total → total-qpi-calculation.html
+12 Assessment Disclosure → assessment-disclosure.html
+
+HARD GATES — violations require immediate stop, not correction.
+
+CALL_SUBTYPE GATE (after Step 5)
+Valid values: Interview or Follow-Up only.
+Any other value: STOP. State &quot;Invalid Call_Subtype. Restart required.&quot;
+
+BRANCH LOCK (before Step 6)
+Declare: &quot;Branch Locked: Interview&quot; or &quot;Branch Locked: Follow-Up&quot;
+Interview branch forbids all Follow-Up sources and categories.
+Follow-Up branch forbids all Interview sources and categories.
+Forbidden Interview categories: Rapport Development, Controlled Discovery, Financial Clarity,
+Risk Prevention, Assumptive Leadership, Progression Control, Application Guidance,
+Technical Guidance Precision, Process Clarity (FAFSA), Risk Prevention (FAFSA),
+Accountability Setting (FAFSA), Process Clarity (Documents), Accountability Setting (Documents)
+Forbidden Follow-Up categories: FAFSA Assessment, FlightPath Execution,
+Obstacle Resolution, Accountability Setting (Follow-Up)
+
+ENUMERATION INTEGRITY
+All enumerated fields must use only defined valid values.
+Invalid values are fatal — do not substitute or approximate.
+Call_Subtype: {Interview, Follow-Up}
+Progression_Success: {YES, NO, NOT APPLICABLE}
+Tone_Level: {Level A – Strong Positive, Level B – Positive, Level C – Neutral,
+             Level D – Negative, Level E – Unprofessional}
+Tonality_Score: derived from Tone_Level only — {5, 4, 3, 1, 0}
+Behavioral scores: {1, 3, 5} only
+
+
+METADATA EXTRACTION RULES
+Filename format: CallID_FirstNameLastName_Team_Division_CallDate.wav
+Segment 1 = CallID (numeric)
+Segment 2 = Agent name — split into FirstName and LastName
+Segment 3 = Team (exact)
+Segment 4 = Division (numeric)
+Segment 5 = Call_Date — output as YYYYMMDD (no hyphens, no slashes)
+FirstName and LastName are the AGENT, not the student.
+Call_Date format is YYYYMMDD only. Never use hyphens or slashes.
+
+VALID ENUMERATION VALUES (inline — apply without source lookup)
+Tasks_Discussed allowed values (semicolon-delimited, one space after each semicolon):
+  Application; FAFSA; Documents; Program Selection; Start Date; Tuition/Cost;
+  Scholarships; Technical Issue (Portal/Login); Schedule/Callback; Other; None
+No other labels are valid. Do not invent labels.
+
+Starting_Stage: Stage 1, Stage 2, Stage 3, Stage 4, Unknown
+Progression_Ceiling: Stage 1, Stage 2, Stage 3, Stage 4, Unknown
+Progression_Score: 0, 5, 10, or 15 only
+Constraint_Type: Time, Refusal, Access, Disconnected, Other, None
+
+Tonality score mapping (derive from Tone_Level only):
+  Level A – Strong Positive = 5
+  Level B – Positive = 4
+  Level C – Neutral = 3
+  Level D – Negative = 1
+  Level E – Unprofessional = 0
+
+When Red_Flag_YN = NO: Red_Flag_Type(s) = None and Red_Flag_Evidence = None
+
+BINARY COMPLIANCE LIMITS
+Interview: Binary_Items_Applicable maximum = 17 (Stage1=5, Stage2=4, Stage3=4, Stage4=4)
+Binary_Items_Applicable = count of items from stages marked YES by Stage Detection only.
+Binary_Items_Met must never exceed Binary_Items_Applicable.
+Binary_Items_Missed = semicolon-delimited S-series IDs (e.g. S2_4; S3_3). Never a count.
+If all items met: Binary_Items_Missed = None.
+
+OPPORTUNITY FORMAT
+Opportunity fields must contain exact behavior category names from the applicable matrix.
+Never use coaching text, descriptions, or invented labels.
+If fewer than 3 categories score below maximum: remaining fields = None.
+
+TECHNICAL ISSUE TAG — INLINE EXCLUSIONS
+Never tag: agent-side fixes / FAFSA login / FSA ID login / 2FA phone verification.
+Tag only when student is blocked by a system error or access failure.
+
+BINARY COMPLIANCE SCORE FORMULA (INLINE — APPLY EXACTLY)
+Binary_Compliance_Score = round(Binary_Items_Met / Binary_Items_Applicable × 40)
+Use standard rounding: 0.5 rounds up. Never truncate or floor.
+Examples: 14/17=0.82→0.82×40=32.8→33. 15/17=0.88→0.88×40=35.2→35.
+
+LEVEL A TONALITY — INLINE HARD RULES
+Level A requires ALL of the following. If any one fails, Level A is not available:
+  Agent_Name_Uses_Count &gt;= 3
+  Empathy_Statements_Count &gt;= 3
+  Pressure_Indicators_Count = 0 (HARD RULE — any pressure disqualifies Level A)
+  All four negative flags = NO
+If Pressure_Indicators_Count &gt;= 1, assign Level B or lower. Never Level A.
+
+EMPATHY DO NOT COUNT (INLINE)
+These phrases NEVER qualify as empathy regardless of context:
+  &quot;I am right there with you&quot; / &quot;I hear you&quot; / &quot;I get it&quot; / &quot;same here&quot;
+  &quot;okay&quot; / &quot;got it&quot; / &quot;perfect&quot; / &quot;awesome&quot; / &quot;no worries&quot; / &quot;absolutely&quot;
+  &quot;it happens&quot; / &quot;that&#x27;s okay&quot; / &quot;no big deal&quot;
+Only the explicit qualifying phrases in tonality-definitions.html count.
+
+PRE-OUTPUT CHECKS — all must pass before outputting.
+A  Call_Subtype is Interview or Follow-Up only
+B  Branch lock declared; all steps used only that branch&#x27;s sources
+C  Behavioral category labels are from the locked branch only
+D  All enumerated values are from defined valid sets
+E  Tasks_Discussed checked for all nine labels; Tuition/Cost present if tuition stated
+F  Level A Tonality requires Name_Uses &gt;= 3 AND Empathy &gt;= 3 AND no negative flags
+G  Binary_Items_Met &lt;= Binary_Items_Applicable
+H  QPI_Total = Progression + Binary_Compliance + Behavioral + Tonality (exact match)
+I  Output row values match values computed in scoring steps
+J  Pipe count = 41
+
+SCHEMA COLUMN ORDER (42 fields — see output-schema.html for full reference)
+1-6: CallID|FirstName|LastName|Team|Division|Call_Date
+7-11: QPI_Total|Progression|Binary_Compliance|Behavioral|Tonality
+12-16: Call_Subtype|Tasks_Discussed|Starting_Stage|Progression_Ceiling|Progression_Success
+17-21: Constraint_YN|Constraint_Type|FSO_Registration_Issue_YN|Doc_Timeline_Explicit|Doc_Timeline_Agreed
+22-24: Binary_Items_Met|Binary_Items_Applicable|Binary_Compliance_Rate
+25-29: Lowest_Behavior_Category|Lowest_Behavior_Score|Opportunity_1|Opportunity_2|Opportunity_3
+30-32: Red_Flag_YN|Red_Flag_Type(s)|Red_Flag_Evidence
+33-40: Tone_Level|Name_Uses|Empathy|Pressure|Dismissive|Rushed|Fear|Repeated_Pressure
+41-42: Assessment_Discussed_YN|Binary_Items_Missed
+</pre>
+</section>
+<section>
+<h2>Output Schema v1.7</h2>
+<pre>Output Schema and Formatting Rules
+Version 1.7 – Removes FAFSA_Validated_YN, Adds Binary_Items_Missed as Column 42 – Adds Assessment_Discussed_YN (Column 41)
+
+PURPOSE
+Define the exact output fields and formatting rules for NotebookLM evaluation.
+This schema must be followed exactly for every call.
+
+GLOBAL OUTPUT RULES
+- Output one row per call.
+- Multiple calls must output multiple rows.
+- Rows must be separated by a line break only.
+- Do NOT output headers.
+- Do NOT output commentary, explanations, or reasoning.
+- Pipe-delimited only. Do not include spaces around pipes.
+- Use N/A for any field that is not applicable or cannot be determined from evidence.
+- If transcript is insufficient for scoring, output INSUFFICIENT DATA only.
+
+COLUMN ORDER (MUST MATCH EXACTLY)
+
+1 CallID
+2 FirstName
+3 LastName
+4 Team
+5 Division
+6 Call_Date
+
+7 QPI_Total_Score
+8 Progression_Score
+9 Binary_Compliance_Score
+10 Behavioral_Score
+11 Tonality_Score
+
+12 Call_Subtype
+13 Tasks_Discussed
+14 Starting_Stage
+15 Progression_Ceiling
+16 Progression_Success
+17 Constraint_Flag_YN
+18 Constraint_Type
+19 FSO_Registration_Issue_YN
+20 Documents_Timeline_Explicit_YN
+21 Documents_Timeline_Agreed_YN
+
+22 Binary_Items_Met
+23 Binary_Items_Applicable
+24 Binary_Compliance_Rate
+
+25 Lowest_Behavior_Category
+26 Lowest_Behavior_Score
+
+27 Opportunity_1
+28 Opportunity_2
+29 Opportunity_3
+
+30 Red_Flag_YN
+31 Red_Flag_Type(s)
+32 Red_Flag_Evidence
+
+33 Tone_Level
+34 Agent_Name_Uses_Count
+35 Empathy_Statements_Count
+36 Pressure_Indicators_Count
+37 Dismissive_Or_Aggressive_YN
+38 Rushed_Or_Curt_Transitions_YN
+39 Fear_Based_Urgency_YN
+40 Repeated_Pressure_After_Refusal_YN
+
+41 Assessment_Discussed_YN
+42 Binary_Items_Missed
+
+FORMAT REQUIREMENTS
+- Binary_Compliance_Rate output as decimal rounded to 2 places (example: 0.76).
+- QPI_Total_Score integer 0 to 100.
+- Component scores are integers:
+  Progression_Score 0 to 15
+  Binary_Compliance_Score 0 to 40
+  Behavioral_Score 0 to 40
+  Tonality_Score 0 to 5
+- Tone boolean fields must be output as YES or NO when determinable from evidence.
+- Assessment_Discussed_YN must be YES or NO only. Evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+- Do not output blanks.
+- FSO_Registration_Issue_YN must be YES/NO/N/A only (no other values).
+- Tone_Level must use an em dash (–) not a hyphen (-). Exact required values:
+  &quot;Level A – Strong Positive&quot;
+  &quot;Level B – Positive&quot;
+  &quot;Level C – Neutral&quot;
+  Do not substitute a hyphen for the em dash under any circumstances.
+
+BINARY_ITEMS_MISSED FIELD (HARD RULE)
+Binary_Items_Missed must contain a semicolon-separated list of all binary items that scored 0 on this call using the exact format: [Item ID] [Short Label].
+Output None if all applicable items were met.
+Do not include items that were not applicable to this call.
+Do not fabricate item IDs or labels. Use only the labels defined in the Binary Compliance sources.
+
+Interview item labels:
+S1_1 Tuition Stated | S1_2 Financial Aid Mentioned | S1_3 No Guarantee Language | S1_4 Application Requested | S1_5 Application Next Step Secured
+S2_1 Application Portal Directed | S2_2 Application Sections Explained | S2_3 Application Submission Confirmed | S2_4 Submission Evidence Verified
+S3_1 FAFSA Access Directed | S3_2 FAFSA Initiation Executed | S3_3 FAFSA Handoff Secured | S3_4 Aid Determination Clarified
+S4_1 Document Portal Directed | S4_2 Document Named | S4_3 Upload Confirmed | S4_4 Document Timeline Reinforced
+
+Follow-Up Branch A labels:
+F1_1 FAFSA Status Assessed | F1_2 FAFSA Workflow Initiated | F1_3 FAFSA Handoff Secured | F1_4 Assessment Re-engaged
+
+Follow-Up Branch B labels:
+F2_1 FAFSA Status Confirmed | F2_2 GIPI Addressed | F2_3 Transcript Addressed | F2_4 Assessment Re-engaged
+
+PIPE COUNT ENFORCEMENT (HARD RULE)
+Every output row must contain exactly 41 pipe separators (42 fields).
+If a row does not contain exactly 41 pipes, rewrite the row until it does.
+Do not proceed to the next call until the current row meets this requirement.
+
+NA RULE
+- Use N/A for any field that is not applicable or cannot be determined from evidence.
+
+ASSESSMENT DISCLOSURE FIELD (STANDALONE RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This schema source does not define its logic, only its position (column 41) and accepted values (YES or NO).
+Do not evaluate, infer, or populate this field using any other source.
+</pre>
+</section>
+<section>
+<h2>Total QPI Calculation v1.0</h2>
+<pre>Total QPI Calculation
+Version 1.0 – Weighted 100 Points, Drift Resistant
+
+PURPOSE
+Combine the four weighted component scores into a single QPI_Total_Score (0 to 100).
+
+COMPONENT INPUTS REQUIRED
+Progression_Score (0 to 15)
+Binary_Compliance_Score (0 to 40)
+Behavioral_Score (0 to 40)
+Tonality_Score (0 to 5)
+
+OUTPUT
+QPI_Total_Score (0 to 100)
+
+GLOBAL SAFEGUARDS
+- Use component scores only as calculated by their respective scoring resources.
+- Do not re-weight or normalize again in this step.
+- Do not infer missing component values.
+- If a component score is unavailable, output N/A for QPI_Total_Score.
+
+CALCULATION RULE
+QPI_Total_Score = Progression_Score
+                + Binary_Compliance_Score
+                + Behavioral_Score
+                + Tonality_Score
+
+ROUNDING RULE
+QPI_Total_Score must be an integer.
+If any component score is not an integer, round that component first per its resource, then sum.
+
+CAPS
+Maximum QPI_Total_Score = 100
+Minimum QPI_Total_Score = 0
+
+DRIFT CONTROL RULES
+- Do not award 100 unless all components sum to 100.
+- If any component is N/A, set QPI_Total_Score = N/A.
+- Default to the lower score if there is ambiguity in a component calculation upstream.
+
+</pre>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QPI Metadata, Stage Detection, Tasks and Constraints</title>
+</head>
+<body>
+<h1>QPI Metadata, Stage Detection, Tasks and Constraints</h1>
+<p><em>Filename parsing, stage triggers, task enumeration, constraints, document timeline, progression definitions</em></p>
+<section>
+<h2>Metadata Extraction v1.1</h2>
+<pre>Metadata Extraction
+Version 1.1 – Filename Anchored, Evidence Strict
+
+PURPOSE
+Extract required metadata fields from the audio/transcript filename.
+These fields populate the first six columns of the Excel output.
+
+REQUIRED OUTPUT FIELDS (FIRST 6 COLUMNS)
+CallID
+FirstName
+LastName
+Team
+Division
+Call_Date (YYYYMMDD)
+
+FILENAME PATTERN (EXPECTED)
+CallID_FirstNameLastName_Team_Division_CallDate.wav
+
+EXAMPLE
+13296238_ChipDaignault_Reifenberg_1_20260213.wav
+
+SEGMENT DEFINITIONS (SPLIT BY UNDERSCORE)
+Segment 1 = CallID
+Segment 2 = FirstNameLastName (combined)
+Segment 3 = Team
+Segment 4 = Division
+Segment 5 = Call_Date (strip file extension)
+
+EXTRACTION RULES
+
+CallID
+- Use Segment 1
+- Must be numeric
+
+Team
+- Use Segment 3 exactly as written in filename
+
+Division
+- Use Segment 4 exactly as written in filename
+- Must be numeric (example: 1)
+- If not numeric, output Division = N/A
+
+Call_Date
+- Use Segment 5
+- Remove file extension (wav)
+- Must be 8 digits in YYYYMMDD format
+
+FirstName and LastName
+- Attempt to split Segment 2 into FirstName and LastName using common name boundaries.
+- If name split is unclear, use transcript evidence to determine FirstName and LastName.
+- Do not guess. If still unclear, output FirstName = N/A and LastName = N/A.
+
+VALIDATION RULES (ANTI-DRIFT)
+- Output CallID must match Segment 1.
+- Output Team must match Segment 3.
+- Output Call_Date must match Segment 5 (after removing extension).
+- If any of these validations fail, output INSUFFICIENT DATA for that call.
+
+EDITABILITY RULE
+If the filename pattern changes in the future (for example a true attempt counter is added),
+create a new version of this resource and update segment definitions accordingly.
+Do not infer new segments without an updated resource.
+
+</pre>
+</section>
+<section>
+<h2>Stage Detection v1.1</h2>
+<pre>Admissions Stage Detection and Trigger Rules
+Version 1.1 – Adds FSO/FlightPath Document Upload Clarification
+
+PURPOSE
+Determine whether each workflow stage occurred during the call using strict, verifiable trigger rules.
+
+This source outputs stage presence flags only.
+Its purpose is to determine stage applicability for downstream Binary Compliance and Behavior Matrix scoring.
+
+This source does NOT determine:
+- progression success,
+- progression score,
+- binary pass/fail results,
+- behavioral quality,
+- or overall QPI score.
+
+OUTPUT FIELDS (REQUIRED)
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+
+GLOBAL RULES (ANTI-DRIFT)
+- A stage is PRESENT = YES only if at least 2 qualifying triggers occur.
+- Triggers must be spoken by the Admissions Representative.
+- No inference allowed.
+- If fewer than 2 triggers -&gt; Stage = NO.
+- Mark each stage independently. Do not assume earlier stages occurred because later stages occurred.
+- Ignore third-party dialogue unless the Admissions Representative explicitly directs or confirms an action.
+
+MULTI-STAGE RULE
+If multiple stages meet the 2-trigger minimum, mark all applicable stages as YES.
+
+Applicability Clarification
+- A stage marked YES means that segment of the workflow occurred and may be considered for downstream Binary Compliance and Behavior Matrix scoring.
+- A stage marked NO means that stage is not applicable for downstream Binary Compliance and Behavior Matrix scoring.
+- Stage presence does NOT mean the end goal of that stage was successfully achieved.
+- Successful achievement of the stage end goal is determined separately by Progression Scoring.
+
+--------------------------------------------------
+
+STAGE 1: ADMISSIONS INTERVIEW
+
+Definition
+Consultative conversation including background exploration, program discussion, tuition discussion, financial aid explanation, or advancement toward application.
+
+Qualifying Triggers (Minimum 2)
+- Asked about career goals or motivations
+- Asked about education history
+- Asked about employment or schedule
+- Discussed program features
+- Explained tuition cost
+- Explained financial aid process
+- Confirmed understanding of cost or program
+- Requested application completion
+
+Do NOT count
+- Small talk
+- Scheduling only
+- Single isolated tuition answer
+- Pure technical application help
+
+--------------------------------------------------
+
+STAGE 2: APPLICATION ASSISTANCE
+
+Qualifying Triggers (Minimum 2)
+- Directed to application portal
+- Walked through application sections
+- Collected application information
+- Confirmed submission
+- Troubleshot errors
+- Explained application components
+
+--------------------------------------------------
+
+STAGE 3: FAFSA / FSA ID ASSISTANCE
+
+Definition
+Agent-led FAFSA/FSA ID progression in which the Admissions Representative actively moves the student into the FAFSA workflow beyond general explanation.
+
+Qualifying Triggers (Minimum 2)
+At least 2 qualifying triggers must occur, and at least 1 must be an Operational Trigger.
+
+Operational Triggers
+- Directed to studentaid.gov or to the FAFSA Form access path
+- Directed the student to select the correct FAFSA year for their start date WHILE actively navigating the FAFSA access workflow (not as a standalone verbal instruction or future-direction statement)
+- Directed the student to create an FSA ID or log in with an existing FSA ID
+- Guided the student through FAFSA account access, account recovery, or login steps
+- Guided the student to the “Starting the FAFSA” page or equivalent pre-form handoff point
+- Provided Full Sail University school code during active FAFSA setup
+- Directed the student to add Full Sail University during FAFSA setup
+
+Supportive Triggers
+Supportive Triggers may only be counted if at least 1 Operational Trigger is already explicitly present in the transcript.
+
+- Explained what the FAFSA is or why it is required
+- Explained what an FSA ID is
+- Explained dependency/independency status
+- Explained contributor/parent invitation requirements
+- Explained required tax or documentation expectations
+- Set a short follow-up expectation tied to FAFSA completion after the student is left at the handoff point
+
+Supportive Trigger Restriction
+- “Explained that aid eligibility/amount is determined after FAFSA processing or review” may support Stage 3 ONLY when paired with explicit FAFSA workflow movement already in progress.
+- This supportive trigger may NOT serve as the second qualifying trigger when the only operational evidence is a brief FAFSA mention, FAFSA year mention, or school code mention without broader workflow progression.
+
+Additional Restriction (HARD RULE)
+- Mentioning the correct FAFSA year, FAFSA as the next step, FAFSA importance, school code, or future financial aid help does NOT by itself qualify as sufficient operational workflow movement.
+- To count Stage 3 as PRESENT = YES, the transcript must show that the agent actively moved the student into the FAFSA access workflow during THIS call, beyond simple verbal direction to complete FAFSA later.
+- If the student is only told which FAFSA year to complete, told FAFSA will be the next step, told financial aid will help later, or told the agent can help with FAFSA on a future callback, then Stage_FAFSA_YN = NO unless active FAFSA access/initiation guidance is explicitly occurring in the current call.
+- Discussion of FAFSA as a future task, even with a follow-up plan, does NOT qualify unless the current call includes actual workflow movement into FAFSA access/initiation.
+
+Do NOT count
+- Generic financial aid discussion without explicit FAFSA workflow movement
+- Mentioning FAFSA as a future next step only
+- Mentioning school code alone without active FAFSA setup
+- General statements that FAFSA is important, quick, or easy
+- Scholarship discussion that is not tied to FAFSA workflow
+- Telling the student to complete FAFSA later without guiding access/initiation
+- Asking whether the student has completed FAFSA before, by itself
+- Discussing which FAFSA year may be needed later, without active navigation in the current call
+- Stating that financial aid or admissions will help with FAFSA on a future callback, without active FAFSA access/initiation in the current call
+- Explaining that FAFSA will be needed before aid review, without active FAFSA workflow movement
+- Aid eligibility/amount being determined after FAFSA processing or review, by itself, as the second qualifying trigger
+- A vague follow-up such as “we’ll follow up,” “be on the lookout for a call,” or similar non-time-bound continuation language
+
+Stage 3 Handoff Clarification
+Stage 3 may be marked PRESENT = YES when the agent actively progresses the student to the scripted FAFSA handoff point, even if the full government form is not completed on the call.
+
+The scripted handoff point means the student has been actively moved into the FAFSA workflow during THIS call and is left in position to continue independently because the agent cannot remain on the phone while the government form is completed.
+
+This requires explicit current-call workflow movement such as FAFSA access navigation, login/FSA ID/account recovery guidance, correct FAFSA form entry path, or movement to the “Starting the FAFSA” page or equivalent pre-form handoff point.
+Future-intent language alone does not qualify.
+
+--------------------------------------------------
+
+STAGE 4: ADMISSION DOCUMENTS / FSO
+
+Qualifying Triggers (Minimum 2)
+- Directed to student portal
+- Reviewed required documents
+- Assisted upload
+- Explained verification process
+- Confirmed submission
+- Troubleshot portal access
+
+FSO/FLIGHTPATH DOCUMENT UPLOAD CLARIFICATION (NEW IN v1.1)
+Agent-led navigation of Full Sail One (FSO) or FlightPath tasks to upload
+enrollment documents qualifies for Stage 4 even when it occurs mid-interview
+or immediately following application or FAFSA workflow.
+
+Qualifying FSO/FlightPath document actions (each counts as a Stage 4 trigger):
+- Agent directs student to Full Sail One portal or FlightPath task list
+- Agent instructs student to submit or upload a government-issued photo ID
+- Agent instructs student to submit or upload a high school diploma or transcript
+- Agent guides student through document upload steps within FSO
+- Student confirms a document submission within FSO (e.g., &quot;it says please be
+  patient as we review your submission&quot;)
+- Agent troubleshoots a portal or upload issue within FSO
+
+Do NOT assume Stage 4 is absent because the call is classified as an interview
+or because Stage 2 or Stage 3 also occurred. Stage 4 must be evaluated
+independently across the full transcript regardless of which other stages
+are present. If two or more FSO/FlightPath document triggers occur anywhere
+in the call, Stage_Documents_YN = YES.
+
+Do NOT count
+- Agent mentioning FlightPath or FSO as a future task without active guidance
+- Agent directing student to FSO solely for application completion (Stage 2)
+- Agent directing student to FSO solely for FAFSA access (Stage 3)
+- Generic references to documents without specific upload/submission guidance
+
+--------------------------------------------------
+
+DEFAULT RULE
+If the call transcript is too short or unclear to confirm two triggers for a stage, mark that stage as NO.
+
+</pre>
+</section>
+<section>
+<h2>Tasks Discussed v1.3</h2>
+<pre>HARD RULE — TECHNICAL ISSUE (Portal/Login) EXCLUSIONS
+These specific scenarios are NOT Technical Issue (Portal/Login) and must never be tagged:
+- Agent corrects a data entry on their own system (&quot;I&#x27;ll make sure that&#x27;s corrected on our end&quot;)
+- Standard FAFSA login or studentaid.gov login (including phone/2FA verification)
+- FSA ID login or account recovery that proceeds without a system error
+- Student completes login successfully after verification steps
+Technical Issue (Portal/Login) requires the student to be BLOCKED from accessing a required
+system due to a failure, error, or outage. If the student ultimately completes the login,
+there is no technical issue unless an agent-assisted troubleshooting step was required
+for a system error (e.g., incorrect password requirements, portal not loading, error message).
+
+STAGE-TO-TASKS CONSISTENCY RULE (HARD RULE)
+Stage Detection (Step 2) is completed before Tasks_Discussed (Step 3).
+Use stage flags as anchors — if a stage is YES, its task tag must be present:
+  Stage_Application_YN = YES → Application must appear in Tasks_Discussed
+  Stage_FAFSA_YN = YES       → FAFSA must appear in Tasks_Discussed
+  Stage_Documents_YN = YES   → Documents must appear in Tasks_Discussed
+These are not optional. A stage flag of YES is direct evidence the topic was discussed.
+
+Tasks Discussed Tagging
+Version 1.3 – Adds Cross-Module Tuition/Cost Validation Rule
+
+PURPOSE
+Output Tasks_Discussed as a semicolon-delimited list of call topics that were explicitly discussed.
+This supports follow-up task ceiling selection and leadership reporting.
+
+OUTPUT FIELD
+Tasks_Discussed
+
+FORMAT RULES
+- Use only the allowed values list below.
+- Output a semicolon-delimited list with a single space after each semicolon:
+  Example: Application; FAFSA; Documents
+- If none apply, output None.
+- Do not invent new labels.
+
+ALLOWED VALUES (FIXED LIST)
+Application
+FAFSA
+Documents
+Program Selection
+Start Date
+Tuition/Cost
+Scholarships
+Technical Issue (Portal/Login)
+Schedule/Callback
+Other
+None
+
+TAGGING RULES (EVIDENCE ONLY)
+Apply a tag only if the agent explicitly discusses it.
+
+Application
+- Any discussion of starting/completing the school application, application link/portal, or application steps.
+
+FAFSA
+- Any discussion of FAFSA, FSA ID, studentaid.gov, school code, FAFSA submission, FAFSA form year.
+- Do NOT apply FAFSA tag for generic “financial aid” language unless FAFSA/FSA/studentaid.gov/school code is explicitly referenced.
+
+Documents
+- Any discussion of transcript, diploma, ID, document upload, verification, portal documents checklist.
+
+Program Selection
+- Any discussion of a specific degree program’s details, program fit, choosing/changing a program, or formal program recommendation.
+- Examples that qualify: agent describes or reads degree program details, agent asks about student goals or interests to assess program fit, agent recommends the student for admission into a specific program, agent compares programs to identify the right match, agent confirms the student’s chosen program.
+- This tag applies in virtually every standard admissions interview. If a degree program was discussed in any substantive way, this tag applies.
+- Do NOT limit this tag to situations where a student is actively switching programs. Standard program confirmation and fit discussion qualifies.
+
+Start Date
+- Discussion of start dates, cohort dates, selecting a start date, “March start vs April start.”
+
+Tuition/Cost
+- Numeric tuition, cost per credit, semester cost, total program cost, out-of-pocket discussion.
+
+Scholarships
+- Scholarships mentioned as a funding source, scholarship search, scholarship eligibility, or any named scholarship (e.g., Pathway, Momentum).
+
+Technical Issue (Portal/Login)
+- Login failures, portal errors, access blocks, verification code failures, form not loading, website outages, account recovery.
+- The issue must prevent or obstruct the student from accessing a required system.
+Do NOT count:
+- Audio dropout or call connection issues
+- Start date showing incorrectly due to data entry (agent corrects it on their end)
+- Agent navigating a portal on behalf of the student without an access problem
+- Minor UI confusion without an actual system error
+
+Schedule/Callback
+- Scheduling a follow-up time, “call you back,” student availability, “reach back out.”
+
+Other
+- Explicit topic discussed that does not fit any label above.
+
+DEFAULT
+If no explicit task topic occurs: None
+
+Anti-Drift Validation Rule (STRENGTHENED IN v1.1)
+- Do NOT output None if any allowed task label has explicit transcript evidence.
+- Before outputting Tasks_Discussed for any call — whether None or a list — check each of the nine labels below against the transcript individually and in sequence. Do not finalize the output until all nine have been checked.
+- Check each label in this order:
+  1) Application — any discussion of starting/completing the school application, application link/portal, or application steps
+  2) FAFSA — any discussion of FAFSA, FSA ID, studentaid.gov, school code, FAFSA submission, FAFSA form year
+  3) Documents — any discussion of transcript, diploma, ID, document upload, verification, or portal documents
+  4) Program Selection — any discussion of choosing or changing a program, program fit, or alternate program recommendation
+  5) Start Date — any discussion of start dates, cohort dates, or selecting a start date
+  6) Tuition/Cost — any numeric tuition, cost per credit, semester cost, total program cost, or out-of-pocket discussion
+  7) Scholarships — any scholarships mentioned as a funding source, scholarship search, scholarship eligibility, or named scholarship
+  8) Technical Issue (Portal/Login) — any login problems, portal errors, verification codes, form not loading, or website issues
+  9) Schedule/Callback — any scheduling of a follow-up time, callback, or student availability discussion
+- A label is included if the agent explicitly discussed it per the definitions above.
+- A label is excluded only when no explicit evidence exists after checking the full transcript for that label.
+- None is only valid when all nine checks return no transcript evidence.
+- Partial or incomplete checking that misses explicit evidence is a tagging error.
+
+CROSS-MODULE VALIDATION RULE (HARD RULE — NEW IN v1.3)
+If binary item S1_1 Tuition Stated is scored 1 on this call, Tuition/Cost MUST appear in Tasks_Discussed.
+- Binary item S1_1 = 1 means the agent explicitly stated a numeric tuition amount or clear tuition statement during the call.
+- That same explicit statement satisfies the Tuition/Cost tag definition.
+- Do NOT output a row where S1_1 = 1 and Tuition/Cost is absent from Tasks_Discussed. Correct Tasks_Discussed before finalizing the row.
+- This rule applies in both directions: if S1_1 = 1 and Tuition/Cost is missing, add it. If Tuition/Cost is present and S1_1 = 0, verify whether tuition was discussed without meeting the numeric threshold before removing the tag.
+
+PER-CALL ISOLATION RULE (HARD RULE — NEW IN v1.2)
+Tasks_Discussed must be determined independently for each call.
+- Do NOT carry forward, copy, or infer tags from any other call in the batch.
+- Do NOT apply a holistic summary of the call instead of the nine-label sequential check.
+- The nine-label sequential check must be executed against THIS call’s transcript only, from scratch, every time.
+- Cross-call tag contamination — where tags from one call appear in another without evidence — is a tagging error.
+
+</pre>
+</section>
+<section>
+<h2>Documents Timeline Evidence v1.0</h2>
+<pre>HARD RULE — DOCUMENTS TIMELINE DEFAULT IS NO
+Documents_Timeline_Explicit_YN = NO unless the agent states a specific deadline or
+time window that applies to document submission. Examples that qualify: &quot;by Friday,&quot;
+&quot;within 48 hours,&quot; &quot;before your start date,&quot; &quot;upload it tonight.&quot;
+These do NOT qualify — output NO immediately if only these appear:
+- &quot;As long as you have a game plan&quot;
+- &quot;Whenever you can get to it&quot;
+- &quot;Just make sure you get those in&quot;
+- General next-step guidance without a date, deadline, or time window
+- Documents completed in-call (already done — no timeline needed)
+If you cannot quote a specific deadline from the transcript, output NO.
+
+Documents Timeline Evidence
+Version 1.0 – Stage 4 Completion Gate, Evidence Strict
+
+PURPOSE
+Output two binary fields that confirm whether a Stage 4 (Documents) timeline was explicitly set and agreed to.
+These fields are used to prevent non-document scheduling (tour/start dates) from being counted as document completion.
+
+OUTPUT FIELDS
+Documents_Timeline_Explicit_YN (YES/NO)
+Documents_Timeline_Agreed_YN (YES/NO)
+
+GLOBAL RULES
+- Evidence only. No inference.
+- These fields apply only when Documents are discussed (Tasks_Discussed includes Documents OR Stage_Documents_YN = YES).
+- If Documents are not discussed and Stage_Documents_YN = NO:
+  Documents_Timeline_Explicit_YN = N/A
+  Documents_Timeline_Agreed_YN = N/A
+
+DEFINITIONS
+
+Documents_Timeline_Explicit_YN = YES only if BOTH are present:
+1) The agent explicitly references document submission/upload as the task, AND
+2) The agent states a time-bound timeline that explicitly applies to document submission/upload.
+Examples:
+- &quot;Upload your transcript today.&quot;
+- &quot;Please submit your documents by tomorrow.&quot;
+- &quot;Get that ID uploaded before Friday.&quot;
+Non-examples (do NOT count):
+- Tour scheduled date/time
+- Start date selection/change
+- General callback scheduling not tied to document upload
+- &quot;As long as you have a game plan&quot; — encouragement without a specific deadline
+- &quot;Whenever you can get to it&quot; or similar open-ended language
+- Documents completed in-call (no timeline needed; the task is already done)
+- FSO application tasks or enrollment tasks completed during the call without a separate deadline for outstanding documents
+
+Documents_Timeline_Agreed_YN = YES only if BOTH are present:
+1) Documents_Timeline_Explicit_YN = YES, AND
+2) The student verbally agrees to that document timeline.
+Examples:
+- &quot;Yes, I can do that.&quot;
+- &quot;Okay, I’ll upload it tonight.&quot;
+- &quot;That works.&quot;
+If the student does not agree explicitly or the response is unclear -&gt; NO.
+
+HARD RULE — TIME-BOUND REQUIREMENT
+Documents_Timeline_Explicit_YN = YES requires a specific deadline or time window
+verbally stated by the agent. Qualifying examples: &quot;within 24 hours,&quot; &quot;by Friday,&quot;
+&quot;before your start date,&quot; &quot;by end of this week.&quot;
+Procedural guidance, general next steps, or encouragement without a time reference
+does NOT qualify regardless of how specific the document discussion is.
+If you cannot identify the specific deadline or time window in the transcript,
+Documents_Timeline_Explicit_YN = NO.
+
+DEFAULTS
+If Documents are discussed but no explicit doc timeline is set:
+- Documents_Timeline_Explicit_YN = NO
+- Documents_Timeline_Agreed_YN = NO
+
+</pre>
+</section>
+<section>
+<h2>Progression Definitions v1.10</h2>
+<pre>Admissions Progression Definitions
+Version 1.10 – Clarifies Follow-Up Starting_Stage Evidence Standard for Prior Completion
+
+CHANGE LOG FROM v1.9
+1) FOLLOW-UP STARTING_STAGE: Added explicit guidance that broad prior completion language
+   from the agent — positioning the student as having finished all upstream enrollment work
+   before the call — qualifies for Starting_Stage = Stage 3 or Stage 4. Scorers were
+   defaulting to Unknown when evidence was present but not item-by-item explicit.
+2) Added qualifying and non-qualifying examples for Stage 3 and Stage 4 Starting_Stage
+   on Follow-Up calls.
+3) Added STARTING_STAGE INTERACTION WITH MONOTONIC RULE clarification — when Starting_Stage
+   is correctly set to Stage 4, the monotonic rule raises Progression_Ceiling to Stage 4
+   and Progression_Success becomes NOT APPLICABLE on coordination-only calls. This is the
+   correct coaching signal for well-executed Post-FAFSA calls.
+4) No changes to Interview Starting_Stage rules, Progression_Ceiling rules, Progression_Success
+   rules, Constraint rules, FSO Registration rules, or any other section.
+
+PURPOSE
+Determine progression-related fields for each call:
+Call_Subtype, Starting_Stage, Progression_Ceiling, Progression_Success,
+Constraint_Flag_YN, Constraint_Type.
+
+INPUTS REQUIRED
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+These flags must be produced using the Stage Detection and Trigger Rules source.
+
+Tasks_Discussed
+(From the Tasks Discussed Tagging source. Used for Follow-Up task ceiling selection.)
+
+GLOBAL RULES (ANTI-DRIFT)
+- Use transcript evidence only.
+- No assumed progression.
+- Stage flags indicate what occurred in THIS call only.
+- Follow-Up calls may begin at later stages due to prior completion; do not require earlier
+  stage flags to be YES to set Starting_Stage above Stage 1.
+- Default to the more conservative value when uncertain, except where a default is explicitly
+  defined below.
+
+--------------------------------------------------
+
+CALL SUBTYPE
+Allowed values:
+Interview
+Follow-Up
+
+Follow-Up evidence (agent-spoken examples):
+- &quot;following up&quot;
+- &quot;we spoke before&quot;
+- &quot;your application is already submitted&quot;
+- &quot;your FAFSA is pending&quot;
+- &quot;we still need your documents&quot;
+
+RECONNECT LANGUAGE EXCEPTION (HARD RULE)
+Phrases such as &quot;following up&quot;, &quot;we spoke before&quot;, &quot;reaching back out&quot;, &quot;reconnecting&quot;, or
+similar contact history references describe why the agent called, not what type of call it is.
+These phrases alone do not classify a call as Follow-Up.
+
+If the agent uses reconnect language but then conducts a full interview sequence during the
+call, classify as Interview.
+
+PRIOR APPLICATION EXCEPTION
+A call is NOT a Follow-Up solely because the student has a prior application on file or prior
+enrollment activity. If the agent conducts the full interview sequence during this call —
+including background exploration, program discussion, tuition explanation, and financial aid
+introduction — the call is classified as Interview regardless of the student&#x27;s prior activity.
+
+The distinction is agent behavior, not student history:
+- If the agent is conducting a first-time interview sequence: Call_Subtype = Interview
+- If the agent is reconnecting after a prior completed interview to advance a next step:
+  Call_Subtype = Follow-Up
+
+If unclear: Call_Subtype = Interview.
+
+--------------------------------------------------
+
+FAFSA_VALIDATED_YN
+Allowed values:
+N/A
+YES
+NO
+
+PURPOSE
+This field applies to Follow-Up calls only. It determines which binary compliance branch is
+used for scoring.
+
+DETECTION RULES
+
+If Call_Subtype = Interview:
+FAFSA_Validated_YN = N/A
+
+If Call_Subtype = Follow-Up:
+Evaluate the transcript to determine whether the student submitted the FAFSA form before or
+during this call.
+
+FAFSA_Validated_YN = YES if:
+- The agent explicitly asked about FAFSA status AND the student confirmed they submitted, OR
+- The agent confirmed the FAFSA is on file or processing, OR
+- The student volunteered that the FAFSA was submitted and the agent acknowledged this, OR
+- The agent&#x27;s blanket prior completion language explicitly establishes FAFSA as complete
+  (see BLANKET PRIOR COMPLETION LANGUAGE in the Starting_Stage section below)
+
+FAFSA_Validated_YN = NO if:
+- The student confirmed the FAFSA has not been submitted, OR
+- The agent identified FAFSA as an incomplete next step and routed to FAFSA completion, OR
+- No evidence of prior FAFSA submission exists in the transcript
+
+HARD RULE — DO NOT INFER
+Do not assume FAFSA submission based on the stage of the call or the student&#x27;s enrollment
+history. If the transcript does not contain explicit confirmation of FAFSA submission status,
+default to NO.
+
+--------------------------------------------------
+
+STARTING_STAGE
+Allowed values:
+Stage 1
+Stage 2
+Stage 3
+Stage 4
+Unknown
+
+Definition:
+Starting_Stage represents the stage the call begins in, based on agent references to what was
+already completed before this call.
+
+INTERVIEW OVERRIDE (HARD RULE)
+If the agent explicitly references conducting an interview during this call:
+- Call_Subtype = Interview
+- Starting_Stage = Stage 1
+
+Interview Calls:
+- Default Starting_Stage = Stage 1.
+- Starting_Stage may be Stage 2 only if agent explicitly confirms the application was already
+  started or completed before this call.
+
+Follow-Up Calls:
+Starting_Stage may be Stage 2, Stage 3, or Stage 4 based on explicit prior completion
+evidence in the transcript. Follow-Up Starting_Stage does NOT require earlier stage flags
+to be YES.
+
+FOLLOW-UP STARTING_STAGE EVIDENCE STANDARD (UPDATED IN v1.10)
+For Follow-Up calls, Starting_Stage may be set based on either:
+
+A) Item-by-item prior completion evidence
+The agent explicitly references a specific prior completed item tied to the target stage.
+Examples:
+- &quot;Your application is already submitted&quot; → Stage 2
+- &quot;Your FAFSA is already on file&quot; → Stage 3
+- &quot;Your GIPI and transcript are uploaded&quot; → Stage 4
+
+B) Broad prior completion language (NEW IN v1.10)
+The agent&#x27;s language explicitly positions the student as having completed all upstream
+enrollment work before this call, even without naming individual items. This qualifies
+Starting_Stage = Stage 3 or Stage 4 depending on what the completion language implies.
+
+BROAD PRIOR COMPLETION — QUALIFYING EVIDENCE FOR STAGE 3 OR STAGE 4
+
+Use Stage 3 when agent language establishes FAFSA is complete but does not clearly
+reference document or supplemental enrollment task completion:
+- &quot;Your FAFSA is handled so now we focus on next steps&quot;
+- &quot;Since your FAFSA is already submitted, we&#x27;re moving forward&quot;
+- &quot;You&#x27;re past the FAFSA stage, we&#x27;re focused on what comes next&quot;
+
+Use Stage 4 when agent language explicitly establishes that all upstream enrollment work —
+including documents or supplemental enrollment tasks — is complete before this call:
+- &quot;What usually takes students days you took care of before we even met&quot;
+- &quot;You&#x27;ve already got your supplemental enrollment documents done&quot;
+- &quot;Everything was handled before we got on this call — you&#x27;re already ahead&quot;
+- &quot;Since you&#x27;ve already completed everything on your end, we&#x27;re focused on next steps&quot;
+- Any agent statement that explicitly frames the student as having completed all upstream
+  enrollment requirements before this call, and positions the current call as coordination
+  or advancement rather than task completion
+
+BROAD PRIOR COMPLETION — NOT QUALIFYING
+The following do NOT establish Starting_Stage above Stage 1:
+- Vague encouragement without explicit completion reference (&quot;you&#x27;ve been doing great&quot;)
+- Agent referencing the student&#x27;s motivation or effort without naming completed tasks
+- General reconnect language without prior completion content (&quot;following up with you&quot;)
+- Student volunteering completion without agent acknowledgment
+
+CONSERVATIVE DEFAULT
+If Starting_Stage cannot be determined from either item-by-item or broad prior completion
+evidence, output Starting_Stage = Unknown.
+Do not use Unknown when broad prior completion language is clearly present. Unknown is
+reserved for calls where no evidence of prior stage completion exists.
+
+--------------------------------------------------
+
+STARTING_STAGE INTERACTION WITH MONOTONIC RULE AND PROGRESSION_SUCCESS (NEW IN v1.10)
+
+COACHING SIGNAL CLARIFICATION
+When Starting_Stage is correctly set to Stage 4 on a Post-FAFSA coordination call:
+1) The FOLLOW-UP CEILING RULE (Tasks_Discussed) may produce a lower ceiling (e.g., Stage 1)
+   if Tasks_Discussed does not include Documents, FAFSA, or Application.
+2) The MONOTONIC RULE then raises Progression_Ceiling to match Starting_Stage = Stage 4.
+3) Progression_Success = NOT APPLICABLE because Starting_Stage = Progression_Ceiling and
+   no advancement is feasible within call scope — all prior work is complete.
+4) Progression_Score = 0 because no stage was completed in-call.
+
+This combination — Starting_Stage = Stage 4, Progression_Ceiling = Stage 4,
+Progression_Success = NOT APPLICABLE, Progression_Score = 0 — is the correct and intended
+coaching signal for a well-executed Post-FAFSA coordination call. It tells a leader:
+this student was already at Stage 4 before the call; the agent&#x27;s job was coordination,
+not workflow execution; no penalty applies. The coaching conversation should focus on
+Binary Compliance and Behavioral scores, not Progression.
+
+DO NOT default to Unknown to avoid this combination. If broad prior completion evidence
+establishes Stage 4, set Starting_Stage = Stage 4 and allow the downstream rules to
+produce the correct coaching signal.
+
+--------------------------------------------------
+
+CONSTRAINTS
+Constraint_Flag_YN values:
+YES
+NO
+
+Constraint_Type values (single values):
+Time
+Refusal
+Access
+Disconnected
+Other
+None
+
+Output format:
+- If more than one constraint applies, output ALL applicable constraint types separated by
+  semicolons, in order of first appearance in the transcript.
+  Example: Time; Access
+- Do NOT choose only one when multiple are explicit.
+- Do NOT infer constraints. Flag only when explicitly stated.
+
+Examples:
+Time: &quot;I have to go&quot;, &quot;no time&quot;, &quot;we&#x27;re busy&quot;, &quot;call me back later&quot;
+Refusal: &quot;I&#x27;m not doing that&quot;, &quot;not ready&quot;, &quot;I don&#x27;t want to&quot;
+Access: &quot;no computer&quot;, &quot;can&#x27;t log in&quot;, &quot;code isn&#x27;t coming through&quot;, &quot;site is down&quot;,
+        &quot;not allowing me to edit&quot;, &quot;correction unavailable&quot;
+Disconnected: abrupt drop/hang-up clearly indicated
+Other: explicit constraint not covered above
+
+Constraint Consistency Rules:
+- If Constraint_Flag_YN = NO, then Constraint_Type must be None.
+- If Constraint_Flag_YN = YES, then Constraint_Type must NOT be None.
+- If Constraint_Flag_YN = YES and multiple constraints are explicit, Constraint_Type must
+  include all applicable types separated by semicolons.
+
+If none are explicit:
+Constraint_Flag_YN = NO
+Constraint_Type = None
+
+--------------------------------------------------
+
+FSO REGISTRATION ISSUE FLAG (OUTPUT ONLY; UN-SCORED)
+
+Field:
+FSO_Registration_Issue_YN values:
+YES
+NO
+N/A
+
+Restriction (HARD RULE)
+- Do NOT set FSO_Registration_Issue_YN = YES unless the transcript explicitly references
+  Full Sail One, FSO, or the account/registration/login issue is explicitly tied to the
+  Full Sail portal/account.
+- If the transcript does not explicitly anchor the issue to Full Sail One / FSO / the Full
+  Sail account or portal, output NO.
+
+Set FSO_Registration_Issue_YN = YES only if BOTH are true:
+1) Stage_Application_YN = YES AND Binary S2_3 = 1 (application completion explicitly
+   confirmed), AND
+2) An explicit obstacle with Full Sail One (FSO) registration/account creation/access is
+   mentioned.
+
+Qualifying FSO obstacle evidence (must be explicit):
+- &quot;Full Sail One&quot; / &quot;FSO&quot;
+- account creation / registration
+- verification code not received / code not coming through
+- cannot create account / cannot log in / login error
+- portal outage specific to account/FSO access
+
+Set FSO_Registration_Issue_YN = NO if:
+- Application completion is explicitly confirmed AND no FSO obstacle is mentioned, OR
+- FSO is not mentioned at all (no inference allowed).
+
+Set FSO_Registration_Issue_YN = N/A if:
+- Binary S2_3 ≠ 1 (application completion not explicitly confirmed).
+
+--------------------------------------------------
+
+PROGRESSION_CEILING
+Allowed values:
+Stage 1
+Stage 2
+Stage 3
+Stage 4
+Unknown
+
+Definition:
+Progression_Ceiling represents the stage target used to evaluate progression performance
+for the call type.
+
+INTERVIEW CEILING RULE (DEPARTMENT EXPECTATION)
+For Interview calls:
+- Default Progression_Ceiling = Stage 3.
+- This reflects departmental expectation that interviews should drive toward FAFSA progression.
+
+INTERVIEW CEILING RULE (HARDENED STAGE 4 SAFEGUARD)
+For Interview calls, do not set Progression_Ceiling to Stage 4 unless ALL conditions are met:
+
+A) Stage_Documents_YN = YES, AND
+B) Stage 4 Intent Evidence is present (agent frames documents as current objective), AND
+C) Stage 4 Commitment Evidence is present (specific document named, submission method, and
+   time-bound timeline or confirmed upload).
+
+If any of A, B, or C are missing, cap ceiling at Stage 3 or below.
+
+FOLLOW-UP CEILING RULE (TASK CEILING)
+For Follow-Up calls:
+- Determine Progression_Ceiling using Tasks_Discussed in this priority order:
+  1) If Tasks_Discussed includes Documents -&gt; Stage 4
+  2) Else if Tasks_Discussed includes FAFSA -&gt; Stage 3
+  3) Else if Tasks_Discussed includes Application -&gt; Stage 2
+  4) Else -&gt; Stage 1
+
+Follow-Up Ceiling Clarification
+- Tasks_Discussed is the default ceiling selector for Follow-Up calls.
+- Tasks_Discussed must NOT override stronger direct transcript evidence about the active
+  stage objective of the call.
+- Brief mention of a later-stage topic does not, by itself, make that later stage the ceiling.
+- Use the highest stage that is clearly functioning as the active task objective of the call.
+
+Constraint Safeguard:
+If explicit constraints prevent advancement, ceiling must not exceed the highest achievable
+stage within call scope.
+
+Fallback:
+If ceiling cannot be determined confidently: Progression_Ceiling = Unknown.
+
+--------------------------------------------------
+
+PROGRESSION SUCCESS
+Allowed values:
+YES
+NO
+NOT APPLICABLE
+
+Definition:
+Whether the agent successfully achieved the Progression_Ceiling in THIS call.
+
+Authority Rule (HARD RULE)
+- Progression_Success must be determined using the stage-specific completion rules in
+  Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+- Progression Definitions determines the ceiling stage to evaluate.
+- Progression Scoring determines whether that ceiling stage was successfully achieved.
+
+Verification Rule (No Assumptions):
+To claim the ceiling stage was successfully achieved during THIS call, the corresponding
+stage flag must be YES.
+
+Ceiling Stage Verification:
+If Progression_Ceiling = Stage 1 -&gt; Stage_Interview_YN must be YES
+If Progression_Ceiling = Stage 2 -&gt; Stage_Application_YN must be YES
+If Progression_Ceiling = Stage 3 -&gt; Stage_FAFSA_YN must be YES
+If Progression_Ceiling = Stage 4 -&gt; Stage_Documents_YN must be YES
+Progression_Success = YES only if BOTH:
+1) The ceiling stage flag is YES, AND
+2) The ceiling stage meets the full stage-specific completion standard defined in
+   Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+
+SYSTEM / ACCESS BLOCK OVERRIDE (HARD RULE)
+If the ceiling stage work is blocked by an explicit access/system failure during the call,
+Progression_Success must be NO even if the ceiling stage flag is YES.
+
+FSO REGISTRATION DOES NOT BLOCK STAGE 2 COMPLETION (PRAGMATIC RULE)
+If the admissions application is explicitly confirmed as completed/submitted in this call,
+treat Stage 2 completion as achieved even if Full Sail One (FSO) registration/account
+creation is interrupted or fails.
+
+Stage 4 Success Gate (Documents)
+For Progression_Ceiling = Stage 4:
+- A time-bound plan must explicitly reference document submission/upload.
+- Student must verbally agree to the document timeline/plan.
+If either is missing -&gt; Progression_Success = NO.
+
+Progression_Success = NO if:
+- Ceiling stage flag is NO, OR
+- Ceiling stage flag is YES but ceiling stage does NOT meet the full stage-specific completion
+  standard defined in Admissions_QPI_Source_Progression_Scoring_v1.4.txt.
+
+Progression_Success = NOT APPLICABLE only if:
+- Starting_Stage equals Progression_Ceiling AND no advancement is feasible within call scope.
+
+--------------------------------------------------
+
+MONOTONIC RULE (CEILING CANNOT BE BELOW START)
+
+If Starting_Stage is known (Stage 1–4) and Progression_Ceiling is known (Stage 1–4):
+- Progression_Ceiling must be equal to or higher than Starting_Stage.
+- If a lower ceiling would occur, set Progression_Ceiling = Starting_Stage.
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by
+Admissions_QPI_Source_Assessment_Disclosure_v1.1.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------
+</pre>
+</section>
+
+</body>
+</html>

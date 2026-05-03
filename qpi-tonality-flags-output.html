@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QPI Tonality, Red Flags and Output Validation</title>
+</head>
+<body>
+<h1>QPI Tonality, Red Flags and Output Validation</h1>
+<p><em>Tonality definitions and count rules, empathy exclusions, Level A hard disqualifiers, red flag definitions, assessment disclosure</em></p>
+<section>
+<h2>Tonality Definitions v1.4</h2>
+<pre>REQUIRED TALLY BLOCK — COMPLETE BEFORE ASSIGNING TONE LEVEL
+Before assigning Tone_Level, explicitly compute and state each count:
+  Name_Uses_Count:     [count only direct address of student first name]
+  Empathy_Count:       [count only qualifying phrases from list below]
+  Pressure_Count:      [count only explicit pressure tactics]
+  Negative_Flags:      [Dismissive / Rushed / Fear / RepeatPressure = YES/NO each]
+
+Only after completing this tally may Tone_Level be assigned.
+Tone_Level must follow deterministically from the tally — no post-hoc adjustment.
+
+Tonality Definitions
+Version 1.4 – Adds Reassurance Phrase Exclusion, Speaker Attribution Rule
+
+PURPOSE
+Evaluate conversational tonality using verifiable indicators with stable score spread.
+Tonality is scored separately as a 0–5 point component.
+
+GLOBAL RULES
+- Base tone evaluation on observable transcript evidence only.
+- Do not infer emotions or intent.
+- Use countable indicators and explicit output flags.
+- Default to Neutral when evidence is limited or ambiguous.
+- If transcript is too short or purely technical, tone defaults to Neutral.
+
+REQUIRED TONE DATA OUTPUT (FIELDS)
+Tone_Level
+Tonality_Score (0–5)
+Agent_Name_Uses_Count
+Empathy_Statements_Count
+Pressure_Indicators_Count
+Dismissive_Or_Aggressive_YN
+Rushed_Or_Curt_Transitions_YN
+Fear_Based_Urgency_YN
+Repeated_Pressure_After_Refusal_YN
+
+OUTPUT FORMAT REQUIREMENT
+Tone_Level must be output exactly as one of:
+&quot;Level A – Strong Positive&quot;
+&quot;Level B – Positive&quot;
+&quot;Level C – Neutral&quot;
+&quot;Level D – Negative&quot;
+&quot;Level E – Unprofessional&quot;
+
+COUNTABLE INDICATORS
+
+Name Use (DETERMINISTIC COUNT RULE)
+Count ONLY when the agent says the student’s first name (or first + last) as a direct address in conversation.
+Do NOT count:
+- reading back contact info (email/phone/address)
+- greetings that do not include the name
+- “sir,” “ma’am,” “buddy,” “friend,” or role terms (“mom,” “dad”)
+If uncertain, do not count.
+
+SPEAKER ATTRIBUTION RULE (HARD RULE — NEW IN v1.4)
+Count ONLY statements spoken by the agent.
+Do NOT count any phrase spoken by the student, parent, or third party
+regardless of content. Before counting any instance, verify the speaker
+is the agent. If speaker attribution is unclear, do not count.
+
+Empathy Statement (DETERMINISTIC COUNT RULE)
+Count ONLY if the agent explicitly validates the student’s emotion/situation using one of the following patterns:
+
+A) Explicit validation phrases (count each instance ONLY when the phrase clearly validates a student’s difficulty, concern, barrier, or meaningful situation):
+- “I understand”
+- “That makes sense”
+- “I can see why”
+- “I appreciate you sharing that”
+- “I’m sorry you’re going through that”
+- “I’m sorry to hear that”
+- “That sounds [hard/frustrating/stressful]”
+- “I know that can be [hard/frustrating/stressful]”
+- “I can imagine that’s [hard/frustrating/stressful]”
+
+Restriction for “That makes sense”
+- “That makes sense” counts ONLY when it clearly refers to a student’s challenge, concern, hesitation, obstacle, or meaningful personal situation.
+- Do NOT count “That makes sense” when it is used only as conversational agreement with a neutral fact, preference, or logical statement.
+
+B) Reflection + validation (count ONLY if BOTH occur in the same sentence/turn):
+- Agent reflects the student’s stated situation (briefly) AND
+- Agent validates it (e.g., “That’s understandable / that makes sense / I get it”)
+
+Do NOT count:
+- Generic politeness or filler (“okay,” “got it,” “perfect,” “awesome,” “no worries”)
+- Reassurance without validation (“we’ll be fine,” “it’s all good,” “don’t worry”)
+- Generic reassurance phrases regardless of context (NEW IN v1.4): “that’s all right,” “that’s okay,” “it’s okay,” “no worries,” “don’t worry about it,” “it happens,” “no big deal” — these do not qualify regardless of the situation they respond to
+- Solidarity or agreement phrases: “I am right there with you,” “I hear you,” “I get it,” “same here” — these express agreement, not validation of the student’s difficulty
+- Coaching/advice without explicit validation (“you should…”, “let’s do…”, “here’s what we’ll do”)
+- Name use alone
+- Conversational agreement with a neutral fact, preference, or logical statement, even if it includes a phrase such as “that makes sense”
+If uncertain, do not count.
+
+Hard exclusion rule:
+Do NOT count empathy if the agent is only acknowledging a task/step or offering generic reassurance (e.g., “okay,” “perfect,” “got it,” “no problem,” “that’s fine,” “that’s all right,” “it’s okay,” “no worries,” “it happens”) unless it includes an explicit validation phrase from list A, or meets Reflection + validation (B).
+
+SPEAKER ATTRIBUTION RULE (HARD RULE — NEW IN v1.4)
+Before counting any empathy statement, verify the speaker is the agent.
+Do NOT count empathy statements spoken by the student, parent, or any
+third party. Student expressions of empathy, agreement, or validation
+do not count regardless of how clearly they qualify under Pattern A or B.
+If speaker attribution is unclear from the transcript, do not count.
+
+Do NOT count “that makes sense” unless the transcript clearly shows the agent is validating a student’s difficulty, concern, barrier, hesitation, or meaningful personal situation.
+
+COMPLETE COUNT REQUIREMENT (HARD RULE — NEW IN v1.3)
+Count every qualifying empathy statement in the transcript.
+Do not stop counting once any threshold is reached.
+Do not cap the count at any number.
+
+Before finalizing Empathy_Statements_Count:
+1) Review the full transcript from start to finish.
+2) Document every instance that meets Pattern A or Pattern B criteria.
+3) Apply the hard exclusion rule to each instance.
+4) The final count is the total of all instances that survive the exclusion check — not the number needed to reach a threshold.
+
+Stopping at 2 because Level B is achieved is a counting error.
+Stopping at 3 because Level A is achieved is a counting error.
+The final Empathy_Statements_Count must reflect every qualifying instance actually present in the transcript.
+
+CONSERVATIVE DEFAULT CLARIFICATION (HARD RULE — NEW IN v1.3)
+Conservative scoring for empathy means: do not count a statement unless it clearly meets the Pattern A or Pattern B criteria.
+It does not mean stop counting once a threshold is reached.
+It does not mean suppress instances that clearly qualify.
+
+These are the only two options:
+- Statement clearly meets Pattern A or B and survives the exclusion check: COUNT IT.
+- Statement is genuinely uncertain or does not clearly meet criteria: DO NOT COUNT IT.
+
+Artificially capping the count at any number is a violation of this rule.
+The same complete-count requirement applies to Agent_Name_Uses_Count.
+Count every qualifying name use in the transcript. Do not stop early.
+
+
+Pressure Indicator
+Count each instance of urgency or pressure language, including:
+- &quot;you need to&quot;
+- &quot;must do this today&quot;
+- &quot;do this right now&quot;
+- &quot;as soon as possible&quot;
+- &quot;I need you to do this&quot;
+- repeated pushing after refusal
+- &quot;you don&#x27;t want to miss this&quot; used as urgency
+Do not count normal next-step direction unless it includes urgency or repeated pushing.
+Do NOT count normal next-step direction phrased without urgency (e.g., “next you’ll…”, “when you can…”, “the next step is…”).
+
+EXPLICIT NEGATIVE CONDITION FIELDS
+
+Dismissive or Aggressive
+Output field:
+Dismissive_Or_Aggressive_YN = YES or NO
+
+Mark YES only if the agent uses language that is belittling, impatient, scolding, sarcastic at the student, or overtly aggressive.
+
+Rushed or Curt Transitions
+Output field:
+Rushed_Or_Curt_Transitions_YN = YES or NO
+
+Mark YES only if the agent repeatedly moves through the call with abrupt, acknowledgment-free transitions that create a clearly rushed or curt tone.
+Examples may include:
+- repeated subject changes without acknowledgment of the student’s response
+- repeated clipped transitions that bypass student concerns or comments
+Do not mark YES for efficient pacing alone.
+
+Fear-Based Urgency
+Output field:
+Fear_Based_Urgency_YN = YES or NO
+
+Mark YES only if the agent uses urgency framed around fear, loss, or negative consequence pressure.
+Examples may include:
+- implying harm or failure if the student does not act immediately
+- coercive phrasing tied to fear or loss
+Do not mark YES for standard urgency alone.
+
+Repeated Pressure After Refusal
+Output field:
+Repeated_Pressure_After_Refusal_YN = YES or NO
+
+Mark YES only if:
+- the student explicitly resists, declines, or says not ready, AND
+- the agent continues pressing the same action repeatedly with pressure language after that refusal.
+Do not mark YES for one additional clarifying attempt.
+
+PURELY TECHNICAL RULE
+If the call is purely technical (portal navigation only) or under 2 minutes of meaningful dialogue:
+- Tone_Level = Level C
+- Tonality_Score = 3
+- Agent_Name_Uses_Count = 0
+- Empathy_Statements_Count = 0
+- Pressure_Indicators_Count = 0
+- Dismissive_Or_Aggressive_YN = NO
+- Rushed_Or_Curt_Transitions_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+TONE LEVELS (CALIBRATED FOR VARIATION)
+
+Level A – Strong Positive (rare)
+Criteria (all required)
+- Agent_Name_Uses_Count &gt;= 3
+- Empathy_Statements_Count &gt;= 3
+- Pressure_Indicators_Count = 0
+- Dismissive_Or_Aggressive_YN = NO
+- Rushed_Or_Curt_Transitions_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+Interpretation
+Reserved for consistently supportive tone throughout the call, not just polite professionalism.
+
+Level B – Positive (common)
+Criteria (all required)
+- (Agent_Name_Uses_Count &gt;= 1 OR Empathy_Statements_Count &gt;= 2)
+- Pressure_Indicators_Count &lt;= 1
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+
+Level C – Neutral (default)
+Criteria
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+- Pressure_Indicators_Count &lt;= 1
+- Does not meet Level A or Level B thresholds and does not meet Level D or Level E thresholds
+
+Interpretation
+Professional and acceptable, but not notably warm/supportive.
+
+Level D – Negative
+Criteria
+- Dismissive_Or_Aggressive_YN = NO
+- Fear_Based_Urgency_YN = NO
+- Repeated_Pressure_After_Refusal_YN = NO
+AND at least one of the following:
+- Pressure_Indicators_Count &gt;= 2
+- Rushed_Or_Curt_Transitions_YN = YES
+
+Note
+If uncertainty exists, default to Level C unless the explicit negative fields or pressure count clearly support Level D.
+
+Level E – Unprofessional
+Criteria
+Assign Level E if any of the following are YES:
+- Dismissive_Or_Aggressive_YN = YES
+- Fear_Based_Urgency_YN = YES
+- Repeated_Pressure_After_Refusal_YN = YES
+
+DETERMINISTIC CLASSIFICATION RULE (REQUIRED)
+Tone_Level must be computed from the count fields and explicit negative-condition output fields.
+
+- Assign Level E first if any Level E condition field = YES.
+- Else assign Level A only if all Level A criteria are satisfied.
+- Else assign Level B only if all Level B criteria are satisfied.
+- Else assign Level D if Level D criteria are satisfied.
+- Else assign Level C.
+
+Do not assign Tone_Level first and then backfill counts or flags.
+If Tone_Level and the counts/flags disagree, change Tone_Level to match the counts/flags.
+
+VALIDATION (REQUIRED)
+If Tone_Level = Level A and (Agent_Name_Uses_Count &lt; 3 OR Empathy_Statements_Count &lt; 3),
+then Tone_Level must be downgraded to Level B if Level B criteria are met, otherwise Level C.
+
+If Tone_Level = Level A and any of the following are YES:
+- Dismissive_Or_Aggressive_YN
+- Rushed_Or_Curt_Transitions_YN
+- Fear_Based_Urgency_YN
+- Repeated_Pressure_After_Refusal_YN
+then Tone_Level must be downgraded based on the deterministic classification rule.
+
+If Tone_Level = Level B and (Agent_Name_Uses_Count = 0 AND Empathy_Statements_Count &lt; 2),
+then Tone_Level must be downgraded to Level C.
+
+If Tone_Level = Level B and (Fear_Based_Urgency_YN = YES OR Repeated_Pressure_After_Refusal_YN = YES OR Dismissive_Or_Aggressive_YN = YES),
+then Tone_Level must be reassigned based on the deterministic classification rule.
+
+</pre>
+</section>
+<section>
+<h2>Tonality Scoring v1.1</h2>
+<pre>Tonality Scoring
+Version 1.1 – Weighted 5 Points, Negative Stronger than Positive, Definition-Aligned
+
+PURPOSE
+Convert Tonality evidence into Tonality_Score (0–5 points).
+Tonality_Score contributes 5 points to total QPI.
+
+INPUTS REQUIRED
+Tone_Level from Tonality Definitions source.
+
+DEPENDENCY RULE
+- Tone_Level must be determined according to the Tonality Definitions source in effect.
+- If the Tonality Definitions source includes explicit negative-condition output fields, those fields must be used as part of determining Tone_Level before applying this scoring map.
+- This resource does not reclassify tone. It converts the final Tone_Level into points.
+
+OUTPUT
+Tonality_Score must be an integer from 0 to 5.
+
+SCORING MAP
+
+Level A – Strong Positive = 5 points
+Level B – Positive = 4 points
+Level C – Neutral = 3 points
+Level D – Negative = 1 point
+Level E – Unprofessional = 0 points
+
+Rationale
+Negative tone reduces scoring more than positive tone increases it.
+
+DRIFT CONTROL RULES
+- Default to Neutral (3 points) when evidence is limited or ambiguous.
+- Assign Unprofessional (0) only when dismissive/aggressive evidence is explicit or when the final Tone_Level from the Tonality Definitions source is Level E.
+- Assign Strong Positive (5) only when thresholds for Level A are met.
+- If call is purely technical or too short, assign Neutral (3).
+
+CAP RULE
+Total QPI must be capped at 100 after adding Tonality_Score.
+
+--------------------------------------------------
+
+</pre>
+</section>
+<section>
+<h2>Red Flags v1.2</h2>
+<pre>Red Flags (Compliance and Risk) – Unscored
+Version 1.2 – Evidence Strict, Schema Aligned (Adds Professionalism Breach; Expands Outcome Guarantee)
+
+PURPOSE
+Identify red flags present in the call. Red flags do NOT alter QPI score.
+They are reported for leadership review and compliance monitoring.
+
+GLOBAL RULES (ANTI-DRIFT)
+- Flag only when explicit evidence is present in the transcript.
+- No inference allowed.
+- If unclear or implied, do not flag.
+- Third-party statements are ignored unless the Admissions Representative confirms or adopts the claim.
+
+RED FLAGS ARE INDEPENDENT (HARD RULE)
+- Red flag detection is independent of stage flags, starting stage, progression ceiling, call subtype, and scoring.
+- Scan the entire transcript for red flag evidence.
+- If evidence exists anywhere in the call, flag it even if the related stage is not present.
+
+MULTI-FLAG OUTPUT RULE (HARD RULE)
+- If more than one red flag category applies, output all applicable categories separated by semicolons.
+- Do not limit to a single category.
+
+EDITABILITY RULE
+- New red flag categories may be added later.
+- Do not rename existing categories without updating downstream reporting.
+- Keep sub-items phrased as explicit agent claims or explicit tactics.
+
+OUTPUT FIELDS (REQUIRED)
+Red_Flag_YN
+Red_Flag_Type(s)
+Red_Flag_Evidence
+
+OUTPUT FORMAT RULES
+- Red_Flag_YN must be YES or NO.
+- Red_Flag_Type(s) must be &quot;None&quot; if Red_Flag_YN = NO.
+- If Red_Flag_YN = YES, list one or more categories separated by semicolons.
+- Red_Flag_Evidence must include short quoted phrases or paraphrased statements anchored to agent language.
+
+--------------------------------------------------
+
+RED FLAG CATEGORIES
+
+1) Financial Aid Misrepresentation
+Flag YES if the agent explicitly:
+- Promised a specific aid amount
+- Guaranteed funding or guaranteed approval
+- Claimed aid is certain or automatic
+
+Coverage Guarantee Language (Financial Aid Misrepresentation)
+Flag YES if the agent implies a guaranteed outcome that the student will not pay out of pocket, including statements like:
+- “Scholarships will cover whatever aid doesn’t.”
+- “You won’t have to pay out of pocket because we’ll cover it.”
+- “Before we start charging out of pocket, scholarships will cover the rest.”
+- “If aid doesn’t cover it, the scholarship will.”
+
+Do NOT flag if the agent clearly frames scholarships as eligibility-based or conditional, including phrases like:
+- “You may qualify…”
+- “If you’re awarded…”
+- “Depending on eligibility…”
+- “We can explore scholarship options…”
+
+2) Cost Misleading
+Flag YES if the agent explicitly:
+- Minimized or dismissed cost concerns
+- Avoided stating tuition when directly asked
+- Framed tuition inaccurately or deceptively
+
+3) Outcome Guarantee
+Flag YES if the agent explicitly guarantees any outcome that should be conditional, including:
+Employment and Earnings:
+- Guaranteed a job
+- Guaranteed salary or earnings
+- Claimed employment is assured
+
+Completion and Academic Outcomes:
+- Guaranteed graduation or degree completion
+- Claimed the student will complete the program or “get your degree” as a certainty
+- Guaranteed an academic deliverable by graduation (example: “your work WILL be published by the time you graduate”)
+- Guaranteed portfolio outcomes (example: “you WILL have X finished projects by graduation”)
+- Used absolute certainty language about outcomes (“every single time,” “you will definitely”)
+
+4) Pressure Tactics
+Flag YES if the agent explicitly:
+- Used fear-based urgency
+- Claimed false scarcity (limited seats) without verification
+- Repeatedly pressured after the student refused
+
+5) Academic Misrepresentation
+Flag YES if the agent explicitly:
+- Minimized workload or requirements
+- Misrepresented program difficulty
+- Suggested the program is easy
+
+6) Professionalism Breach
+Flag YES if the agent explicitly:
+- Used profanity or explicit vulgar language (example: “f***”, “s***”) in front of the student
+- Insulted, mocked, or belittled the student or a third party
+- Used aggressive or hostile phrasing directed at the student
+
+NOTE
+- Do not flag mild slang unless it is clearly profane or hostile.
+
+--------------------------------------------------
+
+DECISION RULE
+
+If any category is flagged:
+Red_Flag_YN = YES
+
+If more than one category applies, output ALL applicable categories in Red_Flag_Type(s), separated by semicolons. Do not limit to a single category.
+
+If no categories are flagged:
+Red_Flag_YN = NO
+Red_Flag_Type(s) = None
+Red_Flag_Evidence = None
+
+</pre>
+</section>
+<section>
+<h2>Assessment Disclosure v1.1</h2>
+<pre>Admissions_QPI_Source_Assessment_Disclosure
+Version: 1.1 – Adds Follow-Up Call Applicability
+Purpose: Detects whether the agent conducted a complete assessment disclosure conversation during the call. This source operates independently and does not modify any existing compliance, behavioral, or scoring outputs.
+
+
+DEFINITION
+
+A complete assessment disclosure requires explicit transcript evidence of all three of the following elements. If any element is missing, the output is NO.
+
+Element 1 - Substance: The agent described the assessment or entrance requirement with enough detail for the student to understand what completing it actually involves. A passing reference to the existence of an assessment does not satisfy this element. The agent must have communicated what the student will need to do.
+
+Element 2 - Readiness Check: The agent directly asked the student a question about their comfort level, feelings, or readiness to complete the assessment. The question must be directed at the student&#x27;s personal response to the requirement, not a general informational question about the program.
+
+Element 3 - Concern Response: If the student expressed any hesitation, concern, or resistance in response to the assessment discussion, the agent attempted to address it before continuing. If the student expressed no concern, this element is considered met by default.
+
+
+DETECTION RULES
+
+Rule 1 - Explicit evidence only. Each element must be supported by a direct, verbatim example from the transcript. Do not infer intent. Do not assume an element was covered because related topics were discussed.
+
+Rule 2 - General admissions policy language does not satisfy Element 1. Any reference to assessments or entrance requirements made during the broad admissions overview portion of the call, prior to the program-specific assessment discussion, must be excluded from consideration.
+
+Rule 3 - All three elements must be present for a YES. If one or more elements cannot be supported by transcript evidence, the output is NO regardless of how well the other elements were executed.
+
+Rule 4 - Self-validation required. Before returning a YES, identify and confirm the specific transcript evidence supporting each of the three elements. If you cannot identify supporting evidence for any element, return NO.
+
+
+OUTPUT
+
+Field name: Assessment_Discussed_YN
+Accepted values: YES or NO
+Default: NO
+
+Return YES only when all three elements are confirmed by explicit transcript evidence.
+Return NO when any element is absent, when evidence is ambiguous, or when assessment language appears only in the general admissions overview and not in a program-specific discussion.
+
+
+SCOPE NOTE
+
+This field is reported for informational and coaching purposes only. It does not affect QPI_Total_Score, Binary_Compliance_Score, Behavioral_Score, or any other scored component. It is a standalone disclosure check designed to support Team Leader coaching conversations about assessment preparation.
+
+FOLLOW-UP CALL APPLICABILITY
+
+On Follow-Up calls, Assessment_Discussed_YN is evaluated using the same three-element standard regardless of degree program. All three elements — Substance, Readiness Check, and Concern Response — must be present for a YES.
+
+On Follow-Up calls the assessment re-engagement is expected regardless of program. Acceptable scripted language for Follow-Up assessment re-engagement:
+&quot;Now that we have completed your documents, the final task is completing your assessment. This is an important part of starting into your program, so let&#x27;s make this a priority so you can get ahead.&quot;
+
+The same evidence standard applies — scripted language alone does not satisfy the disclosure unless all three elements are present with explicit transcript evidence.
+
+INTERVIEW CALL APPLICABILITY (UNCHANGED)
+On Interview calls, Assessment_Discussed_YN is evaluated only for qualifying degree programs as defined in the original scope of this source.
+</pre>
+</section>
+
+</body>
+</html>

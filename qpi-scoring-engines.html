@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QPI Scoring Engines – Progression, Binary and Behavioral</title>
+</head>
+<body>
+<h1>QPI Scoring Engines – Progression, Binary and Behavioral</h1>
+<p><em>BRANCH LOCK: Interview and Follow-Up rules are explicitly partitioned. Use only the branch matching Call_Subtype. Progression scoring, binary compliance, behavioral matrices for both branches.</em></p>
+<section>
+<h2>Progression Scoring v1.4</h2>
+<pre>Admissions Progression Scoring
+Version 1.4 – Tiered Completion Credit (0/5/10/15), Constraint-Agnostic, Follow-Up Stage 4 Supported
+
+PURPOSE
+Assign Progression_Score (0–15) based on the highest stage verifiably completed in THIS call.
+This score reflects what was actually completed in-call (tiered credit), not excuses or constraints.
+Constraints remain reportable context but do not change Progression_Score.
+
+FOUNDATIONAL RULE
+Progression Scoring is separate from Stage Detection.
+
+- Stage Detection determines whether a workflow stage occurred and whether that stage is applicable for Binary Compliance and Behavior Matrix scoring.
+- Progression Scoring determines the highest stage whose end goal was successfully achieved in this call.
+- A stage may be PRESENT = YES without being successfully achieved for progression credit.
+- Binary Compliance and Behavior Matrix then explain what was passed, missed, or executed weakly within the stages that were present.
+
+INPUTS REQUIRED
+Call_Subtype
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+(These stage flags must be produced by the Stage Detection source using evidence strict rules.)
+
+OUTPUT
+Progression_Score must be one of:
+0, 5, 10, 15
+
+GLOBAL SAFEGUARDS (ANTI-DRIFT)
+- Use transcript evidence only. No inference.
+- Stage flags indicate what occurred in THIS call only.
+- Award points only if the stage is BOTH present (stage flag YES) AND completed with an explicit action/commitment.
+- Never award a higher tier unless its completion criteria are met.
+- When uncertain, default to the lower score.
+
+INTERPRETATION RULE
+- Do not use Binary Compliance or Behavior Matrix scores to decide whether a stage was present. Use Stage Detection for stage presence.
+- Do not use Stage Detection alone to determine Progression_Score. Use the stage completion rules below to determine whether the end goal of that stage was successfully achieved.
+- A stage can be PRESENT = YES but still fail to achieve progression credit for that stage.
+- A stage can receive progression credit while still containing some Binary or Behavior misses within that stage.
+
+STAGE COMPLETION REQUIREMENT (COMMITMENT GATE)
+A stage is &quot;completed in this call&quot; only if BOTH are true:
+1) The corresponding stage flag is YES, AND
+2) The agent secures an explicit action/commitment tied to that stage (time-bound plan or confirmed action).
+
+Minimum completion evidence by stage:
+
+Stage 1 completion (Interview)
+Stage 1 is &quot;completed in this call&quot; only if BOTH are true:
+1) Stage_Interview_YN = YES, AND
+2) The agent secures the next step using ONE of the following completion paths:
+
+A) Immediate execution path (in-the-moment)
+- Agent directs the student/parent to begin the next step during the call (application/FAFSA/documents action), AND
+- Student/parent explicitly agrees OR demonstrates execution (e.g., confirms they are on the site/page, begins entering info, proceeds with steps).
+
+OR
+
+B) Time-bound plan (off-call)
+- Agent states a specific follow-up time or completion window (same-day window or scheduled time), AND
+- Student/parent explicitly agrees.
+
+If neither A nor B is fully satisfied -&gt; Stage 1 is NOT completed.
+
+Stage 2 completion (Application)
+Stage 2 is &quot;completed in this call&quot; only if the application is explicitly confirmed as submitted/completed during THIS call.
+
+Score Stage 2 as completed ONLY if:
+A) Verified completion
+- Agent explicitly confirms the application was submitted/completed in this call (or student/parent explicitly confirms submission), OR
+- The call includes explicit evidence of submission completion (e.g., “you hit submit,” “application submitted,” “confirmation page,” “submission confirmation received,” “final screen confirms application submitted,” “application processed successfully”).
+
+Do NOT count as Stage 2 completion:
+- a scheduled callback to return and finish the application later
+- a student agreement to work on the application after the call
+- a same-day or next-day time-bound plan without in-call submission confirmation
+- strong application momentum or partial completion without explicit submission/completion evidence
+
+Business Rule Clarification
+- For progression credit, the application step is considered achieved only when it is completed on the call itself.
+- Off-call completion plans may still support Binary and Behavioral scoring, but they do NOT satisfy Stage 2 completion for Progression_Score purposes.
+
+Stage 3 completion (FAFSA)
+Stage 3 is &quot;completed in this call&quot; only if BOTH are true:
+1) Stage_FAFSA_YN = YES, AND
+2) The agent secures ONE of the following FAFSA completion paths:
+
+A) FAFSA submitted/verified
+- FAFSA is explicitly confirmed as already submitted, OR
+- FAFSA is explicitly confirmed as submitted during the call.
+
+OR
+
+B) Scripted FAFSA handoff completion
+- The agent actively progresses the student into the FAFSA workflow (correct FAFSA year, access path, login/FSA ID/account recovery as needed), AND
+- The student reaches the FAFSA workflow handoff point (for example: “Starting the FAFSA” page or equivalent pre-form completion point), AND
+- The agent explicitly states that the student will continue the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion, AND
+- The student explicitly agrees or acknowledges the plan.
+
+Short Follow-Up Requirement (HARD RULE)
+- The follow-up expectation must be near-term and specific enough to function as a real FAFSA completion plan.
+- Acceptable examples include:
+  - callback in about 30 minutes to 1 hour
+  - later today
+  - tomorrow at a stated time
+  - another similarly specific near-term follow-up tied to FAFSA completion
+
+Enforcement Clarification
+- A generalized team handoff or unscheduled future outreach does NOT satisfy the short follow-up requirement.
+- Statements such as &quot;be on the lookout for a phone call,&quot; &quot;someone will call you,&quot; &quot;your mentor will follow up,&quot; or similar unscheduled continuation language must be scored as NOT completed for Stage 3 progression credit.
+- These statements may support Stage 3 presence only when true workflow movement occurred, but they do NOT satisfy Stage 3 completion.
+
+Do NOT count as Stage 3 completion:
+- vague or unspecified continuation language such as:
+  - “we’ll follow up”
+  - “be on the lookout for a phone call”
+  - “someone will reach out”
+  - or similar non-time-bound follow-up language
+- general FAFSA encouragement without a real handoff plan
+- a follow-up expectation that is not clearly tied to FAFSA completion
+
+Strict Completion Enforcement
+- Generalized team handoff language does NOT satisfy Stage 3 completion.
+- If the follow-up is assigned to a future advisor, mentor, campus mentor, team member, or unspecified callback without a specific short timeline tied to FAFSA completion, Stage 3 completion must be scored NO.
+- Statements such as:
+  - &quot;your mentor will follow up&quot;
+  - &quot;be on the lookout for a phone call&quot;
+  - &quot;someone from the team will call you&quot;
+  - &quot;they will reach out&quot;
+  do NOT satisfy the scripted FAFSA handoff completion path unless the transcript also contains a specific short follow-up timeframe tied to FAFSA completion.
+- These statements may coexist with valid Stage 3 presence, but they do NOT convert Stage 3 presence into Stage 3 completion.
+
+Campus Mentor Handoff Exception (NARROW RULE)
+- For campus students following the approved Campus Mentor handoff script, Stage 3 completion may still be awarded through the scripted FAFSA handoff path even if the original Admissions Representative does not personally schedule the short callback.
+
+Count as valid Stage 3 completion under this exception ONLY if ALL are explicit in the transcript:
+1) The call clearly indicates the student is a campus student or is being routed into the Campus Mentor / campus team path, AND
+2) The agent explicitly states that the Campus Mentor will be the student&#x27;s main point of contact going forward or will be following up on FAFSA / next steps, AND
+3) The agent explicitly instructs the student to continue working on FAFSA in the meantime, AND
+4) The handoff language reflects the approved immediate-next-step campus script rather than a vague or indefinite future follow-up.
+
+Qualifying examples include language such as:
+- &quot;Your Campus Mentor will be following up on FAFSA completion and be your main point of contact going forward&quot;
+- &quot;You&#x27;ll be hearing from your Campus Mentor and supporting teams very soon&quot;
+- &quot;In the meantime, continue to work on your FAFSA&quot;
+
+Do NOT apply this exception if:
+- the student is not clearly established as campus-path / campus-handoff eligible in the current call, OR
+- the handoff is generic team language without Campus Mentor / campus-team specificity, OR
+- the agent does not explicitly reinforce continued FAFSA completion in the meantime.
+
+If FAFSA is only discussed, explained, or positioned as a future task without active workflow progression to the handoff point, Stage 3 is NOT completed.
+
+If the agent does not explicitly state that they cannot remain on the phone for the government form portion, the scripted FAFSA handoff completion path does NOT apply.
+
+Stage 4 completion (Documents)
+- Agent actively advances the documents objective in this call (requirements + where/how to submit), AND
+- Secures an explicit commitment/timeline tied specifically to document submission/upload.
+
+Stage 4 completion requires ALL of the following:
+a) The agent names at least one specific document OR explicitly identifies “required documents” as the objective, AND
+b) The agent confirms where/how the student will submit (portal/location), AND
+c) The agent sets a time-bound plan that explicitly references document submission/upload (not tour dates, start-date changes, or unrelated scheduling), AND
+d) The student verbally agrees to the document timeline/plan (example: “yes,” “okay,” “that works,” “I’ll do that”).
+e) Documents_Timeline_Explicit_YN = YES AND Documents_Timeline_Agreed_YN = YES
+
+DETERMINISTIC SCORING LOGIC
+
+INTERVIEW CALLS
+(Top tier is FAFSA completion.)
+If Stage 3 is completed -&gt; Progression_Score = 15
+Else if Stage 2 is completed -&gt; Progression_Score = 10
+Else if Stage 1 is completed -&gt; Progression_Score = 5
+Else -&gt; Progression_Score = 0
+
+FOLLOW-UP CALLS
+(Top tier can be Documents or FAFSA completion depending on the call task.)
+If Stage 4 is completed -&gt; Progression_Score = 15
+Else if Stage 3 is completed -&gt; Progression_Score = 15
+Else if Stage 2 is completed -&gt; Progression_Score = 10
+Else if Stage 1 is completed -&gt; Progression_Score = 5
+Else -&gt; Progression_Score = 0
+
+CONSTRAINT NOTE (REPORTING ONLY)
+- Constraints do not change Progression_Score.
+- Constraints remain important context for interpretation and trend segmentation.
+
+</pre>
+</section>
+<section>
+<h2>Binary Compliance Checklist – Interview v1.7</h2>
+<pre>Binary Compliance Checklist Definitions
+Version 1.7 – Adds S2_3 FSO Account Creation Exception
+
+PURPOSE
+Define binary compliance items scored as 1 or 0 using explicit transcript evidence.
+This checklist supports a weighted Binary Compliance score (40 points).
+
+APPLICABILITY RULE
+Binary items may be scored ONLY for stages that are marked PRESENT = YES by the Stage Detection source.
+
+- If Stage_Interview_YN = NO, Stage 1 binary items are not applicable.
+- If Stage_Application_YN = NO, Stage 2 binary items are not applicable.
+- If Stage_FAFSA_YN = NO, Stage 3 binary items are not applicable.
+- If Stage_Documents_YN = NO, Stage 4 binary items are not applicable.
+
+Clarification
+- Stage presence determines whether a stage may be evaluated.
+- Binary scoring then determines which explicit required actions within that stage were met or missed.
+- A stage may be PRESENT = YES even if some or many binary items within that stage score 0.
+
+Applicability Override (HARD RULE)
+- Do NOT make a stage binary-applicable based on Progression_Ceiling alone.
+- Do NOT make a stage binary-applicable based on topic mention alone.
+- If the corresponding Stage_X_YN flag is NO, binary items from that stage must be excluded.
+
+INPUTS REQUIRED
+Call_Subtype
+Progression_Ceiling
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+
+GLOBAL SCORING RULES (ANTI-DRIFT)
+- Score 1 = YES only when the agent performed the explicit action in the transcript.
+- Score 0 if action is missing, unclear, implied, or performed only by a third party.
+- No inference allowed.
+- Default to 0 when uncertain.
+- Checklist items are designed to be editable. New items may be added under any stage.
+
+PROOF-LOCK RULE (HARD RULE — APPLIES TO EVERY BINARY ITEM)
+Before scoring any binary item as 1, you must be able to identify and internally quote the exact agent or student words from this transcript that satisfy the criterion.
+
+If you cannot identify specific verbatim language:
+- The score must be 0
+- Do not paraphrase
+- Do not reconstruct
+- Do not cite language from a different call in the batch
+- Do not assume the action occurred because a related action occurred
+
+FABRICATION PREVENTION
+If you scored a binary item as 1 but the evidence you would cite does not appear word-for-word in the transcript, correct the score to 0 before outputting. Cross-check every scored 1 against the transcript before finalizing the row. If the exact quote cannot be located, the score is 0.
+
+APPLICABLE STAGES RULES
+- Binary applicability must follow Stage Detection stage presence rules.
+- Use Progression_Ceiling for reporting context only, not to expand binary applicability beyond stages marked PRESENT = YES.
+- If all stage flags are unclear, default to Stage 1 items only.
+
+--------------------------------------------------
+
+STAGE 1 – INTERVIEW CHECKLIST ITEMS (5)
+
+S1_1 Explicit action: Tuition was stated clearly (numeric amount or clear tuition statement).
+S1_2 Explicit action: Financial aid process was mentioned (FAFSA or aid steps referenced).
+S1_3 Explicit action: No guarantee language was used (aid, cost, outcomes).
+S1_4 Explicit action: Application request was made (agent asked student to start/complete the application).
+S1_5 Explicit action: Application next step was secured (Immediate OR time-bound with agreement):
+Score 1 ONLY if ONE of the following is explicitly present:
+
+A) Immediate execution path (in-the-moment)
+- Agent directs the student to begin the application during the call (portal/link/what page are you on), AND
+- Student/parent explicitly agrees OR demonstrates execution (e.g., “yes/okay,” “I’m on it,” confirms they are on the site/page, or begins entering info).
+
+OR
+
+B) Time-bound plan (off-call)
+- Agent states a specific completion timeframe (same-day window or scheduled time), AND
+- Student/parent explicitly agrees to that timeframe (yes/okay/I will).
+
+If neither A nor B is fully satisfied → score 0.
+
+Notes
+- S1_3 is an absence check: score 1 ONLY if no prohibited guarantee language appears anywhere in agent statements (outcomes, aid, cost coverage, job/salary, graduation/completion, limited seats/urgency).
+- Do NOT use “qualify for / review what you qualify for / determined after FAFSA” statements as evidence for S1_3. Those statements support S3_4, not S1_3.
+- If any prohibited guarantee language appears in agent statements, score S1_3 = 0 and trigger red flag evaluation (do not infer).
+
+RED FLAG OVERRIDE (HARD RULE)
+If Red_Flag_YN = YES and Red_Flag_Type includes Financial Aid Misrepresentation or Cost Misleading, S1_3 must be scored 0. A call cannot simultaneously pass the no-guarantee check and carry a financial misrepresentation or cost misleading flag. These findings are mutually exclusive. Apply this override after completing the Red Flag step and before finalizing the output row.
+
+--------------------------------------------------
+
+STAGE 2 – APPLICATION CHECKLIST ITEMS (4)
+
+S2_1 Explicit action: Student was directed to the application portal or access method.
+S2_2 Explicit action: Required information or sections were explained (what to enter/provide).
+S2_3 Explicit action: Application submission was confirmed as completed:
+Score 1 ONLY if ONE of the following is explicitly present:
+- The student explicitly confirms the application is already submitted/complete, OR
+- The application is completed/submitted during the call (agent walks through to completion), OR
+- The call includes explicit completion language tied to the application workflow, such as the final screen confirming submission, the application being processed successfully, or equivalent confirmation that the application has been submitted, OR
+- The student reaches the Full Sail One welcome video or FSO account creation step during the call (see FSO Account Creation Exception below).
+
+Otherwise score 0.
+
+FSO ACCOUNT CREATION EXCEPTION
+If the student reaches the Full Sail One welcome video or account creation step during the call, the application is considered submitted regardless of whether FSO account creation was completed. The application is internally submitted at the point the student reaches the FSO registration step, even if the confirmation screen has not yet appeared. In these cases:
+- S2_3 = 1 (application submitted — evidenced by reaching the FSO registration step)
+- S2_4 = 0 (confirmation screen not verified if FSO account creation failed or was not completed)
+- FSO_Registration_Issue_YN = YES if FSO account creation was not completed during the call
+
+Do not require the &quot;App Processed Successfully&quot; screen to award S2_3 when FSO failure or interruption prevented the student from reaching that screen.
+
+S2_4 Explicit action: Submission confirmation evidence was verified:
+Score 1 ONLY if the agent or student explicitly references confirmation of submission, including at least one of the following:
+- confirmation screen
+- submitted status
+- confirmation email
+- final screen confirms application submitted
+- application processed successfully
+
+Note: If FSO account creation failed or was not completed, S2_4 must be 0 even if S2_3 = 1. The confirmation screen only appears after successful FSO account creation.
+
+Otherwise score 0.
+
+--------------------------------------------------
+
+STAGE 3 – FAFSA CHECKLIST ITEMS (4)
+
+S3_1 Explicit action: Student was directed to the FAFSA access path and correct starting point.
+Score 1 ONLY if the agent explicitly directs the student into the FAFSA workflow, including at least one of the following:
+- studentaid.gov
+- FAFSA Form / Complete the FAFSA Form
+- correct FAFSA year selection for the student’s start date
+- Login to Start / Create Account / FAFSA Account Recovery
+
+Score 0 if FAFSA is only described at a high level or mentioned as a future task without active workflow direction.
+
+S3_2 Explicit action: FAFSA initiation was functionally executed on-call (agent-led).
+Score 1 ONLY if:
+- The agent actively guides the student through FSA ID creation, FAFSA login, account recovery, or FAFSA access steps, AND
+- The student functionally reaches the FAFSA workflow (for example: inside the FAFSA access flow, selecting the FAFSA year, logging in, reaching the “Starting the FAFSA” page, or equivalent pre-form handoff point), AND
+- There is no unresolved system block preventing progression to that point.
+
+Score 0 if:
+- FAFSA is only explained but not actively initiated, OR
+- The student is told to do FAFSA later without agent-led workflow movement, OR
+- The only evidence is a verbal plan to complete FAFSA later, OR
+- An outage, login failure, or access issue prevents reaching the workflow handoff point.
+
+INTERRUPTED OR UNCONFIRMED EXECUTION (HARD RULE)
+The following do NOT satisfy S3_2:
+- Account creation that was reset, interrupted, or not confirmed as completed during the call
+- The agent directing the student toward FAFSA without the student confirming they reached the workflow handoff point
+- Partial navigation that stopped before the student reached the FAFSA starting point (student or parent selection page)
+
+Score 0 if the FAFSA initiation was attempted but interrupted, reset, or unconfirmed before the call ended.
+Score 1 only if the student explicitly confirms reaching the FAFSA workflow handoff point during the call.
+
+S3_3 Explicit action: FAFSA handoff/completion plan was secured.
+Score 1 ONLY if ONE of the following is explicitly present:
+
+A) FAFSA submitted/complete
+- FAFSA submission is explicitly confirmed as already submitted, OR
+- FAFSA is explicitly confirmed as submitted during the call.
+
+OR
+
+B) Scripted handoff path
+- The agent has actively progressed the student to the FAFSA workflow handoff point, AND
+- The agent explicitly states that the student will continue completing the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion that meets the scripted standard defined below, AND
+- The student explicitly agrees or acknowledges the plan.
+
+SHORT FOLLOW-UP REQUIREMENT (HARD RULE)
+The scripted standard for the follow-up expectation is a callback in approximately 30 minutes to 1 hour. This reflects the actual time required to complete the FAFSA and is the required agent behavior.
+
+Score S3_3 = 1 for the follow-up element ONLY if the agent commits to a callback within approximately 30 minutes to 1 hour of leaving the student at the FAFSA handoff point.
+
+NOT acceptable:
+- Tomorrow at any time — this is a script deviation regardless of whether a specific time is stated
+- Later today without a specific time — too vague to constitute a real completion plan
+- A week or any timeframe beyond same-day
+- Any language that does not commit to a near-term specific callback tied to FAFSA completion
+
+Note: The Campus Mentor handoff exception operates under its own rules and is not governed by the 30 minutes to 1 hour standard. See the Campus Mentor exception language below.
+
+Campus Mentor Handoff Exception (NARROW RULE)
+For campus students following the approved Campus Mentor handoff script, score S3_3 = 1 even if the original Admissions Representative does not personally schedule the short callback, ONLY if ALL are explicit in the transcript:
+- the student is clearly being routed into the Campus Mentor / campus team path,
+- the agent explicitly states that the Campus Mentor will follow up on FAFSA / next steps or be the student&#x27;s main point of contact,
+- the agent explicitly tells the student to continue working on FAFSA in the meantime,
+- and the handoff language reflects the approved campus script rather than a vague generic follow-up.
+
+Generic statements such as &quot;someone will call you,&quot; &quot;the team will reach out,&quot; or &quot;be on the lookout for a phone call&quot; do NOT qualify unless the Campus Mentor script conditions above are explicitly met.
+
+Score 0 if:
+- FAFSA is only introduced or encouraged, OR
+- The student is left to start FAFSA later without active initiation, OR
+- The agent does not explicitly state that they cannot remain on the phone for the government form portion, OR
+- No short follow-up expectation is secured after the handoff, OR
+- The follow-up plan is vague or not tied to FAFSA completion.
+
+S3_4 Explicit action: Aid determination expectations were clarified.
+
+Score 1 ONLY if the agent explicitly communicates both of the following:
+1) That the FAFSA must be completed or submitted first, AND
+2) That eligibility or aid amount will be determined or reviewed by the financial aid team after that submission or processing.
+
+Both elements must be present. One without the other does not satisfy this item.
+
+Scripted language that satisfies this item:
+- &quot;The first step to see what you may be eligible for is completing the FAFSA&quot;
+- &quot;Our financial aid team will be able to go over what you qualify for&quot;
+- &quot;Once we get the FAFSA on file our financial aid team will be able to see what options you would have&quot;
+- &quot;After you submit the FAFSA you will receive a letter showing your estimated aid&quot;
+- Any language that explicitly connects FAFSA completion to a subsequent financial aid review or determination
+
+NOT sufficient to satisfy this item:
+- &quot;For those who qualify&quot; — conditional language that satisfies S1_3 but does not explain the determination process
+- &quot;As long as you qualify&quot; — same as above
+- &quot;It can be fully covered with financial aid for those who qualify&quot; — Launch Box language, not a determination explanation
+- &quot;How we figure out what you are eligible for&quot; — too vague, does not reference FAFSA submission or a subsequent review
+- Any general reference to financial aid without connecting it to FAFSA completion and a subsequent determination step
+
+Score 0 if:
+- The agent only uses conditional qualifiers without explaining the determination process
+- Aid is guaranteed, implied as automatic, or determination timing is not clarified
+- The agent mentions FAFSA generally without connecting it to the determination of eligibility or amount
+
+--------------------------------------------------
+
+STAGE 4 – DOCUMENTS CHECKLIST ITEMS (4)
+
+S4_1 Explicit action: Student was directed to the portal or submission location for documents.
+S4_2 Explicit action: At least one specific required document was named.
+S4_3 Explicit action: Upload was confirmed or a clear upload plan was established.
+S4_4 Explicit action: A timeline was reinforced for document submission.
+
+--------------------------------------------------
+
+OUTPUTS EXPECTED (FOR SCORING RESOURCE)
+Binary item results (0 or 1) for each applicable item.
+Binary_Items_Met
+Binary_Items_Applicable
+
+--------------------------------------------------
+BINARY_ITEMS_APPLICABLE FIXED SUM RULE (HARD RULE)
+Binary_Items_Applicable is the fixed sum of checklist items for each detected stage only.
+Stage 1 = 5 items. Stage 2 = 4 items. Stage 3 = 4 items. Stage 4 = 4 items.
+Transcript length, repetition, or multiple discussions within a stage must NOT
+increase applicability beyond the stage&#x27;s defined item count.
+Total across all four stages = 17. This is the maximum possible value.
+
+BINARY_ITEMS_MISSED OUTPUT (HARD RULE)
+After scoring all applicable binary items, populate Binary_Items_Missed as follows:
+- List every applicable item that scored 0 using this exact format: [Item ID] [Short Label]
+- Separate multiple items with a semicolon and space
+- Output None ONLY if all applicable items scored 1 (Binary_Items_Met = Binary_Items_Applicable)
+- If Binary_Items_Met &lt; Binary_Items_Applicable, None is INVALID — list all missed items
+- Do not include items that were not applicable to this call
+- Do not include items that scored 1
+
+Exact labels to use for missed items:
+S1_1 Tuition Stated
+S1_2 Financial Aid Mentioned
+S1_3 No Guarantee Language
+S1_4 Application Requested
+S1_5 Application Next Step Secured
+S2_1 Application Portal Directed
+S2_2 Application Sections Explained
+S2_3 Application Submission Confirmed
+S2_4 Submission Evidence Verified
+S3_1 FAFSA Access Directed
+S3_2 FAFSA Initiation Executed
+S3_3 FAFSA Handoff Secured
+S3_4 Aid Determination Clarified
+S4_1 Document Portal Directed
+S4_2 Document Named
+S4_3 Upload Confirmed
+S4_4 Document Timeline Reinforced
+
+Example: If S3_3 and S3_4 scored 0 on a call with Stages 1-3 present:
+Binary_Items_Missed = S3_3 FAFSA Handoff Secured; S3_4 Aid Determination Clarified
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------</pre>
+</section>
+<section>
+<h2>Binary Compliance Scoring – Interview v1.2</h2>
+<pre>Binary Compliance Scoring
+Version 1.2 – Weighted 40 Points, Call-Subtype Aware
+
+PURPOSE
+Convert binary checklist results into Binary_Compliance_Score (0 to 40 points).
+
+INPUTS REQUIRED
+Call_Subtype
+Progression_Ceiling
+Stage flags (Stage 1–4)
+Binary checklist item results (0/1)
+
+OUTPUT
+Binary_Items_Met
+Binary_Items_Applicable
+Binary_Compliance_Rate
+Binary_Compliance_Score (0 to 40)
+
+GLOBAL SAFEGUARDS
+- No inference allowed.
+- Default to 0 for any unclear item.
+BINARY PROOF-LOCK (HARD RULE)
+- Score a binary checklist item as 1 ONLY when there is explicit transcript evidence for that specific item:
+  (a) the agent directly instructs the action, OR
+  (b) the agent explicitly confirms completion, OR
+  (c) the agent sets a specific time-bound plan and the student/parent verbally agrees.
+- If evidence is missing, ambiguous, implied, or based only on prior completion claims without verification, score 0.
+- This rule affects binary item scoring ONLY.
+  Do NOT change Stage flags, Starting_Stage, Progression_Ceiling, or applicability based on missing binary evidence.
+- Only include items from applicable stages.
+- Round final score only (do not round the rate mid-calculation).
+- For access/execution items (e.g., FAFSA portal access), the action must be functionally successful. If the transcript shows an outage/maintenance block preventing progress, score 0.
+
+APPLICABLE STAGES DETERMINATION
+
+Authority Rule (HARD)
+- Binary stage applicability must follow Admissions_QPI_Source_Binary_Compliance_Checklist_v1.2.txt and Stage Detection output.
+- A stage may contribute binary items ONLY if that stage is marked PRESENT = YES by the Stage Detection source.
+- Progression_Ceiling helps define the expected workflow range, but it does NOT by itself make a stage binary-applicable if the corresponding stage flag is NO.
+
+Interview Calls
+- Include Stage 1 binary items only if Stage_Interview_YN = YES.
+- Include Stage 2 binary items only if Stage_Application_YN = YES.
+- Include Stage 3 binary items only if Stage_FAFSA_YN = YES.
+- Include Stage 4 binary items only if Stage_Documents_YN = YES.
+
+Follow-Up Calls
+- Include binary items only for stages marked PRESENT = YES in this call.
+- Do not include a stage only because it matches Progression_Ceiling if the corresponding stage flag is NO.
+
+If no later stages are marked YES, score only the stages that are actually present.
+If all stage flags are unclear, default to Stage 1 only.
+
+CALCULATION
+
+Binary_Items_Met
+Sum of all scored 1 values across applicable stages only.
+
+Binary_Items_Applicable
+Count of all checklist items across applicable stages only.
+
+Binary_Compliance_Rate
+Binary_Items_Met / Binary_Items_Applicable
+
+Binary_Compliance_Score
+Binary_Compliance_Rate * 40
+
+PRECISION RULE (HARD — NEW)
+Calculate Binary_Compliance_Score using full-precision division.
+Do NOT truncate or round Binary_Compliance_Rate before multiplication.
+Apply rounding only once, at the final result.
+CORRECT:   14 / 17 = 0.82352... × 40 = 32.94... → round to 33
+INCORRECT: 14 / 17 = 0.82 (truncated) × 40 = 32.8 → truncated to 32
+
+ROUNDING
+Round Binary_Compliance_Score to nearest whole number using standard rounding (0.5 rounds up).
+Binary_Compliance_Rate should be reported as a decimal rounded to 2 places.
+
+Rounding examples:
+- 14/17 = 0.8235 → rate = 0.82 → 0.82 × 40 = 32.8 → Binary_Compliance_Score = 33
+- 15/17 = 0.8824 → rate = 0.88 → 0.88 × 40 = 35.2 → Binary_Compliance_Score = 35
+- 16/17 = 0.9412 → rate = 0.94 → 0.94 × 40 = 37.6 → Binary_Compliance_Score = 38
+- 17/17 = 1.00 → rate = 1.00 → 1.00 × 40 = 40.0 → Binary_Compliance_Score = 40
+
+HARD RULE: Do not truncate. Do not floor. Round to nearest whole number only.
+
+CAPS
+Maximum Binary_Compliance_Score = 40
+Minimum Binary_Compliance_Score = 0
+
+DRIFT CONTROL
+- If Binary_Items_Applicable is 0 (should not occur), set Binary_Compliance_Score = 0 and Binary_Compliance_Rate = 0.00.
+- Default to the lower score when applicability is unclear.
+
+</pre>
+</section>
+<section>
+<h2>Behavior Matrix – Interview – Global Rules v1.7</h2>
+<pre>Behavior Matrix and Opportunity Taxonomy
+Version 1.7 – Adds Score 1 Absence Confirmation Requirement, 5-Anchor Evidence Gate, Qualifying Quote Standard
+
+CHANGE LOG FROM v1.6
+1) Score 1 anchor: Added ABSENCE CONFIRMATION REQUIREMENT — before assigning score 1, the evaluator must identify the expected section, quote agent language, and confirm zero attempt. Validated against live transcripts. Fixes batch pattern of Risk Prevention = 1 on every call.
+2) Score 1 anchor: Added explicit clarification that absent is not the same as ambiguous or incomplete. Imperfect or surface-level execution = 3, not 1.
+3) Score 5 anchor: Added 5-ANCHOR EVIDENCE GATE — before assigning score 5, two distinct qualifying quotes from different sections must be identified. Moved from master prompt into this source where it belongs as a definition rule.
+4) Score 5 anchor: Added QUALIFYING QUOTE STANDARD — closed questions, acknowledgment phrases, and language already excluded by global rules do not count as qualifying evidence.
+
+
+N/A OPPORTUNITY SUPPRESSION (HARD RULE)
+If a behavior category is marked N/A due to stage progression rules, it MUST NOT
+appear in Opportunity_1, Opportunity_2, or Opportunity_3 regardless of its score.
+Only categories that were scored (1, 3, or 5) are eligible for Opportunity fields.
+When determining opportunities, exclude all N/A categories first, then select the
+lowest-scoring eligible categories in order.
+
+PURPOSE
+This source provides a single behavior matrix used for:
+1) Behavioral scoring (weighted 40 percent of total QPI)
+2) Opportunity identification (top 3, unscored)
+3) Deterministic Lowest_Behavior_Category selection for output schema reporting
+
+GLOBAL RULES (ANTI-DRIFT)
+- Score 1, 3, or 5 only. No 2s or 4s.
+- Score only behaviors that are verifiably present in the transcript.
+- A score of 5 requires at least two distinct explicit examples in the call (unless otherwise specified in a category’s 5-anchor).
+- If evidence is limited, ambiguous, or only occurs once -&gt; default to 3.
+- If absent -&gt; score 1.
+- Opportunities must use the same labels as this matrix. No custom opportunity names allowed.
+- Lowest_Behavior_Category must use the same labels as this matrix. No custom labels.
+
+EVIDENCE REQUIREMENTS BY SCORE LEVEL (HARD RULES — APPLY TO EVERY CATEGORY)
+
+Score 5 — STRONG:
+The behavior must be demonstrated with multiple distinct examples drawn from different stages of the call. Two quotes from the same exchange or the same section of the call do not constitute consistent demonstration. To award a 5, identify at least two examples that occur at meaningfully different points in the transcript — for instance, one from the interview stage and one from the financial or application stage. If all evidence comes from a single moment or a single section, the score must not exceed 3. Category-specific 5-anchors defined below may impose additional requirements beyond this global rule.
+
+5-ANCHOR EVIDENCE GATE (HARD RULE — NEW IN v1.7)
+Before finalizing any category score of 5, internally confirm:
+- Quote 1: exact agent words from one section of the call that satisfy the 5-anchor
+- Quote 2: exact agent words from a meaningfully different section of the call that satisfy the 5-anchor
+Both quotes must independently satisfy the specific 5-anchor criteria for that category.
+If you cannot identify two qualifying quotes, the score must be 3 (if any evidence exists) or 1 (if completely absent).
+Do not award 5 based on general call quality, agent effort, task completion, or the fact that other categories scored 5.
+
+QUALIFYING QUOTE STANDARD (HARD RULE — NEW IN v1.7)
+A quote only qualifies as 5-anchor evidence if it directly and substantively demonstrates the specific behavior being evaluated. The following do NOT qualify regardless of context:
+- Closed questions (&quot;Did you...&quot;, &quot;Are you...&quot;, &quot;Have you...&quot;) for categories requiring open-ended engagement
+- Acknowledgment phrases (&quot;Perfect&quot;, &quot;Awesome&quot;, &quot;That sounds great&quot;, standalone affirmations without substantive follow-through)
+- Any language already excluded by the global Acknowledgment Phrases rule below
+- A quote already cited as the first qualifying quote — both quotes must be distinct and from different sections
+
+Score 3 — PRESENT BUT INCOMPLETE:
+The behavior occurred but was limited to one section of the call, was inconsistent across the call, or was present in form but lacked depth or follow-through. This is the correct score when the behavior was attempted but did not meet the full standard for a 5. Do not skip this level. If evidence is thin, drawn from only one moment, or does not meet the category-specific 5-anchor, score 3 not 5.
+
+Score 1 — ABSENT:
+The behavior did not occur in the transcript. No evidence of any attempt. If you can find any evidence of the behavior at all, do not score 1 — use 3 for limited evidence. Score 1 only when the behavior is completely absent.
+
+ABSENCE CONFIRMATION REQUIREMENT (HARD RULE — NEW IN v1.7)
+Before assigning a score of 1 to any behavior category:
+1) Identify the section of the call where this behavior would be expected to occur based on the call type and stages present.
+2) Quote the agent language that occurred in that section.
+3) Confirm that language contains zero evidence of any attempt — not imperfect execution, not surface-level execution, but zero attempt of any kind anywhere in the call.
+
+Absent is not the same as ambiguous. Absent is not the same as incomplete.
+- Ambiguous execution = score 3
+- Incomplete execution = score 3
+- Surface-level attempt = score 3
+- Score 1 only when no attempt of any kind occurred anywhere in the call.
+
+Do not treat imperfect or incomplete execution as absence.
+Conservative scoring means do not award credit without evidence.
+It does not mean suppress or ignore evidence that clearly exists.
+If any evidence of the behavior exists in the transcript — even surface-level — the score must be 3, not 1.
+
+CRITICAL RULE — DO NOT DEFAULT TO 5
+The default score is NOT 5. Each category must be evaluated independently against the evidence in this specific transcript. Do not award 5 simply because other categories scored 5. Do not award 5 because the call went well overall. Do not award 5 because the agent was generally competent. Award 5 only when multiple distinct examples from different parts of the call confirm consistent demonstration of the specific behavior being evaluated.
+
+ACKNOWLEDGMENT PHRASES ARE NOT BEHAVIORAL EVIDENCE
+The following types of agent language are acknowledgment phrases and do not constitute evidence for any behavioral category:
+- Generic affirmations: &quot;Very cool&quot;, &quot;Awesome&quot;, &quot;Perfect&quot;, &quot;Great&quot;, &quot;No worries&quot;, &quot;Absolutely&quot;
+- Brief agreement: &quot;I hear you&quot;, &quot;I got you&quot;, &quot;Got it&quot;, &quot;Okay&quot;
+- Filler encouragement: &quot;That&#x27;s great&quot;, &quot;Love that&quot;, &quot;Sounds good&quot;
+These phrases may appear throughout the call but cannot be cited as evidence for any behavioral score. Only substantive agent language that directly demonstrates the specific behavior being evaluated qualifies as evidence.
+
+APPLICABILITY RULES
+- Stage Detection determines which stage behavior categories are applicable for scoring.
+- Interview calls: score Stage 1 behaviors if Stage 1 is present. Score later-stage behaviors only if those stages are present.
+- Follow-Up calls: score only the stage(s) that are present in the call, regardless of prior stage completion.
+- Do not penalize a follow-up for missing Stage 1 behaviors if Stage 1 is not present.
+
+Applicability Clarification
+- A stage marked PRESENT = YES means that stage occurred and its related behavior categories may be evaluated.
+- A stage marked PRESENT = NO means that stage behavior categories are not applicable and must be excluded.
+- Behavior scoring evaluates quality of execution within an applicable stage.
+- Behavior scoring does NOT determine whether the end goal of the stage was successfully achieved for progression credit.
+CONTROLLED DISCOVERY APPLICABILITY (INTERVIEW-PRIMARY RULE)
+- Controlled Discovery is REQUIRED only when the call is functionally an Interview (Stage 1 only).
+- If the call progresses into Stage 2, Stage 3, or Stage 4 in this interaction, Controlled Discovery is NOT REQUIRED (defaults to N/A) unless the agent performs discovery.
+
+Rules:
+1) Interview-Primary Requirement:
+   - If Stage_Interview_YN = YES AND Stage_Application_YN = NO AND Stage_FAFSA_YN = NO AND Stage_Documents_YN = NO:
+     -&gt; Controlled Discovery is Applicable and must be scored 1/3/5 using the existing anchors.
+
+2) Multi-Stage or Execution Call (Interview + later stages):
+   - If Stage_Interview_YN = YES AND (Stage_Application_YN = YES OR Stage_FAFSA_YN = YES OR Stage_Documents_YN = YES):
+     -&gt; Controlled Discovery = N/A by default.
+     -&gt; Exception: If the agent meets Controlled Discovery Path A or Path B in THIS call, score it normally (1/3/5) instead of N/A.
+
+3) If Stage_Interview_YN = NO:
+   -&gt; Controlled Discovery = N/A.
+
+N/A HANDLING
+- Any category set to N/A must be excluded from:
+  - Behavioral scoring totals and applicable points
+  - Lowest_Behavior_Category selection
+  - Opportunity_1/2/3 eligibility
+
+OUTPUT EXPECTATION
+Each scored category results in a 1/3/5 value. Unscored opportunity selection is derived from the same categories.
+Lowest_Behavior_Category is selected deterministically from the same scored categories using the tie-break rule below.
+CATEGORY DEFINITIONS
+All 13 Interview behavioral category definitions, scoring anchors, and clarifications
+are in behavior-matrix-interview-categories.html.
+</pre>
+</section>
+<section>
+<h2>Behavior Matrix – Interview – Category Anchors v1.7</h2>
+<pre>Behavior Matrix – Interview – Categories
+Version 1.7 – Clarified anchors for Rapport, Discovery, Financial Clarity, Risk Prevention, Assumptive Leadership, Technical Guidance
+
+IMPORTANT: This file contains category definitions and scoring anchors only.
+Global rules, evidence requirements, N/A rules, and opportunity selection rules
+are in behavior-matrix-interview-rules.html and must be applied alongside this file.
+
+--------------------------------------------------------------------
+
+STAGE 1 – INTERVIEW
+
+1) Rapport Development
+Definition
+Builds connection and trust while maintaining a professional, student-centered conversation.
+Evidence indicators
+- Uses student name naturally
+- Reflects or validates student statements
+- Establishes supportive tone without sounding scripted
+Scoring anchors
+5 = Two or more empathy/validation moments AND at least one personalized tie-back to student goals.
+3 = At least one rapport behavior present, but inconsistent or surface-level.
+1 = Transactional, scripted, or minimal connection effort.
+Clarification — Empathy/Validation Moment Definition
+An empathy/validation moment must explicitly acknowledge the student&#x27;s feelings, goals,
+or concerns using original phrasing. Generic affirmations (&quot;awesome,&quot; &quot;great,&quot; &quot;perfect,&quot;
+&quot;absolutely&quot;) do not qualify. Simple repetition of the student&#x27;s words without validation
+does not qualify. The language must demonstrate the agent received and responded to what
+the student shared.
+
+2) Controlled Discovery
+Definition
+Asks purposeful questions and follows up to understand goals, motivation, constraints, and fit.
+Evidence indicators
+- Open-ended questions about goals and motivations
+- Follow-up probing (why, tell me more, what led you to)
+- Summarizes or connects goals to program value
+
+Scoring anchors
+5 = Meets Path A or Path B.
+
+Path A (question-driven):
+- At least 2 open-ended discovery questions AND
+- At least 1 follow-up probe AND
+- At least 1 explicit tie-back connecting the student’s goal/motivation/barrier to program fit or the next step.
+
+Path B (context volunteered by student):
+- The student clearly states goals/motivation/barriers without being prompted AND
+- The agent provides an explicit summary of what the student shared AND
+- The agent provides at least 1 explicit tie-back connecting that information to program fit or the next step.
+
+3 = Some discovery occurs, but Path A and Path B are not fully met (for example: mostly closed questions, no follow-up probe, or no tie-back).
+1 = Little to no discovery; agent does not seek or use student goals/motivation/barriers.
+Clarification — Score 1 Boundary
+Score 1 ONLY if zero open-ended discovery questions occur AND zero goal/motivation/barrier
+references appear anywhere in the call. If even one open-ended question or one reference
+to student goals exists, score 3, not 1.
+
+3) Financial Clarity (Interview)
+Definition
+Sets accurate expectations around tuition and the financial process without guarantees or avoidance.
+Evidence indicators
+- Addresses tuition or cost expectations accurately when relevant
+- Introduces FAFSA/aid process accurately at a high level when relevant
+- Avoids guarantees, minimization, or evasive responses
+Scoring anchors
+5 = Financial expectations explained clearly AND confirms student understanding (verbal check-in) AND no guarantee language.
+3 = Financial topics mentioned but incomplete OR no confirmation of understanding.
+1 = Avoids/deflects improperly, unclear tuition messaging, or any misleading framing.
+Clarification — Confirmation of Understanding
+Confirmation requires the student to explicitly affirm comprehension tied to a specific
+concept — not generic acknowledgment. Examples that qualify: student restates what they
+understood (&quot;so it covers X&quot;), student asks a follow-up question demonstrating engagement,
+student explicitly confirms (&quot;yes, that makes sense&quot; tied to a specific point). A standalone
+&quot;okay,&quot; &quot;got it,&quot; or &quot;yep&quot; without connection to a specific concept does not constitute
+confirmation.
+
+4) Risk Prevention (Interview)
+Definition
+Prevents financial aid misunderstandings and compliance risk during initial financial discussion.
+Evidence indicators
+- Explicitly avoids guarantee language about aid amounts or eligibility
+- Sets expectation that awards/eligibility are determined later
+- Prepares student for at least one common financial aid blocker when relevant (access, timing, documentation)
+Scoring anchors
+5 = Sets determination expectations clearly AND avoids guarantees AND prepares for at least one common blocker.
+3 = Accurate but surface-level; limited prevention (no blockers or weak expectation setting).
+1 = Any guarantee language or minimizing financial aid process.
+Clarification — Surface-Level Definition
+Surface-level prevention means the agent avoids guarantee language but does not address
+timing, documentation, or eligibility uncertainty. To score above 3, the agent must
+explicitly address at least one of: (1) timing — when eligibility or award amounts are
+determined, (2) documentation — what the student must provide for FAFSA or aid processing,
+or (3) eligibility uncertainty — that outcomes vary based on individual circumstances.
+
+5) Assumptive Leadership
+Definition
+Uses confident, forward-moving language that keeps the student progressing, including when the student expresses hesitation, wants to shorten the call, or attempts to disconnect before the workflow is complete.
+
+Evidence indicators
+- Uses “next step” language (we will, next, let’s do this now)
+- Maintains conversational control and direction
+- Limits unnecessary optional phrasing
+- Redirects hesitation, time pressure, or disconnect attempts into a narrowed but forward-moving plan
+- Uses confident deflection language that keeps the student engaged long enough to secure the next appropriate step
+
+Scoring anchors
+5 = Two or more assumptive/forward statements AND maintains control through transitions, including at least one effective redirect of hesitation, time pressure, or disconnect resistance when relevant.
+3 = Some leadership language is present, but it is inconsistent, overly optional, or only partially effective in keeping the call moving forward.
+1 = Passive tone; student drives the call; agent repeatedly defers without attempting to progress, OR the agent allows hesitation/disconnect resistance to end forward movement without a meaningful redirect attempt.
+Clarification — Redirect Requirement
+The redirect requirement in the 5-anchor applies only when the transcript contains explicit
+hesitation, time pressure, or disconnect cues from the student. If no such cues appear,
+the 5-anchor redirect element is satisfied by default — do not penalize the agent for
+absence of a situation that did not occur. Score based on forward-moving assumptive
+language alone in those cases.
+
+6) Progression Control
+Definition
+Secures the next required step with a clear action and timeline.
+
+Evidence indicators
+- Explicit next step identified (apply, FAFSA, docs, follow-up)
+- Time-bound commitment or scheduled plan
+- Confirms what will happen next
+- Student agreement or acknowledgement is explicit when required
+
+Scoring anchors
+5 = Clear next step + TIME-BOUND commitment + student agreement.
+    - TIME-BOUND means a specific date/time or deadline (today/by tomorrow/at 3pm), OR the next step is completed in-call.
+    - Student agreement must be explicit (yes/okay/that works/I’ll do that).
+
+3 = Clear next step stated, but the timeline is non-time-bound (e.g., “when you can,” “soon,” “email me when done”) OR student agreement is not explicit.
+
+1 = No clear next step, no timeline, or call ends without a progression plan.
+
+Clarification
+- Assumptive Leadership and objection handling may help keep the call moving, but they do NOT by themselves satisfy Progression Control.
+- To score Progression Control, the call must still result in a clearly identified next step and a secured plan at the standard required by the anchors above.
+- A successful redirect of hesitation, time pressure, or disconnect resistance without a secured next-step plan should support Assumptive Leadership, not Progression Control.
+--------------------------------------------------------------------
+
+STAGE 2 – APPLICATION
+
+7) Technical Guidance Precision (Application)
+Definition
+Gives clear, step-by-step application guidance and resolves obstacles.
+Evidence indicators
+- Walks through steps in order (where to go, what to click/enter)
+- Troubleshoots barriers
+- Confirms what the student will do next
+Scoring anchors
+5 = Step-by-step guidance AND addresses a barrier OR confirms completion plan explicitly.
+3 = General instructions given but lacks structure or confirmation.
+1 = Vague, incorrect, or confusing guidance.
+Clarification — Step-by-Step Definition
+Step-by-step guidance requires at least two ordered, sequential actions directed to the
+student (e.g., &quot;go to the app store, download Full Sail One, then click the profile button&quot;).
+A single directional statement or a general description of the process does not constitute
+step-by-step guidance and should be scored 3.
+
+8) Accountability Setting (Application)
+Definition
+Creates ownership and urgency to complete the application.
+
+Evidence indicators
+- Reinforces importance of completing
+- Secures time-bound commitment
+- Sets expectations for follow-up
+- Confirms completion when completed in-call
+
+Scoring anchors
+5 = Application is completed and submitted during the call (proof-locked).
+    - Must include explicit confirmation of submission/completion (agent or student/parent), e.g., &quot;submitted&quot;, &quot;hit submit&quot;, &quot;confirmation page&quot;, &quot;application completed.&quot;
+    - If submission is blocked (verification code not received, portal error, FSO registration interruption), score cannot be 5.
+
+3 = Time-bound deadline + student agreement + follow-up expectation, but application is NOT completed on-call.
+    - Deadline must be specific (today/by tomorrow/at 3pm/within 1 hour).
+    - Follow-up expectation must be explicit (agent states when/how they will reconnect OR what action triggers follow-up, e.g., &quot;text/email me once complete&quot;).
+    - Note: Time-bound commitment cannot score 5 unless submission is completed during the call.
+
+1 = Passive encouragement only; no specific deadline, no explicit follow-up expectation, no ownership established.
+--------------------------------------------------------------------
+
+STAGE 3 – FAFSA
+
+9) Process Clarity (FAFSA)
+Definition
+Explains FAFSA steps and requirements clearly without overpromising.
+Evidence indicators
+- Directs to correct access path (studentaid.gov)
+- Explains FSA ID at a basic level when relevant
+- Clarifies what the student must do next
+Scoring anchors
+5 = Clear steps + next action plan + VERIFIED understanding.
+    - VERIFIED understanding requires the student to clearly confirm the next action (e.g., “Yes, I’m going to submit it today,” or repeats what they will do next).
+    - A simple “okay” without clarity does not count as verified understanding.
+3 = Clear explanation is provided, but next action plan is vague OR understanding is not verified.
+Clarification
+- Giving the correct FAFSA year, link, or general next step does NOT by itself satisfy the 5-anchor.
+- To score 5, the agent must provide clear steps, a clear next action plan, AND verified understanding at the standard defined above.
+- A simple acknowledgment, generic “okay,” or broad agreement does NOT count as verified understanding.
+1 = Incorrect, vague, or misleading explanation.
+
+10) Risk Prevention (FAFSA)
+Definition
+Prepares student for common FAFSA issues and avoids compliance risk.
+Evidence indicators
+- Avoids guarantee language about awards
+- Mentions common blockers (docs, dependency, timing) when relevant
+- Sets expectation that eligibility/amount is determined later
+Scoring anchors
+5 = Explicitly sets determination expectation + avoids guarantees + prepares for at least one common blocker.
+3 = Accurate but surface-level; limited prevention.
+1 = Any guarantee language or minimizing FAFSA process.
+Clarification — Surface-Level Definition
+Surface-level prevention means the agent avoids guarantee language but does not address
+timing, documentation, or eligibility uncertainty specific to FAFSA. To score above 3,
+the agent must explicitly address at least one of: (1) timing — when FAFSA determines
+eligibility or award amounts, (2) documentation — what the student must have ready
+(tax info, FSA ID, dependency status), or (3) eligibility uncertainty — that aid amounts
+vary and are not guaranteed.
+
+11) Accountability Setting (FAFSA)
+Definition
+Secures a clear ownership plan for FAFSA completion and establishes expectations for what happens next.
+
+Evidence indicators
+- Establishes a timeline or immediate workflow expectation for FAFSA completion
+- Secures student commitment or acknowledgement
+- Clarifies follow-up expectations
+- When applicable, executes the scripted FAFSA handoff appropriately by leaving the student at the FAFSA workflow handoff point and setting expectations for continued completion and follow-up
+
+Scoring anchors
+5 = ONE of the following is explicitly present:
+
+A) TIME-BOUND completion path
+- Specific deadline + student agreement + follow-up expectation tied to FAFSA completion.
+- Deadline must be specific (today/by tomorrow/at 3pm) OR FAFSA is completed in-call.
+- Follow-up expectation must be explicit (agent states when/how they will reconnect or what action triggers follow-up).
+
+OR
+
+B) Scripted FAFSA handoff path
+- The agent actively progresses the student to the FAFSA workflow handoff point, AND
+- The agent explicitly states that the student will continue the government form independently because the agent cannot remain on the phone for that portion, AND
+- The agent secures a short follow-up expectation tied to FAFSA completion, AND
+- The student explicitly agrees or acknowledges the plan.
+
+Campus Mentor Handoff Clarification
+- For campus students following the approved Campus Mentor handoff script, the 5-anchor scripted FAFSA handoff path may still be satisfied even if the original Admissions Representative does not personally schedule the short callback, provided the transcript explicitly shows:
+  - Campus Mentor / campus-team handoff as the immediate next-step owner,
+  - Campus Mentor framed as the main point of contact going forward,
+  - and explicit instruction for the student to continue FAFSA in the meantime.
+- This exception applies only when the campus handoff is clearly script-driven and immediate, not when the follow-up is generic, indefinite, or assigned to an unspecified team member.
+
+3 = FAFSA ownership is established, but the completion path is incomplete at the 5-anchor level.
+Examples:
+- FAFSA completion is encouraged and the next step is clear, but the timeline is vague/non-time-bound, OR
+- follow-up expectation is present but not short/specific enough for the scripted handoff 5-anchor, OR
+- the student acknowledges the plan generally, but explicit agreement or timing is weaker than required for a 5.
+
+1 = No meaningful ownership plan for FAFSA completion.
+Examples:
+- FAFSA is mentioned only as a future task,
+- no deadline or immediate workflow expectation is established,
+- no real follow-up expectation is set,
+- or the agent leaves FAFSA as a general suggestion without securing student ownership of the next step.
+
+Clarification
+- A valid FAFSA handoff should not be scored as a 1 if the agent clearly advances the student into the FAFSA process and establishes what happens next, but falls short of the strict 5-anchor timing requirements.
+- In those cases, score 3 unless the transcript clearly meets the 5-anchor path above.
+- A specific callback time does NOT by itself make the FAFSA completion path time-bound.
+To qualify for the 5-anchor time-bound path, the student’s own FAFSA completion expectation must also be specific and time-bound.
+
+--------------------------------------------------------------------
+
+STAGE 4 – DOCUMENTS
+
+12) Process Clarity (Documents)
+Definition
+Explains required documents and how to submit them clearly.
+Evidence indicators
+- Names at least one specific document
+- Explains where/how to upload or submit
+- Confirms student understanding
+Scoring anchors
+5 = Names specific document(s) + explains submission path + confirms understanding/next action.
+3 = Mentions documents/portal but lacks specificity or confirmation.
+1 = Vague instructions; student left unclear on what/where/how.
+
+13) Accountability Setting (Documents)
+Definition
+Secures a time-bound plan for document submission.
+Evidence indicators
+- Sets timeline expectation
+- Secures commitment
+- Clarifies follow-up expectations
+Scoring anchors
+5 = Timeline + commitment + follow-up expectation.
+3 = Encourages completion but timeline vague.
+1 = No timeline or accountability.
+
+--------------------------------------------------------------------
+
+LOWEST_BEHAVIOR_CATEGORY SELECTION RULES (DETERMINISTIC)
+Use this section to determine:
+- Lowest_Behavior_Category
+- Lowest_Behavior_Score
+
+OPPORTUNITY ELIGIBILITY GATE (HARD RULE)
+- Opportunities may ONLY be selected from behavior categories scored 1 or 3.
+- A category scored 5 is NEVER eligible to be an Opportunity.
+- If no categories are scored 1 or 3, then Opportunity_1 = None, Opportunity_2 = None, Opportunity_3 = None.
+- If a selected Opportunity does not have a score of 1 or 3, replace it with the next eligible category by priority order. If none exist, output None.
+
+Step 1: Build eligible scored category list
+- Include all applicable behavior categories that were scored for this call.
+- Exclude unscored categories from stages that were not present.
+
+Step 2: Determine Lowest_Behavior_Score
+- Lowest_Behavior_Score is the lowest numeric score among eligible scored categories.
+- Allowed values remain 1, 3, or 5.
+
+Step 3: Determine Lowest_Behavior_Category
+- Select the category or categories tied at Lowest_Behavior_Score.
+- If only one category is tied, output that label.
+- If multiple categories are tied, select the highest-priority tied category using the fixed priority order below.
+
+Fixed Priority Order for tie-breaks
+Progression Control
+Assumptive Leadership
+Accountability Setting (Application)
+Accountability Setting (FAFSA)
+Accountability Setting (Documents)
+Controlled Discovery
+Rapport Development
+Financial Clarity (Interview)
+Process Clarity (FAFSA)
+Process Clarity (Documents)
+Risk Prevention (Interview)
+Risk Prevention (FAFSA)
+Technical Guidance Precision (Application)
+
+Step 4: Output rule
+- Lowest_Behavior_Category must be exactly one label from this matrix.
+- Do not output multiple labels.
+- Do not output a custom label.
+
+--------------------------------------------------------------------
+
+OPPORTUNITY SELECTION RULES (UNSCORED)
+Always output up to three Opportunities using the labels above.
+No custom opportunity names allowed.
+
+Opportunity Selection Decision Tree (Deterministic)
+
+Step 1: Build candidate list
+- Include any behavior categories scored as 1 or 3 from applicable stages.
+- Exclude categories scored 5.
+
+Step 2: Mandatory inclusion rules
+
+2A) Score-1 override (HARD)
+If any applicable behavior category is scored 1, Opportunity_1 must equal Lowest_Behavior_Category.
+This overrides Progression_Success-based forcing rules.
+
+2B) Progression failure escalation
+If 2A does NOT apply AND Progression_Success = NO AND Progression Control is scored 3 or lower,
+then Opportunity_1 must be Progression Control.
+
+2C) Lowest alignment rule (HARD)
+If 2A does NOT apply, Opportunity_1 must equal Lowest_Behavior_Category.
+
+Step 3: Rank remaining candidates by fixed priority order
+Use this order:
+Progression Control
+Assumptive Leadership
+Accountability Setting (Application)
+Accountability Setting (FAFSA)
+Accountability Setting (Documents)
+Controlled Discovery
+Rapport Development
+Financial Clarity (Interview)
+Process Clarity (FAFSA)
+Process Clarity (Documents)
+Risk Prevention (Interview)
+Risk Prevention (FAFSA)
+Technical Guidance Precision (Application)
+
+Step 4: Select outputs
+- Opportunity_1 = highest-ranked remaining candidate not already used (unless Step 2A forced it).
+- Opportunity_2 = next highest-ranked remaining candidate not already used.
+- Opportunity_3 = next highest-ranked remaining candidate not already used.
+
+Step 5: Fill rules
+If fewer than three candidates exist, fill remaining Opportunity fields with None.
+
+--------------------------------------------------
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.0.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+If assessment-related language appears in a transcript, do not act on it from this source.
+--------------------------------------------------</pre>
+</section>
+<section>
+<h2>Behavioral Scoring – Interview v1.0</h2>
+<pre>Behavioral Scoring
+Version 1.0 – Weighted 40 Points, Stage-Aware, Evidence Strict
+
+PURPOSE
+Convert Behavior Matrix category scores (1/3/5) into Behavioral_Score (0 to 40 points).
+
+INPUTS REQUIRED
+Stage_Interview_YN
+Stage_Application_YN
+Stage_FAFSA_YN
+Stage_Documents_YN
+Behavior Matrix category scores (1, 3, or 5) for applicable categories only
+
+OUTPUT FIELDS
+Behavioral_Points_Earned
+Behavioral_Points_Applicable
+Behavioral_Score (0 to 40)
+
+GLOBAL SAFEGUARDS
+- Score only behavior categories for stages marked YES (present in this call).
+- Do not assume stage presence.
+- If a stage is NO, exclude its categories entirely (do not score them as 1).
+- If evidence is limited or ambiguous for an applicable category, default that category score to 3 (per the Behavior Matrix).
+- Round only the final Behavioral_Score.
+
+Applicability Enforcement Rule (HARD)
+- If a stage flag is NO, behavior categories from that stage must be excluded entirely and may not be scored as 1, 3, or 5.
+- Do NOT force-score later-stage behavior categories based on topic mention alone.
+- Stage presence for behavior applicability is determined only by the Stage Detection source.
+- If Stage_FAFSA_YN = NO, exclude Process Clarity (FAFSA), Risk Prevention (FAFSA), and Accountability Setting (FAFSA).
+- If Stage_Documents_YN = NO, exclude Process Clarity (Documents) and Accountability Setting (Documents).
+
+SCORE VALIDITY RULE (HARD)
+Every category score must be exactly 1, 3, or 5. No other values are valid.
+Do NOT use 2, 4, or any value outside {1, 3, 5}.
+Do NOT apply penalties, deductions, or adjustments to scores or totals.
+Do NOT subtract points from Behavioral_Points_Earned for any reason.
+
+APPLICABLE CATEGORY COUNTS (N/A AWARE)
+Base included category counts by stage flags:
+- If Stage_Interview_YN = YES: include 6 Interview categories (5 if Controlled Discovery = N/A)
+- If Stage_Application_YN = YES: include 2 Application categories
+- If Stage_FAFSA_YN = YES: include 3 FAFSA categories
+- If Stage_Documents_YN = YES: include 2 Documents categories
+
+EXPECTED TOTAL COUNTS (HARD REFERENCE — verify your count before scoring)
+All 4 stages, CD N/A (any stage beyond 1 present): 5+2+3+2 = 12 cats, max = 60 pts
+All 4 stages, CD applicable (Stage 1 only):         6+2+3+2 = 13 cats, max = 65 pts
+Stages 1-3, CD N/A:                                 5+2+3   = 10 cats, max = 50 pts
+Stages 1-2, CD N/A:                                 5+2     =  7 cats, max = 35 pts
+Stage 1 only, CD applicable:                         6       =  6 cats, max = 30 pts
+If your count differs from these, stop and recount before proceeding.
+
+N/A OVERRIDE RULE
+- If any behavior category is explicitly set to N/A by the Behavior Matrix applicability rules, it MUST be excluded from included category counts.
+- Behavioral_Points_Applicable must be calculated using the final included count AFTER removing N/A categories.
+
+Controlled Discovery N/A Case (Behavior Matrix Applicability)
+- If Controlled Discovery = N/A for this call (per the Behavior Matrix applicability rules), reduce Interview included category count by 1 for this call.
+- Do not score Controlled Discovery as 1 when it is N/A.
+- Controlled Discovery = N/A must be excluded from:
+  - Behavioral_Points_Earned
+  - Behavioral_Points_Applicable
+
+CALCULATION DEFINITIONS
+Behavioral_Points_Earned
+Sum of all included category scores (each is 1, 3, or 5).
+
+Behavioral_Points_Applicable
+(Number of included categories) * 5
+
+Behavioral_Rate
+Behavioral_Points_Earned / Behavioral_Points_Applicable
+
+Behavioral_Score
+Behavioral_Rate * 40
+
+CALCULATION STEPS
+1) Determine included categories based on stage flags.
+2) Sum included category scores to get Behavioral_Points_Earned.
+3) Compute Behavioral_Points_Applicable = included_categories_count * 5.
+4) Compute Behavioral_Score = (Behavioral_Points_Earned / Behavioral_Points_Applicable) * 40.
+5) Round Behavioral_Score to nearest whole number.
+6) Cap Behavioral_Score between 0 and 40.
+
+DRIFT CONTROL RULES
+- Default to lower score when ambiguity exists.
+- Do not output 40 unless nearly all included categories are scored 5 with evidence meeting the 5 standard.
+- If Behavioral_Points_Applicable is 0 (should not occur), output Behavioral_Score = 0 and earned/applicable = 0.
+
+</pre>
+</section>
+<section>
+<h2>Binary Compliance Checklist – Follow-Up v1.1</h2>
+<pre>Follow-Up Binary Compliance Checklist Definitions
+Version 1.1 – Adds Blanket Prior Completion Confirmation Rule for Branch B
+
+CHANGE LOG FROM v1.0
+1) Added BLANKET PRIOR COMPLETION CONFIRMATION RULE — when agent&#x27;s opening language
+   explicitly establishes all upstream enrollment work is complete without item-by-item
+   review, F2_1, F2_2, and F2_3 may each be scored 1 under this blanket path.
+2) Extended PRIOR COMPLETION CREDIT RULE to explicitly include F2_1.
+3) F2_4 (Assessment Re-engaged) is unaffected — explicit re-engagement is always required
+   regardless of prior completion status.
+
+PURPOSE
+Define binary compliance items scored as 1 or 0 for Follow-Up calls using explicit transcript
+evidence. This checklist supports a weighted Binary Compliance score (40 points) for
+Follow-Up calls only.
+Do NOT apply this checklist to Interview calls. Interview calls use the Interview Binary
+Compliance Checklist.
+
+APPLICABILITY RULE
+This checklist applies ONLY when Call_Subtype = Follow-Up.
+If Call_Subtype = Interview, stop. Use the Interview Binary Compliance Checklist instead.
+
+BRANCH DETERMINATION (HARD RULE)
+Before scoring any binary item, determine the correct branch using FAFSA_Validated_YN:
+
+Branch A — FAFSA_Validated_YN = NO
+The student has not yet submitted the FAFSA form. The agent&#x27;s primary goal is FAFSA completion.
+Score F1_1 through F1_4 only.
+
+Branch B — FAFSA_Validated_YN = YES
+The student has already submitted the FAFSA form. The agent&#x27;s primary goal is document and
+enrollment task completion.
+Score F2_1 through F2_4 only.
+
+Binary_Items_Applicable = 4 for all Follow-Up calls regardless of branch.
+Assessment re-engagement (F1_4 and F2_4) is always applicable regardless of degree program.
+
+--------------------------------------------------
+
+GLOBAL SCORING RULES (ANTI-DRIFT)
+- Score 1 = YES only when the agent performed the explicit action in the transcript.
+- Score 0 if action is missing, unclear, implied, or performed only by a third party.
+- No inference allowed.
+- Default to 0 when uncertain.
+
+PROOF-LOCK RULE (HARD RULE — APPLIES TO EVERY BINARY ITEM)
+Before scoring any binary item as 1, you must be able to identify and internally quote the
+exact agent or student words from this transcript that satisfy the criterion.
+If you cannot identify specific verbatim language:
+- The score must be 0
+- Do not paraphrase
+- Do not reconstruct
+- Do not cite language from a different call
+- Do not assume the action occurred because a related action occurred
+
+FABRICATION PREVENTION
+If you scored a binary item as 1 but the evidence you would cite does not appear word-for-word
+in the transcript, correct the score to 0 before outputting. If the exact quote cannot be
+located, the score is 0.
+
+PRIOR COMPLETION CREDIT RULE
+For items that involve status confirmation or task completion (F2_1, F2_2, and F2_3), a score
+of 1 may be awarded if the agent confirmed the item was already completed prior to the call
+AND acknowledged that confirmation explicitly before moving to remaining tasks.
+
+Score 1 if the agent:
+- Explicitly asked about or confirmed the status of the item during the call, AND
+- Either walked the student through completion on-call OR confirmed prior completion and
+  acknowledged it before pivoting
+
+Score 0 if the agent did not address the item status at all or skipped it without any
+confirmation.
+
+BLANKET PRIOR COMPLETION CONFIRMATION RULE (NEW IN v1.1)
+On Branch B calls, when the agent&#x27;s opening language explicitly establishes that ALL upstream
+enrollment work is complete — without reviewing each item individually — this blanket
+confirmation satisfies the prior completion credit standard for F2_1, F2_2, and F2_3
+simultaneously.
+
+Score F2_1, F2_2, and F2_3 each as 1 under this rule ONLY if the agent&#x27;s language:
+- Explicitly positions the student as having completed all prior enrollment tasks before the
+  call, AND
+- Is spoken by the agent (not assumed from student-only language), AND
+- Is unambiguous about the completion status of upstream enrollment work
+
+Qualifying examples of blanket prior completion language:
+- &quot;What usually takes students days, you took care of before we even met&quot;
+- &quot;You&#x27;ve already got your supplemental enrollment documents done — you&#x27;re ahead of the game&quot;
+- &quot;Everything was already handled before we got on this call&quot;
+- &quot;Since you&#x27;ve already completed everything on your end, we&#x27;re focused on the next steps&quot;
+- Any agent statement that explicitly frames the student as having finished all upstream
+  enrollment requirements before this call
+
+NOT qualifying:
+- Vague encouragement without explicit completion reference (&quot;you&#x27;ve been doing great&quot;)
+- Student volunteering completion without agent acknowledgment or confirmation
+- Agent referencing one specific completed item without establishing broader completion
+- Agent language that implies completion without explicitly stating it
+
+HARD LIMIT — F2_4 IS NEVER COVERED BY THIS RULE
+F2_4 (Assessment Re-engaged) requires explicit re-engagement of the assessment as a
+priority next step during this call. Blanket prior completion confirmation does NOT satisfy
+F2_4 under any circumstances. The assessment must be explicitly addressed regardless of
+what was completed before the call.
+
+--------------------------------------------------
+
+BRANCH A — FAFSA NOT YET SUBMITTED (FAFSA_Validated_YN = NO)
+Applicable items: F1_1, F1_2, F1_3, F1_4
+
+F1_1 Explicit action: FAFSA status was assessed.
+Score 1 ONLY if the agent explicitly asked the student about their FAFSA completion status
+at the start of the call.
+
+Acceptable evidence:
+- Agent asks directly whether the student completed or submitted the FAFSA form
+- Agent references the prior call&#x27;s FAFSA plan and checks on progress
+- Student confirms they have not submitted and agent acknowledges this before proceeding
+
+NOT sufficient:
+- Agent assumes FAFSA status without asking
+- Agent mentions FAFSA as a future task without assessing current status
+- Agent moves directly to FAFSA workflow without establishing current status first
+
+Score 0 if the agent did not explicitly assess FAFSA status before proceeding.
+
+--------------------------------------------------
+
+F1_2 Explicit action: FAFSA workflow was initiated on-call.
+Score 1 ONLY if the agent actively guided the student into the FAFSA workflow during the
+call AND the student confirmed reaching the login or starting point.
+
+Score 1 ONLY if ALL of the following are present:
+1) Agent directed the student to studentaid.gov or the correct FAFSA access path, AND
+2) Student confirmed they are logged in or reached the FAFSA dashboard or form starting point
+
+NOT sufficient:
+- Agent only described FAFSA without guiding workflow movement
+- Agent directed student to FAFSA but student did not confirm reaching the access point
+- FAFSA account creation was attempted but reset, interrupted, or unconfirmed
+- Partial navigation that stopped before the student reached the FAFSA login or starting point
+
+Score 0 if the student did not explicitly confirm reaching the FAFSA workflow entry point.
+
+--------------------------------------------------
+
+F1_3 Explicit action: Scripted FAFSA handoff was secured.
+Score 1 ONLY if ALL of the following are present in the transcript:
+1) Agent explicitly stated they cannot remain on the phone while the student completes the
+   FAFSA because it is a government-issued form, AND
+2) Agent secured a callback within approximately 30 minutes to 1 hour
+
+Scripted language that satisfies this item:
+- &quot;I can&#x27;t stay on the phone with you while you&#x27;re filling this out since it is a
+  government-issued form&quot;
+- &quot;I&#x27;m going to give you a call back in about 30 minutes to 1 hour&quot;
+- Any equivalent language that explicitly states the government form restriction AND commits
+  to a near-term specific callback
+
+NOT acceptable for the follow-up timeframe:
+- Tomorrow at any time
+- Later today without a specific time
+- A week or any timeframe beyond same-day
+- Any language that does not commit to a near-term specific callback tied to FAFSA completion
+
+Score 0 if either element is missing or the follow-up timeframe does not meet the standard.
+
+--------------------------------------------------
+
+F1_4 Explicit action: Assessment re-engagement was addressed.
+Score 1 ONLY if the agent explicitly referenced the assessment requirement as a priority
+next step during this call.
+
+Acceptable evidence:
+- Agent stated that completing the assessment is an important next step
+- Agent asked whether the student has started or completed the assessment
+- Agent established a plan or timeline for assessment completion
+- Agent used language consistent with the scripted assessment re-engagement
+
+NOT sufficient:
+- General mention of program requirements without specific reference to the assessment
+- Agent acknowledged the assessment exists without establishing any action or priority
+
+Score 0 if the agent did not explicitly address the assessment as a next step during the call.
+
+--------------------------------------------------
+
+BRANCH B — FAFSA ALREADY SUBMITTED (FAFSA_Validated_YN = YES)
+Applicable items: F2_1, F2_2, F2_3, F2_4
+
+F2_1 Explicit action: FAFSA status was assessed and confirmed.
+Score 1 ONLY if ONE of the following paths is present:
+
+PATH A — Direct Confirmation
+Agent explicitly confirmed the student&#x27;s FAFSA submission status AND identified the relevant
+award year during the call.
+Acceptable evidence:
+- Agent asked how the FAFSA went and student confirmed submission
+- Agent confirmed which FAFSA year was submitted (2526 or 2627 or both)
+- Agent referenced the prior submission and confirmed it is on file before proceeding
+
+PATH B — Blanket Prior Completion Confirmation (NEW IN v1.1)
+The BLANKET PRIOR COMPLETION CONFIRMATION RULE applies and the agent&#x27;s language
+explicitly establishes all upstream enrollment work — including FAFSA — is complete.
+See BLANKET PRIOR COMPLETION CONFIRMATION RULE above for qualifying evidence.
+
+NOT sufficient for either path:
+- Agent assumed FAFSA was submitted without explicit confirmation or blanket confirmation
+- Agent mentioned FAFSA processing without confirming submission status with the student
+- Agent moved directly to next tasks without any acknowledgment of FAFSA completion status
+
+Score 0 if neither Path A nor Path B is satisfied.
+
+--------------------------------------------------
+
+F2_2 Explicit action: GIPI (Government Issued Photo ID) was addressed.
+Score 1 ONLY if ONE of the following paths is present:
+
+PATH A — Direct Confirmation
+Agent explicitly addressed GIPI status:
+- Confirmed GIPI was already uploaded (prior completion credit applies), OR
+- Guided the student to upload GIPI during the call, OR
+- Established a concrete plan for GIPI upload with a specific timeframe
+
+PATH B — Blanket Prior Completion Confirmation (NEW IN v1.1)
+The BLANKET PRIOR COMPLETION CONFIRMATION RULE applies. See above.
+
+PRIOR COMPLETION CREDIT (PATH A)
+If the student confirms GIPI was already uploaded and the agent acknowledges this before
+pivoting to remaining tasks, score 1. The upload does not need to occur during the call.
+
+NOT sufficient:
+- Agent mentioned documents generally without specifically referencing GIPI
+- Agent assumed GIPI was uploaded without confirmation
+- Agent skipped GIPI without addressing its status
+
+Score 0 if neither path is satisfied.
+
+--------------------------------------------------
+
+F2_3 Explicit action: Transcript was addressed.
+Score 1 ONLY if ONE of the following paths is present:
+
+PATH A — Direct Confirmation
+Agent explicitly addressed transcript status:
+- Confirmed transcript was already submitted (prior completion credit applies), OR
+- Guided the student to submit their transcript during the call, OR
+- Established a concrete plan for transcript submission with a specific timeframe and source
+
+PATH B — Blanket Prior Completion Confirmation (NEW IN v1.1)
+The BLANKET PRIOR COMPLETION CONFIRMATION RULE applies. See above.
+
+PRIOR COMPLETION CREDIT (PATH A)
+If the student confirms transcript was already submitted and the agent acknowledges this
+before pivoting to remaining tasks, score 1.
+
+NOT sufficient:
+- Agent mentioned documents generally without specifically referencing the transcript
+- Agent assumed transcript was submitted without confirmation
+- Agent skipped transcript without addressing its status
+
+Score 0 if neither path is satisfied.
+
+--------------------------------------------------
+
+F2_4 Explicit action: Assessment re-engagement was addressed.
+Score 1 ONLY if the agent explicitly referenced the assessment requirement as a priority
+next step during this call.
+
+HARD RULE — BLANKET CONFIRMATION DOES NOT APPLY
+F2_4 is never satisfied by blanket prior completion confirmation. The assessment must be
+explicitly raised, prioritized, and addressed as a next step in this specific call.
+
+Acceptable evidence:
+- Agent stated that completing the assessment is an important next step
+- Agent asked whether the student has started or completed the assessment
+- Agent established a plan or timeline for assessment completion
+- Agent used language consistent with the scripted assessment re-engagement:
+  &quot;Now that we have completed your documents, the final task is completing your assessment.
+  This is an important part of starting into your program, so let&#x27;s make this a priority
+  so you can get ahead.&quot;
+
+NOT sufficient:
+- General mention of program requirements without specific reference to the assessment
+- Agent acknowledged the assessment exists without establishing any action or priority
+- Blanket prior completion language about enrollment tasks
+
+Score 0 if the agent did not explicitly address the assessment as a next step during the call.
+
+--------------------------------------------------
+
+BINARY_ITEMS_APPLICABLE — ALWAYS 4
+Regardless of branch, Binary_Items_Applicable = 4 for all Follow-Up calls.
+Assessment re-engagement is always included in the denominator.
+Do not adjust Binary_Items_Applicable based on degree program or assessment applicability.
+
+--------------------------------------------------
+
+BINARY_ITEMS_MISSED OUTPUT (HARD RULE)
+After scoring all applicable binary items, populate Binary_Items_Missed as follows:
+- List every applicable item that scored 0 using this exact format: [Item ID] [Short Label]
+- Separate multiple items with a semicolon and space
+- Output None if all applicable items scored 1
+- Do not include items that scored 1
+
+Branch A labels (FAFSA_Validated_YN = NO):
+F1_1 FAFSA Status Assessed
+F1_2 FAFSA Workflow Initiated
+F1_3 FAFSA Handoff Secured
+F1_4 Assessment Re-engaged
+
+Branch B labels (FAFSA_Validated_YN = YES):
+F2_1 FAFSA Status Confirmed
+F2_2 GIPI Addressed
+F2_3 Transcript Addressed
+F2_4 Assessment Re-engaged
+
+Example: If F2_4 scored 0 on a Branch B call where blanket confirmation covered F2_1–F2_3:
+Binary_Items_Missed = F2_4 Assessment Re-engaged
+</pre>
+</section>
+<section>
+<h2>Binary Compliance Scoring – Follow-Up v1.0</h2>
+<pre>Follow-Up Binary Compliance Scoring
+Version 1.0 – Initial Release
+RECONSTRUCTION NOTE: This source was not included in the upload batch. It has been reconstructed
+from the Follow-Up Binary Compliance Checklist v1.0, Binary Compliance Scoring v1.2 (Interview),
+and Follow-Up Behavioral Scoring v1.0. Logic is consistent with all three reference sources.
+Confirm against the original file before treating as authoritative.
+
+PURPOSE
+Convert Follow-Up binary checklist results into Binary_Compliance_Score (0 to 40 points).
+This source applies ONLY when Call_Subtype = Follow-Up.
+Do NOT apply this source to Interview calls. Interview calls use Binary Compliance Scoring v1.2.
+
+APPLICABILITY RULE
+This source applies ONLY when Call_Subtype = Follow-Up.
+If Call_Subtype = Interview, stop. Use Admissions_QPI_Source_Binary_Compliance_Scoring_v1.2.txt instead.
+
+INPUTS REQUIRED
+Call_Subtype (must be Follow-Up to apply this source)
+FAFSA_Validated_YN (determines which branch was scored in the checklist)
+Binary checklist item results (0 or 1) for the applicable branch:
+- Branch A (FAFSA_Validated_YN = NO): F1_1, F1_2, F1_3, F1_4
+- Branch B (FAFSA_Validated_YN = YES): F2_1, F2_2, F2_3, F2_4
+
+OUTPUT FIELDS
+Binary_Items_Met
+Binary_Items_Applicable
+Binary_Compliance_Rate
+Binary_Compliance_Score (0 to 40)
+
+FIXED APPLICABILITY RULE (HARD RULE)
+Binary_Items_Applicable = 4 for ALL Follow-Up calls regardless of branch.
+Assessment re-engagement (F1_4 or F2_4) is always included in the denominator.
+Do not adjust Binary_Items_Applicable based on degree program or assessment applicability.
+Do not adjust Binary_Items_Applicable based on FAFSA_Validated_YN branch.
+
+GLOBAL SAFEGUARDS
+- No inference allowed.
+- Default to 0 for any unclear item.
+
+BINARY PROOF-LOCK (HARD RULE)
+- Score a binary checklist item as 1 ONLY when there is explicit transcript evidence for that specific item:
+  (a) the agent directly instructs the action, OR
+  (b) the agent explicitly confirms completion, OR
+  (c) the agent sets a specific time-bound plan and the student verbally agrees.
+- If evidence is missing, ambiguous, implied, or based only on prior completion claims without
+  verification, score 0.
+- Round final score only. Do not round the rate mid-calculation.
+
+CALCULATION
+
+Binary_Items_Met
+Count of branch items scored 1.
+Minimum: 0 | Maximum: 4
+
+Binary_Items_Applicable
+Always 4 for Follow-Up calls.
+
+Binary_Compliance_Rate
+Binary_Items_Met / 4
+
+Binary_Compliance_Score
+Binary_Compliance_Rate * 40
+
+ROUNDING
+Round Binary_Compliance_Score to nearest whole number.
+Binary_Compliance_Rate must be reported as a decimal rounded to 2 places.
+
+CAPS
+Maximum Binary_Compliance_Score = 40
+Minimum Binary_Compliance_Score = 0
+
+SCORE EXAMPLES
+All 4 items scored 1: 4/4 = 1.00 * 40 = 40
+3 items scored 1:    3/4 = 0.75 * 40 = 30
+2 items scored 1:    2/4 = 0.50 * 40 = 20
+1 item scored 1:     1/4 = 0.25 * 40 = 10
+No items scored 1:   0/4 = 0.00 * 40 = 0
+
+DRIFT CONTROL
+- If Binary_Items_Applicable is not 4, something went wrong upstream. Default Binary_Items_Applicable
+  to 4 and recalculate.
+- Default to the lower score when applicability is unclear.
+
+BINARY_ITEMS_MISSED OUTPUT (HARD RULE)
+After scoring all applicable binary items, populate Binary_Items_Missed as follows:
+- List every applicable item that scored 0 using this exact format: [Item ID] [Short Label]
+- Separate multiple items with a semicolon and space
+- Output None if all applicable items scored 1
+- Do not include items that scored 1
+
+Branch A labels (FAFSA_Validated_YN = NO):
+F1_1 FAFSA Status Assessed
+F1_2 FAFSA Workflow Initiated
+F1_3 FAFSA Handoff Secured
+F1_4 Assessment Re-engaged
+
+Branch B labels (FAFSA_Validated_YN = YES):
+F2_1 FAFSA Status Confirmed
+F2_2 GIPI Addressed
+F2_3 Transcript Addressed
+F2_4 Assessment Re-engaged
+
+Example: If F2_2 and F2_4 scored 0 on a Branch B call:
+Binary_Items_Missed = F2_2 GIPI Addressed; F2_4 Assessment Re-engaged
+
+OUTPUT VALIDATION
+Before finalizing Binary_Compliance_Score:
+- Confirm the correct branch was scored (A or B based on FAFSA_Validated_YN)
+- Confirm Binary_Items_Applicable = 4
+- Confirm Binary_Items_Met = count of items scored 1 in the applicable branch
+- Confirm Binary_Compliance_Rate = Binary_Items_Met / 4
+- Confirm Binary_Compliance_Score = Binary_Compliance_Rate * 40 rounded to nearest whole number
+- If any check fails, recalculate before outputting
+
+--------------------------------------------------
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE)
+Assessment_Discussed_YN is evaluated exclusively by Admissions_QPI_Source_Assessment_Disclosure_v1.1.txt.
+This source must NOT evaluate, infer, score, or incorporate Assessment_Discussed_YN in any way.
+Do not use any content from this source to determine the value of Assessment_Discussed_YN.
+--------------------------------------------------
+</pre>
+</section>
+<section>
+<h2>Behavior Matrix – Follow-Up v1.3</h2>
+<pre>Follow-Up Behavior Matrix and Opportunity Taxonomy
+Version 1.3 – Adds Enforcement Block: Hard Score Ban Extended, Anchor Selection Rule, Pre-Aggregate Validation
+
+CHANGE LOG FROM v1.2
+1) SCORING SCALE LOCK extended — hard ban now explicitly covers 6 and any value
+   above 5 in addition to 2 and 4. No score above 5 exists under any anchor or path.
+2) ANCHOR SELECTION RULE added — model must select exactly one of 1=ABSENT,
+   3=PRESENT, 5=STRONG. Inventing, paraphrasing, or interpolating anchors is prohibited.
+   The label EXEMPLARY is explicitly banned — it does not exist in this system.
+3) PRE-AGGREGATE VALIDATION added — model must confirm each category score is exactly
+   1, 3, or 5 before computing Behavioral_Score. If any score fails, stop and correct.
+
+CHANGE LOG FROM v1.1
+1) All four category score anchors rewritten to Audit-First structure:
+   each score level now states QUALIFIES, DOES NOT QUALIFY, and MUST NOT INFER explicitly.
+2) Score 3 anchors replaced with enumerated conditions — subjective descriptors
+   (&quot;limited,&quot; &quot;incomplete,&quot; &quot;surface-level,&quot; &quot;passingly&quot;) removed.
+3) FAFSA Assessment Score 5 now requires all four criteria explicitly listed.
+   Blanket completion language is locked to Score 3 maximum — Score 5 unavailable
+   without a direct FAFSA status question.
+4) FlightPath Execution Post-FAFSA Score 5 now requires all four criteria explicitly listed.
+   One transfer attempt, however well communicated, locks maximum to Score 3.
+5) Accountability Setting Score 5 now requires evidence from at least two distinct sections
+   of the call — one end-of-call moment alone locks maximum to Score 3.
+6) VALID CATEGORY IDENTIFIERS section added (Principle 3).
+7) INVALID LEGACY IDENTIFIERS section added (Principle 3).
+8) SCORING SCALE LOCK section added (Principle 8).
+9) ABSENCE CONFIRMATION REQUIREMENT made mandatory for Score 1 on every category.
+
+CHANGE LOG FROM v1.0 (carried forward from v1.1)
+- FAFSA Assessment Score 3: added blanket enrollment completion confirmation path.
+- FlightPath Execution: added Post-FAFSA alternate path for calls where FAFSA_Validated_YN
+  = YES and prior enrollment completion is established.
+
+PURPOSE
+This source provides the behavior matrix for Follow-Up calls used for:
+1) Behavioral scoring (weighted 40 points of total QPI)
+2) Opportunity identification (top 3, unscored)
+3) Deterministic Lowest_Behavior_Category selection
+
+This matrix applies ONLY when Call_Subtype = Follow-Up.
+Do NOT apply this matrix to Interview calls.
+
+--------------------------------------------------
+
+VALID CATEGORY IDENTIFIERS (CLOSED LIST — Principle 3)
+The only valid Follow-Up behavioral category labels are:
+  FAFSA Assessment
+  FlightPath Execution
+  Obstacle Resolution
+  Accountability Setting (Follow-Up)
+
+Any label not on this list is invalid and must not be output.
+
+INVALID LEGACY IDENTIFIERS (EXPLICIT BAN — Principle 3)
+The following identifiers from prior system versions are explicitly banned.
+They must not be scored, referenced, or cited as evidence:
+  FUB1, FUB2, FUB3, FUB4
+  Workflow Positioning and FAFSA Contribution
+  Obstacle or Readiness Resolution
+  FA1_1, FA1_2, FA1_3, FA1_4
+  FF1_1, FF1_2, FF1_3, FF1_4
+  FP1_1, FP1_2, FP1_3, FP1_4
+  FU1_1, FU1_2, FU1_3, FU1_4
+  Application Continuation
+  FAFSA Continuation
+  Post-FAFSA Completion
+  Unknown Follow-Up Position
+
+--------------------------------------------------
+
+SCORING SCALE LOCK (Principle 8)
+Valid scores: 1, 3, or 5 only.
+  1 = ABSENT: the behavior did not occur
+  3 = PRESENT: the behavior occurred but did not meet all Score 5 criteria
+  5 = STRONG: the behavior occurred and all Score 5 criteria are explicitly met
+
+HARD BAN — INVALID SCORES (UPDATED IN v1.3)
+Scores of 2, 4, 6, or any value not exactly equal to 1, 3, or 5 are invalid and must
+never be output. No score above 5 exists in this system under any anchor, path, or
+circumstance. If a computed or intended score is not 1, 3, or 5, it must be corrected
+before proceeding. Any response containing a score outside {1, 3, 5} is invalid and
+must be regenerated from scratch.
+
+ANCHOR SELECTION RULE (NEW IN v1.3)
+For each category, select exactly one anchor from the fixed list above:
+  1 = ABSENT
+  3 = PRESENT
+  5 = STRONG
+You may NOT invent, paraphrase, interpolate, or combine anchors.
+The label EXEMPLARY does not exist in this system and is explicitly banned.
+Any anchor not appearing verbatim in this source is invalid.
+
+PRE-AGGREGATE VALIDATION (HARD RULE — NEW IN v1.3)
+Before computing Behavioral_Score, confirm each of the four category scores is exactly
+1, 3, or 5. If any score is not one of these three values, stop, identify the category,
+correct it using the valid anchors defined in this source, and restart the validation.
+Do not proceed to Behavioral_Score computation until all four scores pass this check.
+
+DEFAULT: If evidence is ambiguous and any attempt is present, score 3.
+Score 1 requires confirmed absence. Score 5 requires all criteria met.
+
+--------------------------------------------------
+
+GLOBAL EVIDENCE STANDARD (Principle 6 and 7)
+Score credit requires explicit, quotable transcript evidence spoken by the Admissions
+Representative. The following are not evidence and must never be used to satisfy a criterion:
+- Generic affirmations: &quot;Very cool,&quot; &quot;Awesome,&quot; &quot;Perfect,&quot; &quot;Great,&quot; &quot;No worries,&quot; &quot;Absolutely&quot;
+- Brief agreement: &quot;I hear you,&quot; &quot;I got you,&quot; &quot;Got it,&quot; &quot;Okay&quot;
+- Filler encouragement: &quot;That&#x27;s great,&quot; &quot;Love that,&quot; &quot;Sounds good&quot;
+- Student, parent, or third-party statements
+- Implied actions or reasonable inferences
+- Evidence from any other call in a batch
+
+5-ANCHOR EVIDENCE GATE (Principle 8)
+Before finalizing Score 5 on any category:
+- Identify Quote 1: exact agent words from one section of the call satisfying the criteria.
+- Identify Quote 2: exact agent words from a meaningfully different section of the call
+  satisfying the criteria.
+Both quotes must independently satisfy the specific Score 5 criteria for that category.
+If two qualifying quotes cannot be identified, the score must not exceed 3.
+
+ABSENCE CONFIRMATION REQUIREMENT (mandatory before scoring 1 — Principle 11)
+Before assigning Score 1 to any category:
+1) Identify the section of the call where the behavior would be expected.
+2) Quote the agent language in that section.
+3) Confirm zero evidence of any attempt — not incomplete, not ambiguous, but zero.
+Score 1 is only valid when zero attempt of any kind is confirmed.
+Ambiguous or incomplete evidence must score 3, not 1.
+
+--------------------------------------------------
+
+FOLLOW-UP BEHAVIORAL CATEGORIES
+
+The four categories below are the only valid behavioral categories for Follow-Up calls.
+Do not score Rapport Development, Controlled Discovery, Financial Clarity, Risk Prevention,
+Assumptive Leadership, Progression Control, Technical Guidance Precision, or any other
+Interview-stage category on a Follow-Up call.
+
+--------------------------------------------------
+
+CATEGORY 1 — FAFSA Assessment
+
+DEFINITION
+The agent established clear awareness of where the student stands in the enrollment workflow
+— whether through a direct FAFSA status question or through explicit blanket acknowledgment
+of prior completion — and oriented the call to the correct next step based on that awareness.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required — Principle 11):
+1) Agent posed a direct FAFSA status question using explicit language.
+   Qualifying examples: &quot;Did you submit your FAFSA?&quot;, &quot;How did the FAFSA go?&quot;,
+   &quot;Were you able to get your FAFSA completed?&quot;, &quot;Is your FAFSA submitted?&quot;
+2) Student response explicitly confirmed the FAFSA_Validated_YN branch.
+   Branch YES: student stated FAFSA is submitted, complete, or on file.
+   Branch NO: student stated FAFSA is not yet submitted or still pending.
+3) Agent explicitly stated or confirmed the next step appropriate to the confirmed branch.
+4) Evidence of the status check and next-step communication exists in at least two distinct
+   exchanges from meaningfully different sections of the call.
+
+DOES NOT QUALIFY for Score 5:
+- Blanket prior completion language without a direct FAFSA status question.
+  Maximum score available without a direct question is 3.
+- Agent referencing a prior call plan without asking about current FAFSA status.
+- Student volunteering FAFSA status without agent asking.
+- A single-exchange status check without routing follow-through.
+- Agent assuming FAFSA completion from context clues.
+
+MUST NOT INFER for Score 5:
+- That &quot;you&#x27;ve got everything done&quot; or similar blanket language equals a direct FAFSA
+  status question.
+- That two exchanges about scholarship or enrollment topics constitute FAFSA status routing.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient — Principle 11):
+A) Agent posed a direct FAFSA status question but did not confirm routing or next step
+   based on the student&#x27;s confirmed status.
+B) Agent&#x27;s opening language explicitly established blanket prior completion of all
+   enrollment work — including FAFSA — without a direct question, AND the call was
+   demonstrably oriented toward the correct next step for Branch B.
+   This is the maximum score available when no direct FAFSA question occurs.
+
+DOES NOT QUALIFY for Score 3:
+- Blanket completion language that does not explicitly reference FAFSA or enrollment task
+  completion.
+- Agent mentioning FAFSA in passing without establishing status.
+- Student mentioning FAFSA completion without agent acknowledgment.
+- Agent mentioning FAFSA as a future task only.
+
+SCORE 1 — ABSENT
+
+QUALIFIES (all confirmed via Absence Confirmation):
+- No direct FAFSA status question occurred at any point in the call, AND
+- No blanket prior completion language explicitly establishing FAFSA or enrollment
+  completion occurred at any point in the call.
+
+ABSENCE CONFIRMATION REQUIRED:
+Identify the section where FAFSA assessment would be expected (call opening).
+Quote the agent language. Confirm it contains neither a direct FAFSA question nor blanket
+completion language. If any such language exists anywhere in the call, score 3.
+
+--------------------------------------------------
+
+CATEGORY 2 — FlightPath Execution
+
+DEFINITION
+The agent advanced the student through the next required enrollment execution step with
+specific guidance appropriate to the student&#x27;s current workflow position.
+On standard Follow-Up calls this means FSO FlightPath navigation.
+On Post-FAFSA calls where all FSO tasks are established as complete, this means connecting
+the student to the enrollment team or coordinating the next completion-path action.
+
+POST-FAFSA PATH APPLICABILITY (Principle 5)
+The Post-FAFSA alternate path applies ONLY when BOTH are explicitly established:
+1) FAFSA_Validated_YN = YES, AND
+2) Agent language establishes prior enrollment task completion before or at call start.
+If either condition is not met, apply the Standard FSO Path only.
+
+STANDARD FSO PATH — SCORE 5
+
+QUALIFIES (all four required):
+1) Agent provided step-by-step navigation guidance through FSO FlightPath tasks or steps.
+2) Agent confirmed student&#x27;s location within FlightPath at multiple points during the call.
+3) Agent adapted guidance when student encountered confusion or technical difficulty.
+4) Evidence drawn from at least two distinct FSO navigation exchanges from different sections
+   of the call.
+
+DOES NOT QUALIFY for Score 5 (Standard):
+- Directing student to FlightPath without confirming login or task status.
+- Guidance limited to one task or one section of the call.
+- Agent mentioning FlightPath as a future task without current navigation.
+
+STANDARD FSO PATH — SCORE 3
+
+QUALIFIES (any one sufficient):
+A) Agent directed student into FlightPath and confirmed login, but did not guide through
+   multiple tasks or confirm task completion.
+B) Agent provided FlightPath guidance in one section only, without evidence from a second
+   meaningfully different section.
+
+STANDARD FSO PATH — SCORE 1
+No FSO navigation or FlightPath guidance occurred during the call.
+FSO referenced as a future task only, or not referenced at all.
+
+--
+
+POST-FAFSA ALTERNATE PATH — SCORE 5
+
+QUALIFIES (all four required — Principle 11):
+1) Two or more separate warm transfer attempts to the enrollment team are documented in
+   meaningfully different sections of the call. Two attempts described in the same
+   conversational turn do not count as separate for this criterion.
+2) Agent explicitly stated what the enrollment team connection will accomplish for the
+   student (e.g., &quot;any additional steps that need to be taken care of, you can start
+   knocking those out,&quot; &quot;to get you to the next level of conversations&quot;).
+3) When transfer did not connect, agent explicitly committed to a specific retry plan
+   naming when the retry will occur (same day, next call, specific time window).
+4) Student verbally acknowledged or agreed to the retry plan.
+
+DOES NOT QUALIFY for Post-FAFSA Score 5:
+- One transfer attempt, however well communicated. Maximum score with one attempt is 3.
+- Two documented attempts without explicit purpose statement.
+- Retry plan without student verbal acknowledgment.
+- Enrollment team mentioned as a future goal without an actual transfer attempt.
+
+POST-FAFSA ALTERNATE PATH — SCORE 3
+
+QUALIFIES (any one sufficient):
+A) One documented warm transfer attempt with explicit statement of enrollment team purpose,
+   plus an explicit retry plan, but student acknowledgment not confirmed.
+B) One documented warm transfer attempt with student acknowledgment, but retry plan absent
+   or enrollment team purpose not stated.
+C) Two documented transfer attempts but without meeting the explicit purpose or retry
+   criteria for Score 5.
+
+POST-FAFSA ALTERNATE PATH — SCORE 1
+No warm transfer attempt was made during the call.
+Enrollment team was not mentioned as an action item during this call.
+
+MUST NOT INFER for either path:
+- That discussing the enrollment team in general terms equals an attempted transfer.
+- That a failed transfer without follow-through equals a retry plan.
+
+--------------------------------------------------
+
+CATEGORY 3 — Obstacle Resolution
+
+DEFINITION
+The agent identified a student-raised concern, hindrance, or obstacle that threatened
+enrollment momentum and worked with the student to arrive at a concrete plan to move forward.
+Post-enrollment questions about logistics, networking, program details, or campus life are
+not enrollment-threatening obstacles unless the student explicitly framed them as hesitations
+about proceeding.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required, with two-instance rule — Principle 11):
+1) Student raised an explicit concern, question, or hesitation that threatened enrollment
+   momentum during the call.
+2) Agent acknowledged the specific concern with language tied to that concern — not a
+   generic affirmation.
+3) Agent proposed or co-developed a concrete resolution or course of action.
+4) Student verbally agreed to or acknowledged the plan.
+
+TWO-INSTANCE RULE: Evidence must come from at least two distinct obstacle-resolution
+exchanges from different sections of the call. OR one exchange demonstrating all four
+elements with explicit depth and follow-through at multiple distinct points.
+
+DOES NOT QUALIFY for Score 5:
+- Generic affirmation (&quot;no worries,&quot; &quot;absolutely&quot;) in response to a concern.
+- Agent redirecting from a concern without acknowledging it specifically.
+- One obstacle exchange, however complete. Maximum with one exchange is 3.
+- Student questions about logistics or post-enrollment topics framed as curiosity, not
+  hesitation.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient):
+A) Student raised an enrollment-affecting concern; agent acknowledged specifically; no
+   concrete plan was reached.
+B) Student raised an enrollment-affecting concern; agent proposed a plan; student agreement
+   not confirmed.
+C) One complete obstacle resolution exchange (all four elements met) but only one occurrence.
+
+DOES NOT QUALIFY for Score 3:
+- Generic affirmation without specific acknowledgment of the concern raised.
+- Student questions about logistics or campus life that were not framed as hesitations.
+
+SCORE 1 — ABSENT
+
+QUALIFIES when confirmed via Absence Confirmation:
+No student statement threatening enrollment momentum occurred in the call, OR a
+concern was raised and agent responded only with a generic affirmation without
+specific acknowledgment.
+
+ABSENCE CONFIRMATION REQUIRED:
+Review the full transcript. Identify any student statement. Confirm whether it threatened
+enrollment momentum. Quote the agent&#x27;s response. Confirm generic affirmation only or
+no enrollment-affecting concern raised. If any specific acknowledgment is present, score 3.
+
+SCORING NOTE — SCORE 1 IS NOT A PENALTY:
+If no enrollment-threatening obstacle was raised during the call, Score 1 correctly reflects
+the absence of this behavior. It does not indicate agent failure.
+
+--------------------------------------------------
+
+CATEGORY 4 — Accountability Setting (Follow-Up)
+
+DEFINITION
+The agent established clear, time-bound expectations for what the student will complete
+before the next contact and secured explicit student agreement. On a Follow-Up call,
+accountability setting is the primary mechanism for maintaining enrollment momentum
+between contacts.
+
+SCORE 5 — STRONG
+
+QUALIFIES (all four required, with two-section rule — Principle 11):
+1) Agent communicated at least one specific task the student is expected to complete
+   before the next contact.
+2) Agent stated a specific timeframe for next contact. Specific means a named day, time
+   window, or equivalent deadline. &quot;When you can&quot; or &quot;sometime this week&quot; are not specific.
+3) Student verbally agreed to the timeline or explicitly confirmed the plan.
+4) Evidence of accountability setting exists in at least two distinct exchanges from
+   meaningfully different sections of the call.
+   Example: one accountability moment during task coaching mid-call, and one at the close.
+
+DOES NOT QUALIFY for Score 5:
+- A single end-of-call accountability moment, however specific. Maximum with one moment is 3.
+- Specific timeframe without student verbal agreement.
+- Student suggesting a time without agent anchoring the commitment.
+- General encouragement to &quot;keep going&quot; or &quot;stay on track&quot; without a specific task and time.
+
+SCORE 3 — PRESENT
+
+QUALIFIES (any one sufficient):
+A) One complete accountability exchange (task + specific timeframe + student agreement) but
+   only one occurrence in the call.
+B) Task and specific timeframe set but student agreement not explicitly confirmed.
+C) Multiple references to next steps across the call but no specific timeframe named in
+   any of them.
+
+SCORE 1 — ABSENT
+
+QUALIFIES when confirmed via Absence Confirmation:
+No task expectation, timeframe, or next contact plan was established by the agent at any
+point during the call.
+
+ABSENCE CONFIRMATION REQUIRED:
+Quote the end of the call. Quote any mid-call sections where next steps were discussed.
+Confirm no specific task, timeframe, or contact plan was communicated by the agent.
+If any such language exists anywhere in the call, score 3.
+
+--------------------------------------------------
+
+AGGREGATION AND OUTPUT RULES (Principle 9)
+
+BEHAVIORAL SCORE CALCULATION
+Behavioral_Points_Earned = sum of all four category scores.
+Behavioral_Points_Applicable = 20 (always for Follow-Up calls).
+Behavioral_Score = (Behavioral_Points_Earned / 20) × 40, rounded to nearest whole number.
+
+SCORE EXAMPLES
+5+5+5+5 = 20 → 40
+5+5+5+3 = 18 → 36
+5+5+3+3 = 16 → 32
+5+3+3+3 = 14 → 28
+5+5+5+1 = 16 → 32
+5+5+3+1 = 14 → 28
+5+5+1+1 = 12 → 24
+5+3+1+1 = 10 → 20
+3+3+3+3 = 12 → 24
+3+3+3+1 = 10 → 20
+3+3+1+1 = 8  → 16
+3+1+1+1 = 6  → 12
+1+1+1+1 = 4  → 8
+
+PRE-OUTPUT MATH LOCK (Principle 9)
+Before finalizing Behavioral_Score:
+1) List all four category scores.
+2) Sum to verify Behavioral_Points_Earned.
+3) Confirm Behavioral_Points_Applicable = 20.
+4) Recompute Behavioral_Score = (Earned / 20) × 40 and round.
+If Behavioral_Score = 40 and any category scored below 5, correct before outputting.
+
+LOWEST_BEHAVIOR_CATEGORY SELECTION (Principle 8)
+Lowest_Behavior_Score = the lowest numeric score among the four categories.
+Lowest_Behavior_Category = the category at that score, using tie-break if needed.
+
+TIE-BREAK ORDER (fixed — Principle 8):
+If two or more categories share the lowest score, select the first in this order:
+  1. FAFSA Assessment
+  2. FlightPath Execution
+  3. Obstacle Resolution
+  4. Accountability Setting (Follow-Up)
+
+OPPORTUNITY SELECTION (Principle 8)
+Opportunity_1 = Lowest_Behavior_Category (must be scored 1 or 3).
+Opportunity_2 = category with second-lowest score (scored 1 or 3 only).
+Opportunity_3 = category with third-lowest score (scored 1 or 3 only).
+If fewer than 3 categories score below 5, fill remaining fields with None.
+If all four categories score 5, all Opportunity fields = None and Lowest_Behavior_Score = 5.
+
+A category scored 5 is never eligible to appear in any Opportunity field.
+
+--------------------------------------------------
+
+ASSESSMENT DISCLOSURE EXCLUSION (HARD RULE — Principle 2)
+Assessment_Discussed_YN is governed exclusively by
+Admissions_QPI_Source_Assessment_Disclosure_v1.1.txt.
+This source has no authority over Assessment_Discussed_YN.
+Do not evaluate, infer, score, or reference Assessment_Discussed_YN from this source.
+</pre>
+</section>
+<section>
+<h2>Behavioral Scoring – Follow-Up v1.0</h2>
+<pre>Follow-Up Behavioral Scoring
+Version 1.0 – Initial Release
+
+PURPOSE
+Convert Follow-Up Behavior Matrix category scores (1/3/5) into Behavioral_Score (0 to 40 points).
+This source applies ONLY when Call_Subtype = Follow-Up.
+Do NOT apply this source to Interview calls. Interview calls use the Interview Behavioral Scoring source.
+
+INPUTS REQUIRED
+Call_Subtype (must be Follow-Up to apply this source)
+Follow-Up Behavior Matrix category scores (1, 3, or 5) for all four categories:
+- FAFSA Assessment
+- FlightPath Execution
+- Obstacle Resolution
+- Accountability Setting (Follow-Up)
+
+OUTPUT FIELDS
+Behavioral_Points_Earned
+Behavioral_Points_Applicable
+Behavioral_Score (0 to 40)
+
+GLOBAL SAFEGUARDS
+- All four Follow-Up behavioral categories are always applicable on Follow-Up calls.
+- Do not exclude any category based on FAFSA_Validated_YN branch.
+- Do not exclude any category based on whether the student raised an obstacle.
+  If no obstacle was raised, score Obstacle Resolution = 1 (absent).
+- If evidence is limited or ambiguous for any category, default that category score to 3 per the Follow-Up Behavior Matrix.
+- Round only the final Behavioral_Score.
+
+APPLICABLE CATEGORIES
+Always 4 for Follow-Up calls:
+1. FAFSA Assessment
+2. FlightPath Execution
+3. Obstacle Resolution
+4. Accountability Setting (Follow-Up)
+
+Behavioral_Points_Applicable = 4 × 5 = 20 (always)
+
+CALCULATION DEFINITIONS
+
+Behavioral_Points_Earned
+Sum of all four category scores.
+Minimum: 4 (all scored 1) | Maximum: 20 (all scored 5)
+
+Behavioral_Points_Applicable
+Always 20 for Follow-Up calls (4 categories × maximum score of 5).
+
+Behavioral_Rate
+Behavioral_Points_Earned / Behavioral_Points_Applicable
+Behavioral_Points_Earned / 20
+
+Behavioral_Score
+Behavioral_Rate × 40
+Round to nearest whole number.
+
+SCORE EXAMPLES
+All categories 5: 20/20 = 1.00 × 40 = 40
+Three 5s one 3: 18/20 = 0.90 × 40 = 36
+Two 5s two 3s: 16/20 = 0.80 × 40 = 32
+One 5 three 3s: 14/20 = 0.70 × 40 = 28
+All categories 3: 12/20 = 0.60 × 40 = 24
+One 5 two 3s one 1: 12/20 = 0.60 × 40 = 24
+All categories 1: 4/20 = 0.20 × 40 = 8
+
+OUTPUT VALIDATION
+Before finalizing Behavioral_Score:
+- Confirm all four categories were scored
+- Confirm Behavioral_Points_Applicable = 20
+- Confirm Behavioral_Points_Earned = sum of all four category scores
+- Confirm Behavioral_Rate = Behavioral_Points_Earned / 20
+- Confirm Behavioral_Score = Behavioral_Rate × 40 rounded to nearest whole number
+- If any check fails, recalculate before outputting
+
+LOWEST_BEHAVIOR_CATEGORY AND OPPORTUNITY SELECTION
+After scoring all four categories:
+- Lowest_Behavior_Category = the category with the lowest score
+- If tie: use tie-break order from Follow-Up Behavior Matrix (FAFSA Assessment &gt; FlightPath Execution &gt; Obstacle Resolution &gt; Accountability Setting Follow-Up)
+- Lowest_Behavior_Score = the score of the Lowest_Behavior_Category
+- Opportunity_1 = Lowest_Behavior_Category
+- Opportunity_2 = category with second lowest score (None if all remaining categories score 5)
+- Opportunity_3 = category with third lowest score (None if all remaining categories score 5)
+- If all four categories score 5: Lowest_Behavior_Score = 5, all Opportunity fields = None
+</pre>
+</section>
+
+</body>
+</html>
